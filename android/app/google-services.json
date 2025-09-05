@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "913722725673",
+    "project_id": "sys-analysis-4d374",
+    "storage_bucket": "sys-analysis-4d374.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:913722725673:android:e04208c941dbcf6e201338",
+        "android_client_info": {
+          "package_name": "com.example.sys_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "913722725673-8ojt6fvf3nc4hvc4uplmn7rf01cm7foi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC38BTTEu27-CLmcuw0D8i5xFhQhaphy8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "913722725673-8ojt6fvf3nc4hvc4uplmn7rf01cm7foi.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "913722725673-1qsvufq1e7jo8tlhun0it78r1mhjosur.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.sysApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
