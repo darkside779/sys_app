@@ -179,7 +179,7 @@ class _SplashScreenState extends State<SplashScreen>
                     return FadeTransition(
                       opacity: _fadeAnimation,
                       child: Text(
-                        AppLocalizations.of(context)?.appName ?? 'Delivery System',
+                        AppLocalizations.of(context).app_name,
                         style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -199,7 +199,7 @@ class _SplashScreenState extends State<SplashScreen>
                     return FadeTransition(
                       opacity: _fadeAnimation,
                       child: Text(
-                        AppLocalizations.of(context)?.welcome ?? 'Welcome',
+                        AppLocalizations.of(context).welcome,
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           color: Colors.white.withOpacity(0.9),
                         ),
@@ -249,7 +249,6 @@ class _SplashScreenState extends State<SplashScreen>
 
   String _getLoadingText(AuthState state) {
     final tr = AppLocalizations.of(context);
-    if (tr == null) return 'Loading...';
     
     switch (state) {
       case AuthState.loading:

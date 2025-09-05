@@ -76,7 +76,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       // Show success message
       CommonWidgets.showLocalizedSnackBar(
         context: context,
-        getMessage: (tr) => tr.registrationSuccess,
+        getMessage: (tr) => tr.registration_success,
         type: SnackBarType.success,
       );
 
@@ -86,7 +86,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       // Show error message
       CommonWidgets.showLocalizedSnackBar(
         context: context,
-        getMessage: (tr) => authProvider.errorMessage ?? tr.registrationFailed,
+        getMessage: (tr) => authProvider.errorMessage ?? tr.registration_failed,
         type: SnackBarType.error,
       );
     }
@@ -107,10 +107,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   String? _validateName(String? value) {
-    final tr = AppLocalizations.of(context)!;
+    final tr = AppLocalizations.of(context);
     
     if (value == null || value.isEmpty) {
-      return tr.requiredField;
+      return tr.required_field;
     }
     
     if (value.length < 2) {
@@ -121,58 +121,58 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   String? _validateEmail(String? value) {
-    final tr = AppLocalizations.of(context)!;
+    final tr = AppLocalizations.of(context);
     
     if (value == null || value.isEmpty) {
-      return tr.requiredField;
+      return tr.required_field;
     }
     
     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     if (!emailRegex.hasMatch(value)) {
-      return tr.invalidEmail;
+      return tr.invalid_email;
     }
     
     return null;
   }
 
   String? _validatePhone(String? value) {
-    final tr = AppLocalizations.of(context)!;
+    final tr = AppLocalizations.of(context);
     
     if (value == null || value.isEmpty) {
-      return tr.requiredField;
+      return tr.required_field;
     }
     
     final phoneRegex = RegExp(r'^[+]?[0-9]{10,15}$');
     if (!phoneRegex.hasMatch(value)) {
-      return tr.invalidPhoneNumber;
+      return tr.invalid_phone_number;
     }
     
     return null;
   }
 
   String? _validatePassword(String? value) {
-    final tr = AppLocalizations.of(context)!;
+    final tr = AppLocalizations.of(context);
     
     if (value == null || value.isEmpty) {
-      return tr.requiredField;
+      return tr.required_field;
     }
     
     if (value.length < 6) {
-      return tr.passwordTooShort;
+      return tr.password_too_short;
     }
     
     return null;
   }
 
   String? _validateConfirmPassword(String? value) {
-    final tr = AppLocalizations.of(context)!;
+    final tr = AppLocalizations.of(context);
     
     if (value == null || value.isEmpty) {
-      return tr.requiredField;
+      return tr.required_field;
     }
     
     if (value != _passwordController.text) {
-      return tr.passwordsDoNotMatch;
+      return tr.passwords_do_not_match;
     }
     
     return null;
@@ -180,7 +180,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tr = AppLocalizations.of(context)!;
+    final tr = AppLocalizations.of(context);
     
     return Scaffold(
       appBar: CommonWidgets.localizedAppBar(
@@ -259,7 +259,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       children: [
                         CommonWidgets.localizedText(
                           context,
-                          (tr) => tr.userRole,
+                          (tr) => tr.user_role,
                           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
@@ -388,7 +388,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 // Confirm Password Field
                 CommonWidgets.localizedTextFormField(
                   context: context,
-                  getLabel: (tr) => tr.confirmPassword,
+                  getLabel: (tr) => tr.confirm_password,
                   controller: _confirmPasswordController,
                   obscureText: _isObscureConfirmPassword,
                   validator: _validateConfirmPassword,

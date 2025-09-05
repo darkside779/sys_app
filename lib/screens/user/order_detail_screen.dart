@@ -156,7 +156,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tr = AppLocalizations.of(context)!;
+    final tr = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(

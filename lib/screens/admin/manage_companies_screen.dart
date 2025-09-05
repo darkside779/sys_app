@@ -53,12 +53,12 @@ class _ManageCompaniesScreenState extends State<ManageCompaniesScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.delete),
+        title: Text(AppLocalizations.of(context).delete),
         content: Text('Are you sure you want to delete this company?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text(AppLocalizations.of(context)!.cancel),
+            child: Text(AppLocalizations.of(context).cancel),
           ),
           TextButton(
             onPressed: () {
@@ -74,7 +74,7 @@ class _ManageCompaniesScreenState extends State<ManageCompaniesScreen> {
                 }
               });
             },
-            child: Text(AppLocalizations.of(context)!.delete),
+            child: Text(AppLocalizations.of(context).delete),
           ),
         ],
       ),
@@ -95,7 +95,7 @@ class _ManageCompaniesScreenState extends State<ManageCompaniesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Manage Companies'),
+        title: Text(AppLocalizations.of(context).manage_companies),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -112,8 +112,8 @@ class _ManageCompaniesScreenState extends State<ManageCompaniesScreen> {
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                labelText: 'Search Companies',
-                hintText: 'Enter company name, address, or contact...',
+                labelText: AppLocalizations.of(context).search_companies,
+                hintText: AppLocalizations.of(context).search_companies,
                 prefixIcon: const Icon(Icons.search),
                 suffixIcon: _searchQuery.isNotEmpty
                     ? IconButton(
@@ -196,7 +196,7 @@ class _ManageCompaniesScreenState extends State<ManageCompaniesScreen> {
                           const SizedBox(height: 16),
                           CommonWidgets.primaryButton(
                             context: context,
-                            getText: (tr) => tr.createCompany,
+                            getText: (tr) => tr.create_company,
                             onPressed: _showCreateCompanyDialog,
                             icon: Icons.add,
                           ),

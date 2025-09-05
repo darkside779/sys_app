@@ -25,11 +25,12 @@ class AppTheme {
   // Dark Theme Colors
   static const Color darkBackgroundColor = Color(0xFF121212);
   static const Color darkSurfaceColor = Color(0xFF1E1E1E);
-  static const Color darkOnSurfaceColor = Color(0xFFE0E0E0);
-  static const Color darkOnBackgroundColor = Color(0xFFE0E0E0);
+  static const Color darkOnSurfaceColor = Color(0xFFFFFFFF); // Full white text
+  static const Color darkOnBackgroundColor = Color(0xFFFFFFFF); // Full white text
+  static const Color darkBorderColor = Color(0xFF616161); // Lighter border for visibility
   
   // Text Colors
-  static const Color textPrimary = Color(0xFF212121);
+  static const Color textPrimary = Color(0xFF000000); // Full black text
   static const Color textSecondary = Color(0xFF757575);
   static const Color textHint = Color(0xFFBDBDBD);
   static const Color textOnPrimary = Color(0xFFFFFFFF);
@@ -127,7 +128,7 @@ class AppTheme {
       // Input Decoration Theme
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: surfaceColor,
+        fillColor: Colors.white, // Pure white for light mode
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -152,6 +153,8 @@ class AppTheme {
         labelStyle: const TextStyle(color: textSecondary),
         hintStyle: const TextStyle(color: textHint),
         errorStyle: const TextStyle(color: errorColor),
+        // Ensure input text is white in light mode
+        counterStyle: const TextStyle(color: textPrimary),
       ),
       
       // Card Theme
@@ -327,8 +330,8 @@ class AppTheme {
       
       // App Bar Theme
       appBarTheme: const AppBarTheme(
-        backgroundColor: darkSurfaceColor,
-        foregroundColor: darkOnSurfaceColor,
+        backgroundColor: primaryVariant, // Use darker primary color
+        foregroundColor: textOnPrimary,
         elevation: 2,
         centerTitle: true,
         systemOverlayStyle: SystemUiOverlayStyle(
@@ -336,28 +339,80 @@ class AppTheme {
           statusBarIconBrightness: Brightness.light,
         ),
         titleTextStyle: TextStyle(
-          color: darkOnSurfaceColor,
+          color: textOnPrimary,
           fontSize: 20,
           fontWeight: FontWeight.w600,
         ),
         iconTheme: IconThemeData(
-          color: darkOnSurfaceColor,
+          color: textOnPrimary,
           size: 24,
         ),
+      ),
+      
+      // Elevated Button Theme
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primaryColor,
+          foregroundColor: textOnPrimary,
+          elevation: 2,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          textStyle: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      
+      // Outlined Button Theme
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: primaryColor,
+          side: const BorderSide(color: primaryColor, width: 1.5),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          textStyle: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      
+      // Text Button Theme
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: primaryColor,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          textStyle: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      
+      // Floating Action Button Theme
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        backgroundColor: primaryColor,
+        foregroundColor: textOnPrimary,
+        elevation: 4,
       ),
       
       // Input Decoration Theme
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: darkSurfaceColor,
+        fillColor: Colors.white, // White background for input fields in dark mode to show black text
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Color(0xFF424242)),
+          borderSide: const BorderSide(color: darkBorderColor),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Color(0xFF424242)),
+          borderSide: const BorderSide(color: darkBorderColor),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -371,9 +426,12 @@ class AppTheme {
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: errorColor, width: 2),
         ),
-        labelStyle: const TextStyle(color: Color(0xFFBDBDBD)),
-        hintStyle: const TextStyle(color: Color(0xFF757575)),
+        labelStyle: const TextStyle(color: Color(0xFFE0E0E0)),
+        hintStyle: const TextStyle(color: Color(0xFFBDBDBD)),
         errorStyle: const TextStyle(color: errorColor),
+        floatingLabelStyle: const TextStyle(color: primaryColor),
+        prefixIconColor: Color(0xFFBDBDBD),
+        suffixIconColor: Color(0xFFBDBDBD),
       ),
       
       // Card Theme
@@ -405,8 +463,8 @@ class AppTheme {
       listTileTheme: const ListTileThemeData(
         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         tileColor: darkSurfaceColor,
-        selectedTileColor: Color(0xFF1E3A8A),
-        iconColor: Color(0xFFBDBDBD),
+        selectedTileColor: Color(0xFF1565C0), // More visible blue
+        iconColor: Color(0xFFE0E0E0),
         textColor: darkOnSurfaceColor,
       ),
       
@@ -423,9 +481,20 @@ class AppTheme {
           fontWeight: FontWeight.w600,
         ),
         contentTextStyle: const TextStyle(
-          color: Color(0xFFBDBDBD),
+          color: darkOnSurfaceColor,
           fontSize: 16,
         ),
+      ),
+      
+      // Snack Bar Theme
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: Color(0xFF333333),
+        contentTextStyle: const TextStyle(color: darkOnSurfaceColor),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        behavior: SnackBarBehavior.floating,
+        elevation: 4,
       ),
       
       // Text Theme (dark colors)
@@ -486,7 +555,7 @@ class AppTheme {
           fontWeight: FontWeight.w400,
         ),
         bodySmall: TextStyle(
-          color: Color(0xFFBDBDBD),
+          color: Color(0xFFE0E0E0),
           fontSize: 12,
           fontWeight: FontWeight.w400,
         ),
@@ -501,7 +570,7 @@ class AppTheme {
           fontWeight: FontWeight.w500,
         ),
         labelSmall: TextStyle(
-          color: Color(0xFFBDBDBD),
+          color: Color(0xFFE0E0E0),
           fontSize: 10,
           fontWeight: FontWeight.w500,
         ),

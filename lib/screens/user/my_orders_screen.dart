@@ -1,4 +1,4 @@
-// ignore_for_file: unused_import, deprecated_member_use
+// ignore_for_file: unused_import, deprecated_member_use, use_build_context_synchronously, avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,8 +9,10 @@ import '../../providers/company_provider.dart';
 import '../../models/order_model.dart';
 import '../../models/company_model.dart';
 import '../../localization/app_localizations.dart';
+import '../../localization/localization_extension.dart';
 import '../../widgets/common_widgets.dart';
 import '../../app/theme.dart';
+import 'create_order_screen.dart';
 
 class MyOrdersScreen extends StatefulWidget {
   const MyOrdersScreen({super.key});
@@ -30,8 +32,14 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadOrders();
+      _initializeAndLoadOrders();
     });
+  }
+
+  Future<void> _initializeAndLoadOrders() async {
+    final orderProvider = context.read<OrderProvider>();
+    await orderProvider.initialize(); // Fetch from Firebase
+    _loadOrders(); // Then filter for user orders
   }
 
   @override
@@ -44,10 +52,18 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
     final orderProvider = context.read<OrderProvider>();
     final authProvider = context.read<AuthProvider>();
 
-    // Filter orders for current driver
+    print('DEBUG MyOrders: Current user ID: ${authProvider.user?.id}');
+    print('DEBUG MyOrders: Total orders in provider: ${orderProvider.orders.length}');
+    
+    // Filter orders created by current user
     final userOrders = orderProvider.orders
-        .where((order) => order.driverId == authProvider.user?.id)
+        .where((order) => order.createdBy == authProvider.user?.id)
         .toList();
+
+    print('DEBUG MyOrders: User orders found: ${userOrders.length}');
+    for (var order in userOrders) {
+      print('DEBUG MyOrders: Order - ${order.orderNumber}, createdBy: ${order.createdBy}');
+    }
 
     setState(() {
       _filteredOrders = userOrders;
@@ -64,7 +80,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
     final authProvider = context.read<AuthProvider>();
 
     List<Order> orders = orderProvider.orders
-        .where((order) => order.driverId == authProvider.user?.id)
+        .where((order) => order.createdBy == authProvider.user?.id)
         .toList();
 
     // Apply search filter
@@ -157,7 +173,26 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _navigateToCreateOrder(context),
+        backgroundColor: AppTheme.primaryColor,
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
     );
+  }
+
+  Future<void> _navigateToCreateOrder(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const CreateOrderScreen()),
+    );
+    
+    if (result == true && mounted) {
+      // Refresh orders after creating a new one
+      final orderProvider = context.read<OrderProvider>();
+      await orderProvider.initialize();
+      _loadOrders();
+    }
   }
 
   Widget _buildSearchAndFilters() {
@@ -266,7 +301,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
             Text(
               _searchQuery.isNotEmpty || _statusFilter != null
                   ? 'Try adjusting your filters'
-                  : 'No orders have been assigned to you yet',
+                  : 'No orders created yet. Tap + to create your first order.',
               style: Theme.of(
                 context,
               ).textTheme.bodyMedium?.copyWith(color: Colors.grey),

@@ -5,9 +5,11 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/order_provider.dart';
 import '../../localization/app_localizations.dart';
+import '../../localization/localization_extension.dart';
 import '../../widgets/common_widgets.dart';
 import '../../app/theme.dart';
 import '../auth/login_screen.dart';
+import 'my_orders_screen.dart';
 
 class UserDashboard extends StatefulWidget {
   const UserDashboard({super.key});
@@ -51,7 +53,7 @@ class _UserDashboardState extends State<UserDashboard> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(context.tr.logout),
-        content: Text('Are you sure you want to logout?'), // Add to translations
+        content: Text(context.tr.are_you_sure_logout),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -69,7 +71,7 @@ class _UserDashboardState extends State<UserDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    final tr = AppLocalizations.of(context)!;
+    final tr = AppLocalizations.of(context);
     final authProvider = Provider.of<AuthProvider>(context);
 
     return Scaffold(
@@ -79,7 +81,7 @@ class _UserDashboardState extends State<UserDashboard> {
           CommonWidgets.languageSwitcher(
             context: context,
             onLanguageChanged: (locale) {
-              // Handle language change
+              authProvider.updateProfile(language: locale.languageCode);
             },
           ),
           IconButton(
@@ -96,7 +98,7 @@ class _UserDashboardState extends State<UserDashboard> {
   }
 
   Widget _buildNavigationDrawer(BuildContext context, AuthProvider authProvider) {
-    final tr = AppLocalizations.of(context)!;
+    final tr = AppLocalizations.of(context);
     
     return Drawer(
       child: ListView(
@@ -167,7 +169,7 @@ class _UserDashboardState extends State<UserDashboard> {
   }
 
   Widget _buildBottomNavigation() {
-    final tr = AppLocalizations.of(context)!;
+    final tr = AppLocalizations.of(context);
     
     return BottomNavigationBar(
       currentIndex: _selectedIndex,
@@ -229,12 +231,12 @@ class _UserDashboardState extends State<UserDashboard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'User Dashboard', // Add to translations
+                      context.tr.dashboard,
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'View your orders and manage your profile.',
+                      context.tr.view_orders_manage_profile,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Theme.of(context).textTheme.bodySmall?.color,
                       ),
@@ -257,7 +259,7 @@ class _UserDashboardState extends State<UserDashboard> {
                   Expanded(
                     child: _buildStatCard(
                       context,
-                      context.tr.totalOrders,
+                      context.tr.total_orders,
                       userOrders.length.toString(),
                       Icons.shopping_bag,
                       AppTheme.primaryColor,
@@ -267,7 +269,7 @@ class _UserDashboardState extends State<UserDashboard> {
                   Expanded(
                     child: _buildStatCard(
                       context,
-                      context.tr.todayOrders,
+                      context.tr.today_orders,
                       userOrders.where((order) => 
                         order.date.day == DateTime.now().day &&
                         order.date.month == DateTime.now().month &&
@@ -287,12 +289,12 @@ class _UserDashboardState extends State<UserDashboard> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Recent Orders', // Add to translations
+                    context.tr.recent_orders,
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   TextButton(
                     onPressed: () => setState(() => _selectedIndex = 1),
-                    child: Text('View All'), // Add to translations
+                    child: Text(context.tr.view_all),
                   ),
                 ],
               ),
@@ -310,12 +312,12 @@ class _UserDashboardState extends State<UserDashboard> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'No orders yet', // Add to translations
+                        context.tr.no_orders_yet,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Your orders will appear here once assigned.',
+                        context.tr.orders_appear_when_assigned,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Theme.of(context).textTheme.bodySmall?.color,
                         ),
@@ -365,7 +367,7 @@ class _UserDashboardState extends State<UserDashboard> {
               
               // Quick Actions
               Text(
-                'Quick Actions', // Add to translations
+                context.tr.quick_actions,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               const SizedBox(height: 12),
@@ -376,7 +378,7 @@ class _UserDashboardState extends State<UserDashboard> {
                   children: [
                     CommonWidgets.primaryButton(
                       context: context,
-                      getText: (tr) => 'Refresh Orders', // Add to translations
+                      getText: (tr) => tr.refresh_orders,
                       onPressed: () {
                         Provider.of<OrderProvider>(context, listen: false).loadAllOrders();
                       },
@@ -385,7 +387,7 @@ class _UserDashboardState extends State<UserDashboard> {
                     const SizedBox(height: 12),
                     CommonWidgets.secondaryButton(
                       context: context,
-                      getText: (tr) => 'Update Profile', // Add to translations
+                      getText: (tr) => tr.update_profile,
                       onPressed: () => setState(() => _selectedIndex = 2),
                       icon: Icons.person,
                     ),
@@ -462,23 +464,21 @@ class _UserDashboardState extends State<UserDashboard> {
   }
 
   String _getOrderStatusText(dynamic state) {
-    final tr = AppLocalizations.of(context)!;
+    final tr = AppLocalizations.of(context);
     switch (state.toString()) {
       case 'OrderState.received':
-        return tr.orderReceived;
+        return tr.order_received;
       case 'OrderState.returned':
-        return tr.orderReturned;
+        return tr.order_returned;
       case 'OrderState.notReturned':
-        return tr.orderNotReturned;
+        return tr.order_not_returned;
       default:
-        return 'Pending'; // Add to translations
+        return tr.pending;
     }
   }
 
   Widget _buildOrdersTab() {
-    return const Center(
-      child: Text('Orders List - Coming Soon'),
-    );
+    return const MyOrdersScreen();
   }
 
   Widget _buildProfileTab() {
@@ -528,7 +528,7 @@ class _UserDashboardState extends State<UserDashboard> {
               
               CommonWidgets.localizedCard(
                 context: context,
-                getTitle: (tr) => 'Account Information', // Add to translations
+                getTitle: (tr) => tr.account_information,
                 content: Column(
                   children: [
                     ListTile(
@@ -542,8 +542,8 @@ class _UserDashboardState extends State<UserDashboard> {
                     ),
                     ListTile(
                       leading: const Icon(Icons.notifications),
-                      title: Text('Notifications'), // Add to translations
-                      subtitle: Text('Manage notification preferences'),
+                      title: Text(context.tr.notifications),
+                      subtitle: Text(context.tr.manage_notification_preferences),
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () {
                         // Navigate to notification settings
@@ -551,8 +551,8 @@ class _UserDashboardState extends State<UserDashboard> {
                     ),
                     ListTile(
                       leading: const Icon(Icons.security),
-                      title: Text('Privacy & Security'), // Add to translations
-                      subtitle: Text('Manage your privacy settings'),
+                      title: Text(context.tr.privacy_security),
+                      subtitle: Text(context.tr.manage_privacy_settings),
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () {
                         // Navigate to privacy settings

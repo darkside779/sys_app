@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/foundation.dart';
 import '../models/order_model.dart' as models;
 import '../services/db_service.dart';
@@ -92,13 +94,23 @@ class OrderProvider with ChangeNotifier {
   // Create new order
   Future<bool> createOrder(models.Order order) async {
     try {
+      print('DEBUG: Creating order for user: ${order.createdBy}');
+      print('DEBUG: Order details: ${order.orderNumber}, ${order.customerName}');
+      
       final orderId = await _dbService.createOrder(order);
+      print('DEBUG: Order created with ID: $orderId');
+      
       final newOrder = order.copyWith(id: orderId);
       _orders.insert(0, newOrder);
       _applyFilters();
       notifyListeners();
+      
+      print('DEBUG: Total orders in provider: ${_orders.length}');
+      print('DEBUG: Filtered orders: ${_filteredOrders.length}');
+      
       return true;
     } catch (e) {
+      print('DEBUG: Error creating order: $e');
       _setError('Failed to create order: $e');
       return false;
     }

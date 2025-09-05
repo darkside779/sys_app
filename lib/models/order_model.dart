@@ -59,7 +59,7 @@ class Order {
   Map<String, dynamic> toMap() {
     return {
       'companyId': FirebaseFirestore.instance.doc('delivery_companies/$companyId'),
-      'driverId': FirebaseFirestore.instance.doc('drivers/$driverId'),
+      'driverId': (driverId.isNotEmpty && driverId != 'unassigned') ? FirebaseFirestore.instance.doc('drivers/$driverId') : null,
       'customerName': customerName,
       'customerAddress': customerAddress,
       'date': Timestamp.fromDate(date),
@@ -79,7 +79,7 @@ class Order {
     return Order(
       id: doc.id,
       companyId: (data['companyId'] as DocumentReference).id,
-      driverId: (data['driverId'] as DocumentReference).id,
+      driverId: data['driverId'] != null ? (data['driverId'] as DocumentReference).id : 'unassigned',
       customerName: data['customerName'] ?? '',
       customerAddress: data['customerAddress'] ?? '',
       date: (data['date'] as Timestamp).toDate(),

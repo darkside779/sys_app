@@ -1,9 +1,10 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, unused_import, unused_element
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../localization/app_localizations.dart';
+import '../../localization/localization_extension.dart';
 import '../../widgets/common_widgets.dart';
 import 'register_screen.dart';
 import '../admin/admin_dashboard.dart';
@@ -48,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
       // Show success message
       CommonWidgets.showLocalizedSnackBar(
         context: context,
-        getMessage: (tr) => tr.loginSuccess,
+        getMessage: (tr) => tr.login_success,
         type: SnackBarType.success,
       );
 
@@ -58,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
       // Show error message
       CommonWidgets.showLocalizedSnackBar(
         context: context,
-        getMessage: (tr) => authProvider.errorMessage ?? tr.loginFailed,
+        getMessage: (tr) => authProvider.errorMessage ?? tr.login_failed,
         type: SnackBarType.error,
       );
     }
@@ -85,38 +86,37 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   String? _validateEmail(String? value) {
-    final tr = AppLocalizations.of(context)!;
+    final tr = AppLocalizations.of(context);
 
     if (value == null || value.isEmpty) {
-      return tr.requiredField;
+      return tr.required_field;
     }
 
     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
     if (!emailRegex.hasMatch(value)) {
-      return tr.invalidEmail;
+      return tr.invalid_email;
     }
 
     return null;
   }
 
   String? _validatePassword(String? value) {
-    final tr = AppLocalizations.of(context)!;
+    final tr = AppLocalizations.of(context);
 
     if (value == null || value.isEmpty) {
-      return tr.requiredField;
+      return tr.required_field;
     }
 
     if (value.length < 6) {
-      return tr.passwordTooShort;
+      return tr.password_too_short;
     }
 
     return null;
   }
 
   void _changeLanguage(Locale locale) {
-    // This would be handled by the app-level locale management
-    // For now, we'll just rebuild the widget
-    setState(() {});
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    authProvider.updateProfile(language: locale.languageCode);
   }
 
   @override

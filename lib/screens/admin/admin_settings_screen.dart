@@ -78,7 +78,7 @@ class _AdminSettingsScreenState extends State<AdminSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tr = AppLocalizations.of(context)!;
+    final tr = AppLocalizations.of(context);
     final authProvider = context.watch<AuthProvider>();
 
     return Scaffold(

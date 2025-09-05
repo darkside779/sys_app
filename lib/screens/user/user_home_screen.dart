@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/order_provider.dart';
 import '../../localization/app_localizations.dart';
+import '../../localization/localization_extension.dart';
 import '../../widgets/common_widgets.dart';
 import '../../app/theme.dart';
 import '../../models/order_model.dart';
@@ -53,7 +54,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(context.tr.logout),
-        content: Text('Are you sure you want to logout?'),
+        content: Text(context.tr.are_you_sure_logout),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -71,12 +72,12 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tr = AppLocalizations.of(context)!;
+    final tr = AppLocalizations.of(context);
     final authProvider = Provider.of<AuthProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_selectedIndex == 0 ? tr.dashboard : 'My Orders'),
+        title: Text(_selectedIndex == 0 ? tr.dashboard : context.tr.my_orders),
         actions: [
           CommonWidgets.languageSwitcher(
             context: context,
@@ -98,7 +99,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   }
 
   Widget _buildNavigationDrawer(BuildContext context, AuthProvider authProvider) {
-    final tr = AppLocalizations.of(context)!;
+    final tr = AppLocalizations.of(context);
     
     return Drawer(
       child: ListView(
@@ -108,7 +109,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
             ),
-            accountName: Text(authProvider.user?.name ?? 'Driver User'),
+            accountName: Text(authProvider.user?.name ?? context.tr.driver_user),
             accountEmail: Text(authProvider.user?.phone ?? ''),
             currentAccountPicture: CircleAvatar(
               backgroundColor: Colors.white,
@@ -130,7 +131,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
           ),
           ListTile(
             leading: const Icon(Icons.assignment),
-            title: Text('My Orders'),
+            title: Text(context.tr.my_orders),
             selected: _selectedIndex == 1,
             onTap: () {
               setState(() => _selectedIndex = 1);
@@ -160,17 +161,18 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   }
 
   Widget _buildBottomNavigation() {
+    final tr = AppLocalizations.of(context);
     return BottomNavigationBar(
       currentIndex: _selectedIndex,
       onTap: (index) => setState(() => _selectedIndex = index),
-      items: const [
+      items: [
         BottomNavigationBarItem(
-          icon: Icon(Icons.dashboard),
-          label: 'Dashboard',
+          icon: const Icon(Icons.dashboard),
+          label: tr.dashboard,
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.assignment),
-          label: 'My Orders',
+          icon: const Icon(Icons.assignment),
+          label: tr.my_orders,
         ),
       ],
     );
@@ -217,12 +219,12 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Driver Dashboard', 
+                      context.tr.driver_dashboard,
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'View and manage your assigned orders.',
+                      context.tr.view_manage_orders,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Theme.of(context).textTheme.bodySmall?.color,
                       ),
@@ -235,7 +237,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               
               // Statistics Grid
               Text(
-                'My Statistics',
+                context.tr.my_statistics,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               const SizedBox(height: 12),
@@ -250,28 +252,28 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                 children: [
                   _buildStatCard(
                     context,
-                    'Total Orders',
+                    context.tr.total_orders,
                     orderStats['total']?.toString() ?? '0',
                     Icons.assignment,
                     AppTheme.primaryColor,
                   ),
                   _buildStatCard(
                     context,
-                    'Pending',
+                    context.tr.pending,
                     orderStats['received']?.toString() ?? '0',
                     Icons.pending,
                     AppTheme.warningColor,
                   ),
                   _buildStatCard(
                     context,
-                    'Completed',
+                    context.tr.completed,
                     orderStats['returned']?.toString() ?? '0',
                     Icons.check_circle,
                     AppTheme.successColor,
                   ),
                   _buildStatCard(
                     context,
-                    'Not Returned',
+                    context.tr.not_returned,
                     orderStats['notReturned']?.toString() ?? '0',
                     Icons.cancel,
                     AppTheme.errorColor,
@@ -283,7 +285,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               
               // Recent Orders
               Text(
-                'Recent Orders',
+                context.tr.recent_orders,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               const SizedBox(height: 12),
@@ -297,7 +299,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                         Icon(Icons.inbox, size: 64, color: Colors.grey),
                         const SizedBox(height: 16),
                         Text(
-                          'No orders assigned',
+                          context.tr.no_orders_assigned,
                           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             color: Colors.grey,
                           ),
@@ -314,7 +316,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                 Center(
                   child: CommonWidgets.primaryButton(
                     context: context,
-                    getText: (tr) => 'View All Orders',
+                    getText: (tr) => tr.view_all_orders,
                     onPressed: () => setState(() => _selectedIndex = 1),
                   ),
                 ),
@@ -400,7 +402,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               children: [
                 Expanded(
                   child: Text(
-                    'Order #${order.orderNumber}',
+                    '${context.tr.order_hash}${order.orderNumber}',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -426,17 +428,17 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Customer: ${order.customerName}',
+              '${context.tr.customer}: ${order.customerName}',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             Text(
-              'Address: ${order.customerAddress}',
+              '${context.tr.address}: ${order.customerAddress}',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: Colors.grey,
               ),
             ),
             Text(
-              'Amount: \$${order.cost.toStringAsFixed(2)}',
+              '${context.tr.amount}: \$${order.cost.toStringAsFixed(2)}',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),

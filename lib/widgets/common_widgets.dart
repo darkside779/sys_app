@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../localization/app_localizations.dart';
+import '../localization/localization_extension.dart';
 import '../app/theme.dart';
 
 /// Common UI components that work with the app's theme and localization
@@ -117,6 +118,10 @@ class CommonWidgets {
       keyboardType: keyboardType,
       maxLines: obscureText ? 1 : maxLines,
       enabled: enabled,
+      style: TextStyle(
+        color: Colors.black, // Force black text in all modes
+        fontSize: 16,
+      ),
       decoration: AppTheme.getInputDecoration(
         labelText: getLabel(context.tr),
         hintText: getHint?.call(context.tr),

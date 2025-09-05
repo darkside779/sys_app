@@ -48,8 +48,8 @@ class DeliverySystemApp extends StatelessWidget {
               GlobalCupertinoLocalizations.delegate,
             ],
             supportedLocales: const [
-              Locale('en', ''), // English
-              Locale('ar', ''), // Arabic
+              Locale('en'), // English
+              Locale('ar'), // Arabic
             ],
             
             // Determine locale based on user preference or system default
@@ -70,8 +70,7 @@ class DeliverySystemApp extends StatelessWidget {
             
             // Theme configuration
             theme: AppTheme.lightTheme,
-            darkTheme: AppTheme.darkTheme,
-            themeMode: ThemeMode.system,
+            themeMode: ThemeMode.light, // Force light mode only
             
             // Initial route - always start with splash screen
             home: const SplashScreen(),
@@ -94,8 +93,8 @@ class DeliverySystemApp extends StatelessWidget {
     if (authProvider.user != null) {
       return Locale(authProvider.user!.language);
     }
-    // Default to system locale or English
-    return null;
+    // For unauthenticated users, use the current app language
+    return Locale(authProvider.currentLanguage);
   }
 
   TextDirection _getTextDirection(BuildContext context) {

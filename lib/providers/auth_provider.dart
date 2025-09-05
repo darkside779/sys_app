@@ -7,8 +7,8 @@ enum AuthState { initial, loading, authenticated, unauthenticated, error }
 
 class AuthProvider with ChangeNotifier {
   final AuthService _authService = AuthService();
-  
   AuthState _state = AuthState.initial;
+  String _currentLanguage = 'en'; // Default language
   models.User? _user;
   String? _errorMessage;
 
@@ -16,6 +16,7 @@ class AuthProvider with ChangeNotifier {
   AuthState get state => _state;
   models.User? get user => _user;
   String? get errorMessage => _errorMessage;
+  String get currentLanguage => _currentLanguage;
   bool get isAuthenticated => _state == AuthState.authenticated && _user != null;
   bool get isLoading => _state == AuthState.loading;
   bool get isAdmin => _user?.role == models.UserRole.admin;
@@ -175,6 +176,12 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  // Update language for unauthenticated users
+  void setLanguage(String language) {
+    _currentLanguage = language;
+    notifyListeners();
+  }
+
   // Update user profile
   Future<bool> updateProfile({
     String? name,
@@ -182,7 +189,14 @@ class AuthProvider with ChangeNotifier {
     String? language,
     bool? notificationsEnabled,
   }) async {
-    if (_user == null) return false;
+    if (_user == null) {
+      // If no user is logged in, just update the app language
+      if (language != null) {
+        setLanguage(language);
+        return true;
+      }
+      return false;
+    }
 
     try {
       _setState(AuthState.loading);
