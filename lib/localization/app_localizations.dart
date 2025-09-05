@@ -1099,6 +1099,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View Reports'**
   String get view_reports;
+
+  /// No description provided for @search_orders.
+  ///
+  /// In en, this message translates to:
+  /// **'Search Orders'**
+  String get search_orders;
+
+  /// No description provided for @search_orders_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Order number, customer, address...'**
+  String get search_orders_hint;
+
+  /// No description provided for @all_status.
+  ///
+  /// In en, this message translates to:
+  /// **'All Status'**
+  String get all_status;
+
+  /// No description provided for @filters_applied.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters applied'**
+  String get filters_applied;
+
+  /// No description provided for @clear_all.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear All'**
+  String get clear_all;
+
+  /// No description provided for @no_orders_found.
+  ///
+  /// In en, this message translates to:
+  /// **'No orders found'**
+  String get no_orders_found;
+
+  /// No description provided for @try_adjusting_filters.
+  ///
+  /// In en, this message translates to:
+  /// **'Try adjusting your filters'**
+  String get try_adjusting_filters;
+
+  /// No description provided for @no_orders_created_yet.
+  ///
+  /// In en, this message translates to:
+  /// **'No orders created yet. Tap + to create your first order'**
+  String get no_orders_created_yet;
+
+  /// No description provided for @view_details.
+  ///
+  /// In en, this message translates to:
+  /// **'View Details'**
+  String get view_details;
+
+  /// No description provided for @mark_as_returned.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as Returned'**
+  String get mark_as_returned;
+
+  /// No description provided for @mark_as_not_returned.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as Not Returned'**
+  String get mark_as_not_returned;
+
+  /// No description provided for @customer_information.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer Information'**
+  String get customer_information;
+
+  /// No description provided for @order_information.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Information'**
+  String get order_information;
+
+  /// No description provided for @notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get notes;
+
+  /// No description provided for @company_information.
+  ///
+  /// In en, this message translates to:
+  /// **'Company Information'**
+  String get company_information;
+
+  /// No description provided for @unknown_company.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown Company'**
+  String get unknown_company;
+
+  /// No description provided for @company.
+  ///
+  /// In en, this message translates to:
+  /// **'Company'**
+  String get company;
+
+  /// No description provided for @contact.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact'**
+  String get contact;
+
+  /// No description provided for @date.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get date;
+
+  /// No description provided for @note.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get note;
+
+  /// No description provided for @status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get status;
+
+  /// No description provided for @currency_symbol.
+  ///
+  /// In en, this message translates to:
+  /// **'AED'**
+  String get currency_symbol;
 }
 
 class _AppLocalizationsDelegate

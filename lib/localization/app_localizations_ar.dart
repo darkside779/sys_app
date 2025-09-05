@@ -510,4 +510,71 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get view_reports => 'عرض التقارير';
+
+  @override
+  String get search_orders => 'البحث في الطلبات';
+
+  @override
+  String get search_orders_hint => 'رقم الطلب، العميل، العنوان...';
+
+  @override
+  String get all_status => 'جميع الحالات';
+
+  @override
+  String get filters_applied => 'تم تطبيق المرشحات';
+
+  @override
+  String get clear_all => 'مسح الكل';
+
+  @override
+  String get no_orders_found => 'لم يتم العثور على طلبات';
+
+  @override
+  String get try_adjusting_filters => 'حاول تعديل المرشحات';
+
+  @override
+  String get no_orders_created_yet =>
+      'لم يتم إنشاء طلبات بعد. اضغط + لإنشاء طلبك الأول';
+
+  @override
+  String get view_details => 'عرض التفاصيل';
+
+  @override
+  String get mark_as_returned => 'تحديد كمرتجع';
+
+  @override
+  String get mark_as_not_returned => 'تحديد كغير مرتجع';
+
+  @override
+  String get customer_information => 'معلومات العميل';
+
+  @override
+  String get order_information => 'معلومات الطلب';
+
+  @override
+  String get notes => 'ملاحظات';
+
+  @override
+  String get company_information => 'معلومات الشركة';
+
+  @override
+  String get unknown_company => 'شركة غير معروفة';
+
+  @override
+  String get company => 'الشركة';
+
+  @override
+  String get contact => 'الاتصال';
+
+  @override
+  String get date => 'التاريخ';
+
+  @override
+  String get note => 'ملاحظة';
+
+  @override
+  String get status => 'الحالة';
+
+  @override
+  String get currency_symbol => 'د.إ';
 }

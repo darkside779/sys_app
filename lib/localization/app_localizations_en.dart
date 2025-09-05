@@ -513,4 +513,71 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get view_reports => 'View Reports';
+
+  @override
+  String get search_orders => 'Search Orders';
+
+  @override
+  String get search_orders_hint => 'Order number, customer, address...';
+
+  @override
+  String get all_status => 'All Status';
+
+  @override
+  String get filters_applied => 'Filters applied';
+
+  @override
+  String get clear_all => 'Clear All';
+
+  @override
+  String get no_orders_found => 'No orders found';
+
+  @override
+  String get try_adjusting_filters => 'Try adjusting your filters';
+
+  @override
+  String get no_orders_created_yet =>
+      'No orders created yet. Tap + to create your first order';
+
+  @override
+  String get view_details => 'View Details';
+
+  @override
+  String get mark_as_returned => 'Mark as Returned';
+
+  @override
+  String get mark_as_not_returned => 'Mark as Not Returned';
+
+  @override
+  String get customer_information => 'Customer Information';
+
+  @override
+  String get order_information => 'Order Information';
+
+  @override
+  String get notes => 'Notes';
+
+  @override
+  String get company_information => 'Company Information';
+
+  @override
+  String get unknown_company => 'Unknown Company';
+
+  @override
+  String get company => 'Company';
+
+  @override
+  String get contact => 'Contact';
+
+  @override
+  String get date => 'Date';
+
+  @override
+  String get note => 'Note';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get currency_symbol => 'AED';
 }

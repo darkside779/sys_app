@@ -219,7 +219,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                       TextFormField(
                         controller: _costController,
                         decoration: InputDecoration(
-                          labelText: context.tr.amount,
+                          labelText: '${context.tr.amount} (${context.tr.currency_symbol})',
                           prefixIcon: const Icon(Icons.attach_money),
                           border: const OutlineInputBorder(),
                         ),

@@ -135,7 +135,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Order status updated successfully'),
+            content: Text(context.tr.update_success),
             backgroundColor: Colors.green,
           ),
         );
@@ -208,8 +208,8 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                   child: TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
-                      labelText: 'Search Orders',
-                      hintText: 'Order number, customer, address...',
+                      labelText: context.tr.search_orders,
+                      hintText: context.tr.search_orders_hint,
                       prefixIcon: const Icon(Icons.search),
                       border: OutlineInputBorder(),
                       isDense: true,
@@ -236,14 +236,14 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                   child: DropdownButtonFormField<OrderState>(
                     initialValue: _statusFilter,
                     decoration: InputDecoration(
-                      labelText: 'Status',
+                      labelText: context.tr.status,
                       border: OutlineInputBorder(),
                       isDense: true,
                     ),
                     items: [
                       DropdownMenuItem<OrderState>(
                         value: null,
-                        child: Text('All Status'),
+                        child: Text(context.tr.all_status),
                       ),
                       ...OrderState.values.map(
                         (status) => DropdownMenuItem<OrderState>(
@@ -265,14 +265,14 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
               Row(
                 children: [
                   Text(
-                    'Filters applied',
+                    context.tr.filters_applied,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   const Spacer(),
                   TextButton.icon(
                     onPressed: _clearFilters,
                     icon: const Icon(Icons.clear, size: 16),
-                    label: Text('Clear All'),
+                    label: Text(context.tr.clear_all),
                   ),
                 ],
               ),
@@ -292,7 +292,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
             Icon(Icons.inbox, size: 64, color: Colors.grey),
             const SizedBox(height: 16),
             Text(
-              'No orders found',
+              context.tr.no_orders_found,
               style: Theme.of(
                 context,
               ).textTheme.titleMedium?.copyWith(color: Colors.grey),
@@ -300,8 +300,8 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
             const SizedBox(height: 8),
             Text(
               _searchQuery.isNotEmpty || _statusFilter != null
-                  ? 'Try adjusting your filters'
-                  : 'No orders created yet. Tap + to create your first order.',
+                  ? context.tr.try_adjusting_filters
+                  : context.tr.no_orders_created_yet,
               style: Theme.of(
                 context,
               ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
@@ -350,7 +350,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
               children: [
                 Expanded(
                   child: Text(
-                    'Order #${order.orderNumber}',
+                    '${context.tr.order_hash}${order.orderNumber}',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -390,7 +390,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                         children: [
                           const Icon(Icons.info, size: 18),
                           const SizedBox(width: 8),
-                          Text('View Details'),
+                          Text(context.tr.view_details),
                         ],
                       ),
                     ),
@@ -406,7 +406,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                               color: Colors.green,
                             ),
                             const SizedBox(width: 8),
-                            Text('Mark as Returned'),
+                            Text(context.tr.mark_as_returned),
                           ],
                         ),
                       ),
@@ -421,7 +421,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                               color: Colors.red,
                             ),
                             const SizedBox(width: 8),
-                            Text('Mark as Not Returned'),
+                            Text(context.tr.mark_as_not_returned),
                           ],
                         ),
                       ),
@@ -431,24 +431,24 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
               ],
             ),
             const SizedBox(height: 12),
-            _buildInfoRow(Icons.person, 'Customer', order.customerName),
+            _buildInfoRow(Icons.person, context.tr.customer, order.customerName),
             const SizedBox(height: 8),
-            _buildInfoRow(Icons.location_on, 'Address', order.customerAddress),
+            _buildInfoRow(Icons.location_on, context.tr.address, order.customerAddress),
             const SizedBox(height: 8),
             _buildInfoRow(
               Icons.attach_money,
-              'Amount',
-              '\$${order.cost.toStringAsFixed(2)}',
+              context.tr.amount,
+              '${context.tr.currency_symbol}${order.cost.toStringAsFixed(2)}',
             ),
             const SizedBox(height: 8),
             _buildInfoRow(
               Icons.calendar_today,
-              'Date',
+              context.tr.date,
               DateFormat('MMM dd, yyyy').format(order.date),
             ),
             if (order.note != null && order.note!.isNotEmpty) ...[
               const SizedBox(height: 8),
-              _buildInfoRow(Icons.note, 'Note', order.note!),
+              _buildInfoRow(Icons.note, context.tr.note, order.note!),
             ],
           ],
         ),
@@ -501,7 +501,7 @@ class _OrderDetailsDialog extends StatelessWidget {
     }
 
     return AlertDialog(
-      title: Text('Order Details'),
+      title: Text(context.tr.order_details),
       content: SizedBox(
         width: MediaQuery.of(context).size.width * 0.8,
         child: SingleChildScrollView(
@@ -514,7 +514,7 @@ class _OrderDetailsDialog extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      'Order #${order.orderNumber}',
+                      '${context.tr.order_hash}${order.orderNumber}',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -551,34 +551,34 @@ class _OrderDetailsDialog extends StatelessWidget {
               const SizedBox(height: 24),
 
               // Customer Information
-              _buildSectionTitle('Customer Information'),
+              _buildSectionTitle(context.tr.customer_information),
               const SizedBox(height: 8),
-              _buildDetailRow(Icons.person, 'Name', order.customerName),
+              _buildDetailRow(Icons.person, context.tr.name, order.customerName),
               _buildDetailRow(
                 Icons.location_on,
-                'Address',
+                context.tr.address,
                 order.customerAddress,
               ),
 
               const SizedBox(height: 16),
 
               // Order Information
-              _buildSectionTitle('Order Information'),
+              _buildSectionTitle(context.tr.order_information),
               const SizedBox(height: 8),
               _buildDetailRow(
                 Icons.attach_money,
-                'Amount',
-                '\$${order.cost.toStringAsFixed(2)}',
+                context.tr.amount,
+                '${context.tr.currency_symbol}${order.cost.toStringAsFixed(2)}',
               ),
               _buildDetailRow(
                 Icons.calendar_today,
-                'Date',
+                context.tr.date,
                 DateFormat('MMM dd, yyyy').format(order.date),
               ),
 
               if (order.note != null && order.note!.isNotEmpty) ...[
                 const SizedBox(height: 16),
-                _buildSectionTitle('Notes'),
+                _buildSectionTitle(context.tr.notes),
                 const SizedBox(height: 8),
                 Container(
                   width: double.infinity,
@@ -604,7 +604,7 @@ class _OrderDetailsDialog extends StatelessWidget {
                     (c) => c.id == order.companyId,
                     orElse: () => DeliveryCompany(
                       id: order.companyId,
-                      name: 'Unknown Company',
+                      name: context.tr.unknown_company,
                       contact: 'N/A',
                       address: 'N/A',
                       createdAt: DateTime.now(),
@@ -615,15 +615,15 @@ class _OrderDetailsDialog extends StatelessWidget {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildSectionTitle('Company Information'),
+                      _buildSectionTitle(context.tr.company_information),
                       const SizedBox(height: 8),
-                      _buildDetailRow(Icons.business, 'Company', company.name),
+                      _buildDetailRow(Icons.business, context.tr.company, company.name),
                       _buildDetailRow(
                         Icons.location_city,
-                        'Address',
+                        context.tr.address,
                         company.address,
                       ),
-                      _buildDetailRow(Icons.phone, 'Contact', company.contact),
+                      _buildDetailRow(Icons.phone, context.tr.contact, company.contact),
                     ],
                   );
                 },
@@ -635,7 +635,7 @@ class _OrderDetailsDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text('Close'),
+          child: Text(context.tr.close),
         ),
       ],
     );
