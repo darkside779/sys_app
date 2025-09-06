@@ -211,7 +211,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
           ),
           ListTile(
             leading: const Icon(Icons.analytics),
-            title: Text('Reports'),
+            title: Text(tr.view_reports),
             selected: _selectedIndex == 4,
             onTap: () {
               setState(() => _selectedIndex = 4);
@@ -279,7 +279,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.analytics),
-          label: 'Reports',
+          label: tr.view_reports,
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.people),

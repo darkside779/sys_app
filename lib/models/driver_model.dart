@@ -35,12 +35,20 @@ class Driver {
   factory Driver.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     
+    // Helper function to extract ID from either String or DocumentReference
+    String extractId(dynamic field, String fallback) {
+      if (field == null) return fallback;
+      if (field is String) return field;
+      if (field is DocumentReference) return field.id;
+      return fallback;
+    }
+    
     return Driver(
       id: doc.id,
       name: data['name'] ?? '',
       phone: data['phone'] ?? '',
-      companyId: (data['companyId'] as DocumentReference).id,
-      createdBy: (data['createdBy'] as DocumentReference).id,
+      companyId: extractId(data['companyId'], ''),
+      createdBy: extractId(data['createdBy'], ''),
       createdAt: (data['createdAt'] as Timestamp).toDate(),
       isActive: data['isActive'] ?? true,
     );

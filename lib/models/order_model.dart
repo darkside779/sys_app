@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../localization/app_localizations.dart';
 
-enum OrderState { received, returned, notReturned }
+enum OrderState { received, outForDelivery, returned, notReturned }
 
 extension OrderStateExtension on OrderState {
   String getLocalizedDisplayName(BuildContext context) {
@@ -10,6 +10,8 @@ extension OrderStateExtension on OrderState {
     switch (this) {
       case OrderState.received:
         return localizations.status_received;
+      case OrderState.outForDelivery:
+        return localizations.status_out_for_delivery;
       case OrderState.returned:
         return localizations.status_returned;
       case OrderState.notReturned:
@@ -21,6 +23,8 @@ extension OrderStateExtension on OrderState {
     switch (this) {
       case OrderState.received:
         return 'Received';
+      case OrderState.outForDelivery:
+        return 'Out for delivery';
       case OrderState.returned:
         return 'Returned';
       case OrderState.notReturned:
@@ -40,6 +44,7 @@ class Order {
   final String orderNumber;
   final OrderState state;
   final String? note; // Optional
+  final String? returnReason; // Reason why order was returned
   final String createdBy; // Reference to users/userId
   final DateTime createdAt;
 
@@ -54,6 +59,7 @@ class Order {
     required this.orderNumber,
     required this.state,
     this.note,
+    this.returnReason,
     required this.createdBy,
     required this.createdAt,
   });
@@ -61,8 +67,12 @@ class Order {
   // Convert Order object to Map for Firestore
   Map<String, dynamic> toMap() {
     return {
-      'companyId': FirebaseFirestore.instance.doc('delivery_companies/$companyId'),
-      'driverId': (driverId.isNotEmpty && driverId != 'unassigned') ? FirebaseFirestore.instance.doc('drivers/$driverId') : null,
+      'companyId': FirebaseFirestore.instance.doc(
+        'delivery_companies/$companyId',
+      ),
+      'driverId': (driverId.isNotEmpty && driverId != 'unassigned')
+          ? FirebaseFirestore.instance.doc('drivers/$driverId')
+          : null,
       'customerName': customerName,
       'customerAddress': customerAddress,
       'date': Timestamp.fromDate(date),
@@ -70,6 +80,7 @@ class Order {
       'orderNumber': orderNumber,
       'state': state.value,
       'note': note,
+      'returnReason': returnReason,
       'createdBy': FirebaseFirestore.instance.doc('users/$createdBy'),
       'createdAt': Timestamp.fromDate(createdAt),
     };
@@ -78,11 +89,19 @@ class Order {
   // Create Order object from Firestore DocumentSnapshot
   factory Order.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    
+
+    // Helper function to extract ID from either String or DocumentReference
+    String extractId(dynamic field, String fallback) {
+      if (field == null) return fallback;
+      if (field is String) return field;
+      if (field is DocumentReference) return field.id;
+      return fallback;
+    }
+
     return Order(
       id: doc.id,
-      companyId: (data['companyId'] as DocumentReference).id,
-      driverId: data['driverId'] != null ? (data['driverId'] as DocumentReference).id : 'unassigned',
+      companyId: extractId(data['companyId'], ''),
+      driverId: extractId(data['driverId'], 'unassigned'),
       customerName: data['customerName'] ?? '',
       customerAddress: data['customerAddress'] ?? '',
       date: (data['date'] as Timestamp).toDate(),
@@ -93,7 +112,8 @@ class Order {
         orElse: () => OrderState.received,
       ),
       note: data['note'],
-      createdBy: (data['createdBy'] as DocumentReference).id,
+      returnReason: data['returnReason'],
+      createdBy: extractId(data['createdBy'], ''),
       createdAt: (data['createdAt'] as Timestamp).toDate(),
     );
   }
@@ -114,6 +134,7 @@ class Order {
         orElse: () => OrderState.received,
       ),
       note: map['note'],
+      returnReason: map['returnReason'],
       createdBy: (map['createdBy'] as DocumentReference).id,
       createdAt: (map['createdAt'] as Timestamp).toDate(),
     );
@@ -131,6 +152,7 @@ class Order {
     String? orderNumber,
     OrderState? state,
     String? note,
+    String? returnReason,
     String? createdBy,
     DateTime? createdAt,
   }) {
@@ -145,6 +167,7 @@ class Order {
       orderNumber: orderNumber ?? this.orderNumber,
       state: state ?? this.state,
       note: note ?? this.note,
+      returnReason: returnReason ?? this.returnReason,
       createdBy: createdBy ?? this.createdBy,
       createdAt: createdAt ?? this.createdAt,
     );
@@ -168,6 +191,7 @@ class Order {
         other.state == state &&
         other.cost == cost &&
         other.note == note &&
+        other.returnReason == returnReason &&
         other.createdBy == createdBy;
   }
 
@@ -182,6 +206,7 @@ class Order {
         state.hashCode ^
         cost.hashCode ^
         (note?.hashCode ?? 0) ^
+        (returnReason?.hashCode ?? 0) ^
         createdBy.hashCode;
   }
 }

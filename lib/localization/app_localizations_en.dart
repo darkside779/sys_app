@@ -126,7 +126,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get today_orders => 'Today\'s Orders';
 
   @override
-  String get orders => 'Orders';
+  String get orders => ' orders';
 
   @override
   String get order_number => 'Order Number';
@@ -235,7 +235,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get address => 'Address';
 
   @override
-  String get enter_address => 'Enter company address';
+  String get enter_address => 'Enter address';
 
   @override
   String get address_required => 'Address is required';
@@ -380,7 +380,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get company_deleted_success => 'Company deleted successfully';
 
   @override
-  String get operation_failed => 'Operation failed. Please try again';
+  String get operation_failed => 'Operation failed';
 
   @override
   String get today => 'Today';
@@ -533,7 +533,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_orders_found => 'No orders found';
 
   @override
-  String get try_adjusting_filters => 'Try adjusting your filters';
+  String get try_adjusting_filters =>
+      'Try adjusting your filters to see more results';
 
   @override
   String get no_orders_created_yet =>
@@ -622,4 +623,276 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get password_mismatch => 'Passwords do not match';
+
+  @override
+  String get manage_orders => 'Manage Orders';
+
+  @override
+  String get all_statuses => 'All Statuses';
+
+  @override
+  String get all_drivers => 'All Drivers';
+
+  @override
+  String get all_companies => 'All';
+
+  @override
+  String get driver => 'Driver';
+
+  @override
+  String get update_status => 'Update Status';
+
+  @override
+  String get cost => 'Cost';
+
+  @override
+  String get select_status => 'Select Status';
+
+  @override
+  String get select_driver => 'Select Driver';
+
+  @override
+  String get select_company => 'Select Company';
+
+  @override
+  String get unknown_user => 'Unknown User';
+
+  @override
+  String get delete_company_confirm =>
+      'Are you sure you want to delete this company?';
+
+  @override
+  String get company_deleted => 'Company deleted successfully';
+
+  @override
+  String get company_created => 'Company created successfully';
+
+  @override
+  String get company_updated => 'Company updated successfully';
+
+  @override
+  String get no_companies_search => 'No companies found matching your search';
+
+  @override
+  String get created_on => 'Created On';
+
+  @override
+  String get manage_drivers => 'Manage Drivers';
+
+  @override
+  String get search_drivers => 'Search Drivers';
+
+  @override
+  String get enter_driver_search => 'Enter driver name or phone...';
+
+  @override
+  String get filter_by_company => 'Filter by Company';
+
+  @override
+  String get delete_driver_confirm =>
+      'Are you sure you want to delete this driver?';
+
+  @override
+  String get driver_deleted => 'Driver deleted successfully';
+
+  @override
+  String get driver_created => 'Driver created successfully';
+
+  @override
+  String get driver_updated => 'Driver updated successfully';
+
+  @override
+  String get no_drivers_filter => 'No drivers found matching your filters';
+
+  @override
+  String get no_drivers_available => 'No drivers available';
+
+  @override
+  String get edit_driver => 'Edit Driver';
+
+  @override
+  String get created => 'Created';
+
+  @override
+  String get enter_driver_name => 'Enter driver name';
+
+  @override
+  String get driver_name_required => 'Driver name is required';
+
+  @override
+  String get phone_number => 'Phone Number';
+
+  @override
+  String get enter_phone_number => 'Enter phone number';
+
+  @override
+  String get phone_number_required => 'Phone number is required';
+
+  @override
+  String get please_select_company => 'Please select a company';
+
+  @override
+  String get active_driver => 'Active Driver';
+
+  @override
+  String get filters => 'Filters';
+
+  @override
+  String get apply => 'Apply';
+
+  @override
+  String get select_date_range => 'Select Date Range';
+
+  @override
+  String get summary_statistics => 'Summary Statistics';
+
+  @override
+  String get received => 'Received';
+
+  @override
+  String get returned => 'Returned';
+
+  @override
+  String get total_revenue => 'Total Revenue';
+
+  @override
+  String get average_order => 'Average Order';
+
+  @override
+  String get company_performance => 'Company Performance';
+
+  @override
+  String get driver_performance => 'Driver Performance';
+
+  @override
+  String get unknown_driver => 'Unknown Driver';
+
+  @override
+  String get filtered_orders => 'Filtered Orders';
+
+  @override
+  String get unassigned => 'Unassigned';
+
+  @override
+  String get add_user => 'Add User';
+
+  @override
+  String get search_users => 'Search Users';
+
+  @override
+  String get name_or_phone => 'Name or phone...';
+
+  @override
+  String get all_roles => 'All Roles';
+
+  @override
+  String get no_users_found => 'No users found';
+
+  @override
+  String get add_users_to_get_started => 'Add users to get started';
+
+  @override
+  String get delete_user => 'Delete User';
+
+  @override
+  String get are_you_sure_delete_user => 'Are you sure you want to delete';
+
+  @override
+  String get action_cannot_be_undone => 'This action cannot be undone.';
+
+  @override
+  String get deleted_successfully => 'deleted successfully';
+
+  @override
+  String get failed_to_delete_user => 'Failed to delete user';
+
+  @override
+  String get activated => 'activated';
+
+  @override
+  String get deactivated => 'deactivated';
+
+  @override
+  String get failed_to_update_user_status => 'Failed to update user status';
+
+  @override
+  String get user_created_successfully => 'User created successfully';
+
+  @override
+  String get user_updated_successfully => 'User updated successfully';
+
+  @override
+  String get create_user => 'Create User';
+
+  @override
+  String get edit_user => 'Edit User';
+
+  @override
+  String get full_name => 'Full Name';
+
+  @override
+  String get enter_users_full_name => 'Enter user\'s full name';
+
+  @override
+  String get name_is_required => 'Name is required';
+
+  @override
+  String get email_address => 'Email Address';
+
+  @override
+  String get enter_email_address => 'Enter email address';
+
+  @override
+  String get email_is_required => 'Email is required';
+
+  @override
+  String get please_enter_valid_email => 'Please enter a valid email address';
+
+  @override
+  String get enter_password => 'Enter password';
+
+  @override
+  String get password_is_required => 'Password is required';
+
+  @override
+  String get password_min_length => 'Password must be at least 6 characters';
+
+  @override
+  String get phone_number_is_required => 'Phone number is required';
+
+  @override
+  String get default_role => 'Default';
+
+  @override
+  String get active_user => 'Active User';
+
+  @override
+  String get user_can_login_access_system =>
+      'User can login and access the system';
+
+  @override
+  String get role => 'Role';
+
+  @override
+  String get deactivate => 'Deactivate';
+
+  @override
+  String get activate => 'Activate';
+
+  @override
+  String get status_out_for_delivery => 'Out for delivery';
+
+  @override
+  String get return_reason => 'Return Reason';
+
+  @override
+  String get enter_return_reason => 'Enter return reason';
+
+  @override
+  String get return_reason_required => 'Return reason is required';
+
+  @override
+  String returned_reason(Object reason) {
+    return 'Returned: $reason';
+  }
 }

@@ -84,7 +84,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
         customerAddress: _customerAddressController.text.trim(),
         cost: double.parse(_costController.text.trim()),
         date: _selectedDate,
-        state: models.OrderState.received,
+        state: models.OrderState.outForDelivery,
         companyId: _selectedCompanyId!,
         createdBy: authProvider.user!.id,
         createdAt: DateTime.now(),

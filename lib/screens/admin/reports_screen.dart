@@ -61,19 +61,27 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
     // Filter by order number
     if (_orderNumberController.text.isNotEmpty) {
-      orders = orders.where((order) => 
-        order.orderNumber.toLowerCase().contains(_orderNumberController.text.toLowerCase())
-      ).toList();
+      orders = orders
+          .where(
+            (order) => order.orderNumber.toLowerCase().contains(
+              _orderNumberController.text.toLowerCase(),
+            ),
+          )
+          .toList();
     }
 
     // Filter by company
     if (_selectedCompanyId != null) {
-      orders = orders.where((order) => order.companyId == _selectedCompanyId).toList();
+      orders = orders
+          .where((order) => order.companyId == _selectedCompanyId)
+          .toList();
     }
 
     // Filter by driver
     if (_selectedDriverId != null) {
-      orders = orders.where((order) => order.driverId == _selectedDriverId).toList();
+      orders = orders
+          .where((order) => order.driverId == _selectedDriverId)
+          .toList();
     }
 
     // Filter by status
@@ -83,15 +91,20 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
     // Filter by date range
     if (_startDate != null) {
-      orders = orders.where((order) => 
-        order.date.isAfter(_startDate!) || 
-        order.date.isAtSameMomentAs(_startDate!)
-      ).toList();
+      orders = orders
+          .where(
+            (order) =>
+                order.date.isAfter(_startDate!) ||
+                order.date.isAtSameMomentAs(_startDate!),
+          )
+          .toList();
     }
     if (_endDate != null) {
-      orders = orders.where((order) => 
-        order.date.isBefore(_endDate!.add(Duration(days: 1)))
-      ).toList();
+      orders = orders
+          .where(
+            (order) => order.date.isBefore(_endDate!.add(Duration(days: 1))),
+          )
+          .toList();
     }
 
     setState(() {
@@ -114,15 +127,24 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
   Map<String, dynamic> _generateStatistics() {
     final stats = <String, dynamic>{};
-    
+
     stats['totalOrders'] = _filteredOrders.length;
-    stats['receivedOrders'] = _filteredOrders.where((o) => o.state == OrderState.received).length;
-    stats['returnedOrders'] = _filteredOrders.where((o) => o.state == OrderState.returned).length;
-    stats['notReturnedOrders'] = _filteredOrders.where((o) => o.state == OrderState.notReturned).length;
-    
-    stats['totalRevenue'] = _filteredOrders.fold<double>(0, (sum, order) => sum + order.cost);
-    stats['averageOrderValue'] = _filteredOrders.isNotEmpty 
-        ? stats['totalRevenue'] / _filteredOrders.length 
+    stats['receivedOrders'] = _filteredOrders
+        .where((o) => o.state == OrderState.received)
+        .length;
+    stats['returnedOrders'] = _filteredOrders
+        .where((o) => o.state == OrderState.returned)
+        .length;
+    stats['notReturnedOrders'] = _filteredOrders
+        .where((o) => o.state == OrderState.notReturned)
+        .length;
+
+    stats['totalRevenue'] = _filteredOrders.fold<double>(
+      0,
+      (sum, order) => sum + order.cost,
+    );
+    stats['averageOrderValue'] = _filteredOrders.isNotEmpty
+        ? stats['totalRevenue'] / _filteredOrders.length
         : 0.0;
 
     // Company breakdown
@@ -151,7 +173,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
           ? DateTimeRange(start: _startDate!, end: _endDate!)
           : null,
     );
-    
+
     if (picked != null) {
       setState(() {
         _startDate = picked.start;
@@ -189,7 +211,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 Icon(Icons.filter_list, color: Theme.of(context).primaryColor),
                 const SizedBox(width: 8),
                 Text(
-                  'Filters',
+                  AppLocalizations.of(context).filters,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -198,13 +220,13 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 TextButton.icon(
                   onPressed: _clearFilters,
                   icon: const Icon(Icons.clear),
-                  label: Text('Clear'),
+                  label: Text(AppLocalizations.of(context).clear),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton.icon(
                   onPressed: _applyFilters,
                   icon: const Icon(Icons.search),
-                  label: Text('Apply'),
+                  label: Text(AppLocalizations.of(context).apply),
                 ),
               ],
             ),
@@ -218,7 +240,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   child: TextField(
                     controller: _orderNumberController,
                     decoration: InputDecoration(
-                      labelText: 'Order Number',
+                      labelText: AppLocalizations.of(context).order_number,
                       prefixIcon: const Icon(Icons.numbers),
                       border: OutlineInputBorder(),
                       isDense: true,
@@ -232,7 +254,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       return DropdownButtonFormField<String>(
                         initialValue: _selectedCompanyId,
                         decoration: InputDecoration(
-                          labelText: 'Company',
+                          labelText: AppLocalizations.of(context).company,
                           prefixIcon: const Icon(Icons.business),
                           border: OutlineInputBorder(),
                           isDense: true,
@@ -240,10 +262,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         items: [
                           DropdownMenuItem<String>(
                             value: null,
-                            child: Text('All Companies'),
+                            child: Text(
+                              AppLocalizations.of(context).all_companies,
+                            ),
                           ),
-                          ...companyProvider.companies.map((company) =>
-                            DropdownMenuItem<String>(
+                          ...companyProvider.companies.map(
+                            (company) => DropdownMenuItem<String>(
                               value: company.id,
                               child: Text(company.name),
                             ),
@@ -252,7 +276,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         onChanged: (value) {
                           setState(() {
                             _selectedCompanyId = value;
-                            _selectedDriverId = null; // Reset driver when company changes
+                            _selectedDriverId =
+                                null; // Reset driver when company changes
                           });
                         },
                       );
@@ -264,13 +289,15 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   child: Consumer<DriverProvider>(
                     builder: (context, driverProvider, child) {
                       final availableDrivers = _selectedCompanyId != null
-                          ? driverProvider.drivers.where((d) => d.companyId == _selectedCompanyId).toList()
+                          ? driverProvider.drivers
+                                .where((d) => d.companyId == _selectedCompanyId)
+                                .toList()
                           : driverProvider.drivers;
-                      
+
                       return DropdownButtonFormField<String>(
                         initialValue: _selectedDriverId,
                         decoration: InputDecoration(
-                          labelText: 'Driver',
+                          labelText: AppLocalizations.of(context).driver,
                           prefixIcon: const Icon(Icons.local_shipping),
                           border: OutlineInputBorder(),
                           isDense: true,
@@ -278,10 +305,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         items: [
                           DropdownMenuItem<String>(
                             value: null,
-                            child: Text('All Drivers'),
+                            child: Text(
+                              AppLocalizations.of(context).all_drivers,
+                            ),
                           ),
-                          ...availableDrivers.map((driver) =>
-                            DropdownMenuItem<String>(
+                          ...availableDrivers.map(
+                            (driver) => DropdownMenuItem<String>(
                               value: driver.id,
                               child: Text(driver.name),
                             ),
@@ -301,7 +330,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   child: DropdownButtonFormField<OrderState>(
                     initialValue: _selectedStatus,
                     decoration: InputDecoration(
-                      labelText: 'Status',
+                      labelText: AppLocalizations.of(context).status,
                       prefixIcon: const Icon(Icons.info),
                       border: OutlineInputBorder(),
                       isDense: true,
@@ -309,10 +338,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     items: [
                       DropdownMenuItem<OrderState>(
                         value: null,
-                        child: Text('All Statuses'),
+                        child: Text(AppLocalizations.of(context).all_statuses),
                       ),
-                      ...OrderState.values.map((status) =>
-                        DropdownMenuItem<OrderState>(
+                      ...OrderState.values.map(
+                        (status) => DropdownMenuItem<OrderState>(
                           value: status,
                           child: Text(status.getLocalizedDisplayName(context)),
                         ),
@@ -330,7 +359,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   child: InkWell(
                     onTap: _selectDateRange,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 16,
+                      ),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
                         borderRadius: BorderRadius.circular(4),
@@ -343,9 +375,13 @@ class _ReportsScreenState extends State<ReportsScreen> {
                             child: Text(
                               _startDate != null && _endDate != null
                                   ? '${DateFormat('MMM dd').format(_startDate!)} - ${DateFormat('MMM dd, yyyy').format(_endDate!)}'
-                                  : 'Select Date Range',
+                                  : AppLocalizations.of(
+                                      context,
+                                    ).select_date_range,
                               style: TextStyle(
-                                color: _startDate != null ? Colors.black : Colors.grey[600],
+                                color: _startDate != null
+                                    ? Colors.black
+                                    : Colors.grey[600],
                               ),
                             ),
                           ),
@@ -364,7 +400,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
   Widget _buildReportsContent() {
     final stats = _generateStatistics();
-    
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -372,39 +408,39 @@ class _ReportsScreenState extends State<ReportsScreen> {
         children: [
           // Summary Statistics
           Text(
-            'Summary Statistics',
+            AppLocalizations.of(context).summary_statistics,
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           const SizedBox(height: 16),
           _buildStatisticsGrid(stats),
-          
+
           const SizedBox(height: 24),
-          
+
           // Company Performance
           if (stats['companyBreakdown'].isNotEmpty) ...[
             Text(
-              'Company Performance',
+              AppLocalizations.of(context).company_performance,
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 16),
             _buildCompanyPerformance(stats['companyBreakdown']),
             const SizedBox(height: 24),
           ],
-          
+
           // Driver Performance
           if (stats['driverBreakdown'].isNotEmpty) ...[
             Text(
-              'Driver Performance',
+              AppLocalizations.of(context).driver_performance,
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 16),
             _buildDriverPerformance(stats['driverBreakdown']),
             const SizedBox(height: 24),
           ],
-          
+
           // Orders List
           Text(
-            'Filtered Orders (${_filteredOrders.length})',
+            '${AppLocalizations.of(context).filtered_orders} (${_filteredOrders.length})',
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           const SizedBox(height: 16),
@@ -423,17 +459,52 @@ class _ReportsScreenState extends State<ReportsScreen> {
       mainAxisSpacing: 16,
       childAspectRatio: 1.5,
       children: [
-        _buildStatCard('Total Orders', stats['totalOrders'].toString(), Icons.shopping_bag, AppTheme.primaryColor),
-        _buildStatCard('Received', stats['receivedOrders'].toString(), Icons.inbox, AppTheme.infoColor),
-        _buildStatCard('Returned', stats['returnedOrders'].toString(), Icons.check_circle, AppTheme.successColor),
-        _buildStatCard('Not Returned', stats['notReturnedOrders'].toString(), Icons.cancel, AppTheme.errorColor),
-        _buildStatCard('Total Revenue', '\$${stats['totalRevenue'].toStringAsFixed(2)}', Icons.attach_money, AppTheme.warningColor),
-        _buildStatCard('Average Order', '\$${stats['averageOrderValue'].toStringAsFixed(2)}', Icons.trending_up, AppTheme.infoColor),
+        _buildStatCard(
+          AppLocalizations.of(context).total_orders,
+          stats['totalOrders'].toString(),
+          Icons.shopping_bag,
+          AppTheme.primaryColor,
+        ),
+        _buildStatCard(
+          AppLocalizations.of(context).received,
+          stats['receivedOrders'].toString(),
+          Icons.inbox,
+          AppTheme.infoColor,
+        ),
+        _buildStatCard(
+          AppLocalizations.of(context).returned,
+          stats['returnedOrders'].toString(),
+          Icons.check_circle,
+          AppTheme.successColor,
+        ),
+        _buildStatCard(
+          AppLocalizations.of(context).not_returned,
+          stats['notReturnedOrders'].toString(),
+          Icons.cancel,
+          AppTheme.errorColor,
+        ),
+        _buildStatCard(
+          AppLocalizations.of(context).total_revenue,
+          'AED ${stats['totalRevenue'].toStringAsFixed(2)}',
+          Icons.attach_money,
+          AppTheme.warningColor,
+        ),
+        _buildStatCard(
+          AppLocalizations.of(context).average_order,
+          'AED ${stats['averageOrderValue'].toStringAsFixed(2)}',
+          Icons.trending_up,
+          AppTheme.infoColor,
+        ),
       ],
     );
   }
 
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
+  Widget _buildStatCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -473,21 +544,23 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   (c) => c.id == entry.key,
                   orElse: () => DeliveryCompany(
                     id: entry.key,
-                    name: 'Unknown Company',
+                    name: AppLocalizations.of(context).unknown_company,
                     contact: '',
                     address: '',
                     createdAt: DateTime.now(),
                     createdBy: '',
                   ),
                 );
-                
+
                 return ListTile(
                   leading: CircleAvatar(
                     backgroundColor: AppTheme.primaryColor,
                     child: Text('${entry.value}'),
                   ),
                   title: Text(company.name),
-                  subtitle: Text('${entry.value} orders'),
+                  subtitle: Text(
+                    '${entry.value}${AppLocalizations.of(context).orders}',
+                  ),
                   trailing: Text(
                     '${((entry.value / _filteredOrders.length) * 100).toStringAsFixed(1)}%',
                     style: TextStyle(
@@ -516,21 +589,23 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   (d) => d.id == entry.key,
                   orElse: () => Driver(
                     id: entry.key,
-                    name: 'Unknown Driver',
+                    name: AppLocalizations.of(context).unknown_driver,
                     phone: '',
                     companyId: '',
                     createdAt: DateTime.now(),
                     createdBy: '',
                   ),
                 );
-                
+
                 return ListTile(
                   leading: CircleAvatar(
                     backgroundColor: AppTheme.successColor,
                     child: Text('${entry.value}'),
                   ),
                   title: Text(driver.name),
-                  subtitle: Text('${entry.value} orders'),
+                  subtitle: Text(
+                    '${entry.value}${AppLocalizations.of(context).orders}',
+                  ),
                   trailing: Text(
                     '${((entry.value / _filteredOrders.length) * 100).toStringAsFixed(1)}%',
                     style: TextStyle(
@@ -558,17 +633,17 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 Icon(Icons.inbox, size: 64, color: Colors.grey),
                 const SizedBox(height: 16),
                 Text(
-                  'No orders found',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Colors.grey,
-                  ),
+                  AppLocalizations.of(context).no_orders_found,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleMedium?.copyWith(color: Colors.grey),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Try adjusting your filters',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.grey,
-                  ),
+                  AppLocalizations.of(context).try_adjusting_filters,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
                 ),
               ],
             ),
@@ -592,11 +667,36 @@ class _ReportsScreenState extends State<ReportsScreen> {
             ),
             child: Row(
               children: [
-                Expanded(child: Text('Order #', style: TextStyle(fontWeight: FontWeight.bold))),
-                Expanded(child: Text('Customer', style: TextStyle(fontWeight: FontWeight.bold))),
-                Expanded(child: Text('Status', style: TextStyle(fontWeight: FontWeight.bold))),
-                Expanded(child: Text('Amount', style: TextStyle(fontWeight: FontWeight.bold))),
-                Expanded(child: Text('Date', style: TextStyle(fontWeight: FontWeight.bold))),
+                Expanded(
+                  child: Text(
+                    AppLocalizations.of(context).order_hash,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    AppLocalizations.of(context).customer,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    AppLocalizations.of(context).status,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    AppLocalizations.of(context).amount,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    AppLocalizations.of(context).date,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
               ],
             ),
           ),
@@ -612,6 +712,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
     switch (order.state) {
       case OrderState.received:
         statusColor = AppTheme.infoColor;
+        break;
+      case OrderState.outForDelivery:
+        statusColor = Colors.blue;
         break;
       case OrderState.returned:
         statusColor = AppTheme.successColor;

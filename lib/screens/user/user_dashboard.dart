@@ -38,7 +38,7 @@ class _UserDashboardState extends State<UserDashboard> {
     if (shouldLogout == true && mounted) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       await authProvider.signOut();
-      
+
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -97,17 +97,18 @@ class _UserDashboardState extends State<UserDashboard> {
     );
   }
 
-  Widget _buildNavigationDrawer(BuildContext context, AuthProvider authProvider) {
+  Widget _buildNavigationDrawer(
+    BuildContext context,
+    AuthProvider authProvider,
+  ) {
     final tr = AppLocalizations.of(context);
-    
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
-            ),
+            decoration: BoxDecoration(color: Theme.of(context).primaryColor),
             accountName: Text(authProvider.user?.name ?? 'User'),
             accountEmail: Text(authProvider.user?.phone ?? ''),
             currentAccountPicture: CircleAvatar(
@@ -137,24 +138,24 @@ class _UserDashboardState extends State<UserDashboard> {
               Navigator.pop(context);
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.person),
-            title: Text(tr.profile),
-            selected: _selectedIndex == 2,
-            onTap: () {
-              setState(() => _selectedIndex = 2);
-              Navigator.pop(context);
-            },
-          ),
+          // ListTile(
+          //   leading: const Icon(Icons.person),
+          //   title: Text(tr.profile),
+          //   selected: _selectedIndex == 2,
+          //   onTap: () {
+          //     setState(() => _selectedIndex = 2);
+          //     Navigator.pop(context);
+          //   },
+          // ),
           const Divider(),
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: Text(tr.settings),
-            onTap: () {
-              Navigator.pop(context);
-              // Navigate to settings
-            },
-          ),
+          // ListTile(
+          //   leading: const Icon(Icons.settings),
+          //   title: Text(tr.settings),
+          //   onTap: () {
+          //     Navigator.pop(context);
+          //     // Navigate to settings
+          //   },
+          // ),
           ListTile(
             leading: const Icon(Icons.logout),
             title: Text(tr.logout),
@@ -170,23 +171,20 @@ class _UserDashboardState extends State<UserDashboard> {
 
   Widget _buildBottomNavigation() {
     final tr = AppLocalizations.of(context);
-    
+
     return BottomNavigationBar(
       currentIndex: _selectedIndex,
       onTap: (index) => setState(() => _selectedIndex = index),
       items: [
-        BottomNavigationBarItem(
-          icon: const Icon(Icons.home),
-          label: tr.home,
-        ),
+        BottomNavigationBarItem(icon: const Icon(Icons.home), label: tr.home),
         BottomNavigationBarItem(
           icon: const Icon(Icons.shopping_bag),
           label: tr.orders,
         ),
-        BottomNavigationBarItem(
-          icon: const Icon(Icons.person),
-          label: tr.profile,
-        ),
+        // BottomNavigationBarItem(
+        //   icon: const Icon(Icons.person),
+        //   label: tr.profile,
+        // ),
       ],
     );
   }
@@ -208,16 +206,17 @@ class _UserDashboardState extends State<UserDashboard> {
     return Consumer<OrderProvider>(
       builder: (context, orderProvider, _) {
         if (orderProvider.isLoading) {
-          return CommonWidgets.localizedLoading(
-            context,
-            (tr) => tr.loading,
-          );
+          return CommonWidgets.localizedLoading(context, (tr) => tr.loading);
         }
 
         final userOrders = orderProvider.orders
-            .where((order) => order.driverId == Provider.of<AuthProvider>(context, listen: false).user?.id)
+            .where(
+              (order) =>
+                  order.driverId ==
+                  Provider.of<AuthProvider>(context, listen: false).user?.id,
+            )
             .toList();
-        
+
         return SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -230,30 +229,30 @@ class _UserDashboardState extends State<UserDashboard> {
                 content: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      context.tr.dashboard,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      context.tr.view_orders_manage_profile,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).textTheme.bodySmall?.color,
-                      ),
-                    ),
+                    // Text(
+                    //   context.tr.dashboard,
+                    //   style: Theme.of(context).textTheme.bodyLarge,
+                    // ),
+                    // const SizedBox(height: 8),
+                    // Text(
+                    //   context.tr.view_orders_manage_profile,
+                    //   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    //     color: Theme.of(context).textTheme.bodySmall?.color,
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // Order Statistics
               Text(
                 context.tr.orders,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               const SizedBox(height: 12),
-              
+
               Row(
                 children: [
                   Expanded(
@@ -270,20 +269,24 @@ class _UserDashboardState extends State<UserDashboard> {
                     child: _buildStatCard(
                       context,
                       context.tr.today_orders,
-                      userOrders.where((order) => 
-                        order.date.day == DateTime.now().day &&
-                        order.date.month == DateTime.now().month &&
-                        order.date.year == DateTime.now().year
-                      ).length.toString(),
+                      userOrders
+                          .where(
+                            (order) =>
+                                order.date.day == DateTime.now().day &&
+                                order.date.month == DateTime.now().month &&
+                                order.date.year == DateTime.now().year,
+                          )
+                          .length
+                          .toString(),
                       Icons.today,
                       AppTheme.successColor,
                     ),
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 24),
-              
+
               // Recent Orders
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -299,7 +302,7 @@ class _UserDashboardState extends State<UserDashboard> {
                 ],
               ),
               const SizedBox(height: 12),
-              
+
               if (userOrders.isEmpty)
                 CommonWidgets.localizedCard(
                   context: context,
@@ -327,51 +330,56 @@ class _UserDashboardState extends State<UserDashboard> {
                   ),
                 )
               else
-                ...userOrders.take(3).map((order) => Card(
-                  margin: const EdgeInsets.only(bottom: 8),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: _getOrderStatusColor(order.state),
-                      child: Icon(
-                        _getOrderStatusIcon(order.state),
-                        color: Colors.white,
-                        size: 20,
+                ...userOrders
+                    .take(3)
+                    .map(
+                      (order) => Card(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: _getOrderStatusColor(order.state),
+                            child: Icon(
+                              _getOrderStatusIcon(order.state),
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                          title: Text(order.orderNumber),
+                          subtitle: Text(order.customerName),
+                          trailing: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                _getOrderStatusText(order.state),
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(
+                                      color: _getOrderStatusColor(order.state),
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                              ),
+                              Text(
+                                '${order.date.day}/${order.date.month}',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
+                          ),
+                          onTap: () {
+                            // Navigate to order details
+                          },
+                        ),
                       ),
                     ),
-                    title: Text(order.orderNumber),
-                    subtitle: Text(order.customerName),
-                    trailing: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          _getOrderStatusText(order.state),
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: _getOrderStatusColor(order.state),
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        Text(
-                          '${order.date.day}/${order.date.month}',
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ],
-                    ),
-                    onTap: () {
-                      // Navigate to order details
-                    },
-                  ),
-                )),
-              
+
               const SizedBox(height: 24),
-              
+
               // Quick Actions
               Text(
                 context.tr.quick_actions,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               const SizedBox(height: 12),
-              
+
               CommonWidgets.localizedCard(
                 context: context,
                 content: Column(
@@ -380,7 +388,10 @@ class _UserDashboardState extends State<UserDashboard> {
                       context: context,
                       getText: (tr) => tr.refresh_orders,
                       onPressed: () {
-                        Provider.of<OrderProvider>(context, listen: false).loadAllOrders();
+                        Provider.of<OrderProvider>(
+                          context,
+                          listen: false,
+                        ).loadAllOrders();
                       },
                       icon: Icons.refresh,
                     ),
@@ -401,7 +412,13 @@ class _UserDashboardState extends State<UserDashboard> {
     );
   }
 
-  Widget _buildStatCard(BuildContext context, String title, String value, IconData icon, Color color) {
+  Widget _buildStatCard(
+    BuildContext context,
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -424,9 +441,9 @@ class _UserDashboardState extends State<UserDashboard> {
             const SizedBox(height: 8),
             Text(
               title,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
@@ -485,7 +502,7 @@ class _UserDashboardState extends State<UserDashboard> {
     return Consumer<AuthProvider>(
       builder: (context, authProvider, _) {
         final user = authProvider.user;
-        
+
         return SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -498,11 +515,7 @@ class _UserDashboardState extends State<UserDashboard> {
                     CircleAvatar(
                       radius: 50,
                       backgroundColor: Theme.of(context).primaryColor,
-                      child: Icon(
-                        Icons.person,
-                        size: 50,
-                        color: Colors.white,
-                      ),
+                      child: Icon(Icons.person, size: 50, color: Colors.white),
                     ),
                     const SizedBox(height: 16),
                     Text(
@@ -523,9 +536,9 @@ class _UserDashboardState extends State<UserDashboard> {
                   ],
                 ),
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               CommonWidgets.localizedCard(
                 context: context,
                 getTitle: (tr) => tr.account_information,
@@ -534,7 +547,11 @@ class _UserDashboardState extends State<UserDashboard> {
                     ListTile(
                       leading: const Icon(Icons.language),
                       title: Text(context.tr.language),
-                      subtitle: Text(user?.language == 'ar' ? context.tr.arabic : context.tr.english),
+                      subtitle: Text(
+                        user?.language == 'ar'
+                            ? context.tr.arabic
+                            : context.tr.english,
+                      ),
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () {
                         // Navigate to language settings
@@ -543,7 +560,9 @@ class _UserDashboardState extends State<UserDashboard> {
                     ListTile(
                       leading: const Icon(Icons.notifications),
                       title: Text(context.tr.notifications),
-                      subtitle: Text(context.tr.manage_notification_preferences),
+                      subtitle: Text(
+                        context.tr.manage_notification_preferences,
+                      ),
                       trailing: const Icon(Icons.chevron_right),
                       onTap: () {
                         // Navigate to notification settings

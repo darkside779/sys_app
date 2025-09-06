@@ -335,7 +335,7 @@ abstract class AppLocalizations {
   /// No description provided for @orders.
   ///
   /// In en, this message translates to:
-  /// **'Orders'**
+  /// **' orders'**
   String get orders;
 
   /// No description provided for @order_number.
@@ -551,7 +551,7 @@ abstract class AppLocalizations {
   /// No description provided for @enter_address.
   ///
   /// In en, this message translates to:
-  /// **'Enter company address'**
+  /// **'Enter address'**
   String get enter_address;
 
   /// No description provided for @address_required.
@@ -839,7 +839,7 @@ abstract class AppLocalizations {
   /// No description provided for @operation_failed.
   ///
   /// In en, this message translates to:
-  /// **'Operation failed. Please try again'**
+  /// **'Operation failed'**
   String get operation_failed;
 
   /// No description provided for @today.
@@ -1139,7 +1139,7 @@ abstract class AppLocalizations {
   /// No description provided for @try_adjusting_filters.
   ///
   /// In en, this message translates to:
-  /// **'Try adjusting your filters'**
+  /// **'Try adjusting your filters to see more results'**
   String get try_adjusting_filters;
 
   /// No description provided for @no_orders_created_yet.
@@ -1315,6 +1315,540 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Passwords do not match'**
   String get password_mismatch;
+
+  /// No description provided for @manage_orders.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Orders'**
+  String get manage_orders;
+
+  /// No description provided for @all_statuses.
+  ///
+  /// In en, this message translates to:
+  /// **'All Statuses'**
+  String get all_statuses;
+
+  /// No description provided for @all_drivers.
+  ///
+  /// In en, this message translates to:
+  /// **'All Drivers'**
+  String get all_drivers;
+
+  /// No description provided for @all_companies.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all_companies;
+
+  /// No description provided for @driver.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver'**
+  String get driver;
+
+  /// No description provided for @update_status.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Status'**
+  String get update_status;
+
+  /// No description provided for @cost.
+  ///
+  /// In en, this message translates to:
+  /// **'Cost'**
+  String get cost;
+
+  /// No description provided for @select_status.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Status'**
+  String get select_status;
+
+  /// No description provided for @select_driver.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Driver'**
+  String get select_driver;
+
+  /// No description provided for @select_company.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Company'**
+  String get select_company;
+
+  /// No description provided for @unknown_user.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown User'**
+  String get unknown_user;
+
+  /// No description provided for @delete_company_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this company?'**
+  String get delete_company_confirm;
+
+  /// No description provided for @company_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Company deleted successfully'**
+  String get company_deleted;
+
+  /// No description provided for @company_created.
+  ///
+  /// In en, this message translates to:
+  /// **'Company created successfully'**
+  String get company_created;
+
+  /// No description provided for @company_updated.
+  ///
+  /// In en, this message translates to:
+  /// **'Company updated successfully'**
+  String get company_updated;
+
+  /// No description provided for @no_companies_search.
+  ///
+  /// In en, this message translates to:
+  /// **'No companies found matching your search'**
+  String get no_companies_search;
+
+  /// No description provided for @created_on.
+  ///
+  /// In en, this message translates to:
+  /// **'Created On'**
+  String get created_on;
+
+  /// No description provided for @manage_drivers.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Drivers'**
+  String get manage_drivers;
+
+  /// No description provided for @search_drivers.
+  ///
+  /// In en, this message translates to:
+  /// **'Search Drivers'**
+  String get search_drivers;
+
+  /// No description provided for @enter_driver_search.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter driver name or phone...'**
+  String get enter_driver_search;
+
+  /// No description provided for @filter_by_company.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by Company'**
+  String get filter_by_company;
+
+  /// No description provided for @delete_driver_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this driver?'**
+  String get delete_driver_confirm;
+
+  /// No description provided for @driver_deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver deleted successfully'**
+  String get driver_deleted;
+
+  /// No description provided for @driver_created.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver created successfully'**
+  String get driver_created;
+
+  /// No description provided for @driver_updated.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver updated successfully'**
+  String get driver_updated;
+
+  /// No description provided for @no_drivers_filter.
+  ///
+  /// In en, this message translates to:
+  /// **'No drivers found matching your filters'**
+  String get no_drivers_filter;
+
+  /// No description provided for @no_drivers_available.
+  ///
+  /// In en, this message translates to:
+  /// **'No drivers available'**
+  String get no_drivers_available;
+
+  /// No description provided for @edit_driver.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Driver'**
+  String get edit_driver;
+
+  /// No description provided for @created.
+  ///
+  /// In en, this message translates to:
+  /// **'Created'**
+  String get created;
+
+  /// No description provided for @enter_driver_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter driver name'**
+  String get enter_driver_name;
+
+  /// No description provided for @driver_name_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver name is required'**
+  String get driver_name_required;
+
+  /// No description provided for @phone_number.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get phone_number;
+
+  /// No description provided for @enter_phone_number.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter phone number'**
+  String get enter_phone_number;
+
+  /// No description provided for @phone_number_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number is required'**
+  String get phone_number_required;
+
+  /// No description provided for @please_select_company.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a company'**
+  String get please_select_company;
+
+  /// No description provided for @active_driver.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Driver'**
+  String get active_driver;
+
+  /// No description provided for @filters.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get filters;
+
+  /// No description provided for @apply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get apply;
+
+  /// No description provided for @select_date_range.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Date Range'**
+  String get select_date_range;
+
+  /// No description provided for @summary_statistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Summary Statistics'**
+  String get summary_statistics;
+
+  /// No description provided for @received.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get received;
+
+  /// No description provided for @returned.
+  ///
+  /// In en, this message translates to:
+  /// **'Returned'**
+  String get returned;
+
+  /// No description provided for @total_revenue.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Revenue'**
+  String get total_revenue;
+
+  /// No description provided for @average_order.
+  ///
+  /// In en, this message translates to:
+  /// **'Average Order'**
+  String get average_order;
+
+  /// No description provided for @company_performance.
+  ///
+  /// In en, this message translates to:
+  /// **'Company Performance'**
+  String get company_performance;
+
+  /// No description provided for @driver_performance.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver Performance'**
+  String get driver_performance;
+
+  /// No description provided for @unknown_driver.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown Driver'**
+  String get unknown_driver;
+
+  /// No description provided for @filtered_orders.
+  ///
+  /// In en, this message translates to:
+  /// **'Filtered Orders'**
+  String get filtered_orders;
+
+  /// No description provided for @unassigned.
+  ///
+  /// In en, this message translates to:
+  /// **'Unassigned'**
+  String get unassigned;
+
+  /// No description provided for @add_user.
+  ///
+  /// In en, this message translates to:
+  /// **'Add User'**
+  String get add_user;
+
+  /// No description provided for @search_users.
+  ///
+  /// In en, this message translates to:
+  /// **'Search Users'**
+  String get search_users;
+
+  /// No description provided for @name_or_phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Name or phone...'**
+  String get name_or_phone;
+
+  /// No description provided for @all_roles.
+  ///
+  /// In en, this message translates to:
+  /// **'All Roles'**
+  String get all_roles;
+
+  /// No description provided for @no_users_found.
+  ///
+  /// In en, this message translates to:
+  /// **'No users found'**
+  String get no_users_found;
+
+  /// No description provided for @add_users_to_get_started.
+  ///
+  /// In en, this message translates to:
+  /// **'Add users to get started'**
+  String get add_users_to_get_started;
+
+  /// No description provided for @delete_user.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete User'**
+  String get delete_user;
+
+  /// No description provided for @are_you_sure_delete_user.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete'**
+  String get are_you_sure_delete_user;
+
+  /// No description provided for @action_cannot_be_undone.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone.'**
+  String get action_cannot_be_undone;
+
+  /// No description provided for @deleted_successfully.
+  ///
+  /// In en, this message translates to:
+  /// **'deleted successfully'**
+  String get deleted_successfully;
+
+  /// No description provided for @failed_to_delete_user.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete user'**
+  String get failed_to_delete_user;
+
+  /// No description provided for @activated.
+  ///
+  /// In en, this message translates to:
+  /// **'activated'**
+  String get activated;
+
+  /// No description provided for @deactivated.
+  ///
+  /// In en, this message translates to:
+  /// **'deactivated'**
+  String get deactivated;
+
+  /// No description provided for @failed_to_update_user_status.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update user status'**
+  String get failed_to_update_user_status;
+
+  /// No description provided for @user_created_successfully.
+  ///
+  /// In en, this message translates to:
+  /// **'User created successfully'**
+  String get user_created_successfully;
+
+  /// No description provided for @user_updated_successfully.
+  ///
+  /// In en, this message translates to:
+  /// **'User updated successfully'**
+  String get user_updated_successfully;
+
+  /// No description provided for @create_user.
+  ///
+  /// In en, this message translates to:
+  /// **'Create User'**
+  String get create_user;
+
+  /// No description provided for @edit_user.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit User'**
+  String get edit_user;
+
+  /// No description provided for @full_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name'**
+  String get full_name;
+
+  /// No description provided for @enter_users_full_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter user\'s full name'**
+  String get enter_users_full_name;
+
+  /// No description provided for @name_is_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Name is required'**
+  String get name_is_required;
+
+  /// No description provided for @email_address.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Address'**
+  String get email_address;
+
+  /// No description provided for @enter_email_address.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter email address'**
+  String get enter_email_address;
+
+  /// No description provided for @email_is_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Email is required'**
+  String get email_is_required;
+
+  /// No description provided for @please_enter_valid_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email address'**
+  String get please_enter_valid_email;
+
+  /// No description provided for @enter_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter password'**
+  String get enter_password;
+
+  /// No description provided for @password_is_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is required'**
+  String get password_is_required;
+
+  /// No description provided for @password_min_length.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters'**
+  String get password_min_length;
+
+  /// No description provided for @phone_number_is_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number is required'**
+  String get phone_number_is_required;
+
+  /// No description provided for @default_role.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get default_role;
+
+  /// No description provided for @active_user.
+  ///
+  /// In en, this message translates to:
+  /// **'Active User'**
+  String get active_user;
+
+  /// No description provided for @user_can_login_access_system.
+  ///
+  /// In en, this message translates to:
+  /// **'User can login and access the system'**
+  String get user_can_login_access_system;
+
+  /// No description provided for @role.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get role;
+
+  /// No description provided for @deactivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Deactivate'**
+  String get deactivate;
+
+  /// No description provided for @activate.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate'**
+  String get activate;
+
+  /// No description provided for @status_out_for_delivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Out for delivery'**
+  String get status_out_for_delivery;
+
+  /// No description provided for @return_reason.
+  ///
+  /// In en, this message translates to:
+  /// **'Return Reason'**
+  String get return_reason;
+
+  /// No description provided for @enter_return_reason.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter return reason'**
+  String get enter_return_reason;
+
+  /// No description provided for @return_reason_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Return reason is required'**
+  String get return_reason_required;
+
+  /// No description provided for @returned_reason.
+  ///
+  /// In en, this message translates to:
+  /// **'Returned: {reason}'**
+  String returned_reason(Object reason);
 }
 
 class _AppLocalizationsDelegate

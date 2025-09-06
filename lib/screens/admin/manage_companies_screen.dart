@@ -54,7 +54,7 @@ class _ManageCompaniesScreenState extends State<ManageCompaniesScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(AppLocalizations.of(context).delete),
-        content: Text('Are you sure you want to delete this company?'),
+        content: Text(AppLocalizations.of(context).delete_company_confirm),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -67,7 +67,7 @@ class _ManageCompaniesScreenState extends State<ManageCompaniesScreen> {
                 if (success && mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Company deleted successfully'),
+                      content: Text(AppLocalizations.of(context).company_deleted),
                       backgroundColor: Colors.green,
                     ),
                   );
@@ -100,7 +100,7 @@ class _ManageCompaniesScreenState extends State<ManageCompaniesScreen> {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () => context.read<CompanyProvider>().loadAllCompanies(),
-            tooltip: 'Refresh',
+            tooltip: AppLocalizations.of(context).refresh,
           ),
         ],
       ),
@@ -165,7 +165,7 @@ class _ManageCompaniesScreenState extends State<ManageCompaniesScreen> {
                           const SizedBox(height: 8),
                           ElevatedButton(
                             onPressed: () => companyProvider.loadAllCompanies(),
-                            child: Text('Retry'),
+                            child: Text(AppLocalizations.of(context).retry),
                           ),
                         ],
                       ),
@@ -188,8 +188,8 @@ class _ManageCompaniesScreenState extends State<ManageCompaniesScreen> {
                         const SizedBox(height: 16),
                         Text(
                           _searchQuery.isNotEmpty
-                              ? 'No companies found matching your search'
-                              : 'No companies available',
+                              ? AppLocalizations.of(context).no_companies_search
+                              : AppLocalizations.of(context).no_companies_available,
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         if (_searchQuery.isEmpty) ...[
@@ -229,7 +229,7 @@ class _ManageCompaniesScreenState extends State<ManageCompaniesScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _showCreateCompanyDialog,
         icon: const Icon(Icons.add),
-        label: Text('Create Company'),
+        label: Text(AppLocalizations.of(context).create_company),
       ),
     );
   }
@@ -276,7 +276,7 @@ class CompanyCard extends StatelessWidget {
                         children: [
                           const Icon(Icons.edit, size: 18),
                           const SizedBox(width: 8),
-                          Text('Edit'),
+                          Text(AppLocalizations.of(context).edit),
                         ],
                       ),
                     ),
@@ -286,7 +286,7 @@ class CompanyCard extends StatelessWidget {
                         children: [
                           const Icon(Icons.delete, size: 18, color: Colors.red),
                           const SizedBox(width: 8),
-                          Text('Delete', style: const TextStyle(color: Colors.red)),
+                          Text(AppLocalizations.of(context).delete, style: const TextStyle(color: Colors.red)),
                         ],
                       ),
                     ),
@@ -312,7 +312,7 @@ class CompanyCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    company.isActive ? 'Active' : 'Inactive',
+                    company.isActive ? AppLocalizations.of(context).active : AppLocalizations.of(context).inactive,
                     style: TextStyle(
                       color: company.isActive ? Colors.green.shade800 : Colors.red.shade800,
                       fontSize: 12,
@@ -322,7 +322,7 @@ class CompanyCard extends StatelessWidget {
                 ),
                 const Spacer(),
                 Text(
-                  'Created On ${company.createdAt.toString().split(' ')[0]}',
+                  '${AppLocalizations.of(context).created_on} ${company.createdAt.toString().split(' ')[0]}',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
@@ -414,7 +414,7 @@ class _CompanyDialogState extends State<CompanyDialog> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Company created successfully'),
+              content: Text(AppLocalizations.of(context).company_created),
               backgroundColor: Colors.green,
             ),
           );
@@ -431,7 +431,7 @@ class _CompanyDialogState extends State<CompanyDialog> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Company updated successfully'),
+              content: Text(AppLocalizations.of(context).company_updated),
               backgroundColor: Colors.green,
             ),
           );
@@ -445,7 +445,7 @@ class _CompanyDialogState extends State<CompanyDialog> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Operation failed: $e'),
+            content: Text('${AppLocalizations.of(context).operation_failed}: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -463,8 +463,8 @@ class _CompanyDialogState extends State<CompanyDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(widget.company == null
-          ? 'Create Company'
-          : 'Edit Company'),
+          ? AppLocalizations.of(context).create_company
+          : AppLocalizations.of(context).edit_company),
       content: SizedBox(
         width: MediaQuery.of(context).size.width * 0.8,
         child: Form(
@@ -475,13 +475,13 @@ class _CompanyDialogState extends State<CompanyDialog> {
               TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(
-                  labelText: 'Company Name',
-                  hintText: 'Enter company name',
+                  labelText: AppLocalizations.of(context).company_name,
+                  hintText: AppLocalizations.of(context).enter_company_name,
                   prefixIcon: const Icon(Icons.business),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Company name is required';
+                    return AppLocalizations.of(context).company_name_required;
                   }
                   return null;
                 },
@@ -490,13 +490,13 @@ class _CompanyDialogState extends State<CompanyDialog> {
               TextFormField(
                 controller: _emailController,
                 decoration: InputDecoration(
-                  labelText: 'Contact Info',
-                  hintText: 'Enter email or phone',
+                  labelText: AppLocalizations.of(context).contact_info,
+                  hintText: AppLocalizations.of(context).enter_contact_info,
                   prefixIcon: const Icon(Icons.contact_mail),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Contact info is required';
+                    return AppLocalizations.of(context).contact_info_required;
                   }
                   return null;
                 },
@@ -505,15 +505,15 @@ class _CompanyDialogState extends State<CompanyDialog> {
               TextFormField(
                 controller: _addressController,
                 decoration: InputDecoration(
-                  labelText: 'Address',
-                  hintText: 'Enter address',
+                  labelText: AppLocalizations.of(context).address,
+                  hintText: AppLocalizations.of(context).enter_address,
                   prefixIcon: const Icon(Icons.location_on),
                 ),
                 maxLines: 3,
               ),
               const SizedBox(height: 16),
               CheckboxListTile(
-                title: Text('Active Company'),
+                title: Text(AppLocalizations.of(context).active_company),
                 value: _isActive,
                 onChanged: (value) {
                   setState(() {
@@ -529,15 +529,15 @@ class _CompanyDialogState extends State<CompanyDialog> {
       actions: [
         TextButton(
           onPressed: _isLoading ? null : () => Navigator.pop(context),
-          child: Text('Cancel'),
+          child: Text(AppLocalizations.of(context).cancel),
         ),
         ElevatedButton(
           onPressed: _isLoading ? null : () => _saveCompany(),
           child: _isLoading
               ? const CircularProgressIndicator()
               : Text(widget.company == null
-                  ? 'Create'
-                  : 'Update'),
+                  ? AppLocalizations.of(context).create
+                  : AppLocalizations.of(context).update),
         ),
       ],
     );

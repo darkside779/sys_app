@@ -6,6 +6,7 @@ import '../../models/user_model.dart';
 import '../../providers/user_provider.dart';
 import '../../widgets/common_widgets.dart';
 import '../../app/theme.dart';
+import '../../localization/app_localizations.dart';
 
 class ManageUsersScreen extends StatefulWidget {
   const ManageUsersScreen({super.key});
@@ -51,10 +52,13 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
 
     // Apply search filter
     if (_searchQuery.isNotEmpty) {
-      users = users.where((user) => 
-        user.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-        user.phone.toLowerCase().contains(_searchQuery.toLowerCase())
-      ).toList();
+      users = users
+          .where(
+            (user) =>
+                user.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+                user.phone.toLowerCase().contains(_searchQuery.toLowerCase()),
+          )
+          .toList();
     }
 
     // Apply role filter
@@ -83,19 +87,14 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
   void _showCreateUserDialog() {
     showDialog(
       context: context,
-      builder: (context) => UserDialog(
-        onUserSaved: _applyFilters,
-      ),
+      builder: (context) => UserDialog(onUserSaved: _applyFilters),
     );
   }
 
   void _showEditUserDialog(User user) {
     showDialog(
       context: context,
-      builder: (context) => UserDialog(
-        user: user,
-        onUserSaved: _applyFilters,
-      ),
+      builder: (context) => UserDialog(user: user, onUserSaved: _applyFilters),
     );
   }
 
@@ -103,16 +102,18 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Delete User'),
-        content: Text('Are you sure you want to delete "${user.name}"? This action cannot be undone.'),
+        title: Text(AppLocalizations.of(context).delete_user),
+        content: Text(
+          '${AppLocalizations.of(context).are_you_sure_delete_user} "${user.name}"? ${AppLocalizations.of(context).action_cannot_be_undone}',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
+            child: Text(AppLocalizations.of(context).cancel),
           ),
           CommonWidgets.errorButton(
             context: context,
-            getText: (tr) => 'Delete',
+            getText: (tr) => tr.delete,
             onPressed: () {
               Navigator.pop(context);
               _deleteUser(user);
@@ -126,13 +127,15 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
   Future<void> _deleteUser(User user) async {
     final userProvider = context.read<UserProvider>();
     final success = await userProvider.deleteUser(user.id);
-    
+
     if (success) {
       _applyFilters();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('User "${user.name}" deleted successfully'),
+            content: Text(
+              '${AppLocalizations.of(context).user} "${user.name}" ${AppLocalizations.of(context).deleted_successfully}',
+            ),
             backgroundColor: Colors.green,
           ),
         );
@@ -141,7 +144,9 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to delete user: ${userProvider.errorMessage}'),
+            content: Text(
+              '${AppLocalizations.of(context).failed_to_delete_user}: ${userProvider.errorMessage}',
+            ),
             backgroundColor: Colors.red,
           ),
         );
@@ -152,13 +157,15 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
   Future<void> _toggleUserStatus(User user) async {
     final userProvider = context.read<UserProvider>();
     final success = await userProvider.toggleUserStatus(user.id);
-    
+
     if (success) {
       _applyFilters();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('User "${user.name}" ${!user.isActive ? 'activated' : 'deactivated'}'),
+            content: Text(
+              '${AppLocalizations.of(context).user} "${user.name}" ${!user.isActive ? AppLocalizations.of(context).activated : AppLocalizations.of(context).deactivated}',
+            ),
             backgroundColor: Colors.green,
           ),
         );
@@ -167,7 +174,67 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to update user status: ${userProvider.errorMessage}'),
+            content: Text(
+              '${AppLocalizations.of(context).failed_to_update_user_status}: ${userProvider.errorMessage}',
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  void _showResetPasswordDialog(User user) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Reset Password'),
+        content: Text(
+          'Are you sure you want to reset the password for "${user.name}" to the default password "user1234"?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(AppLocalizations.of(context).cancel),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _resetUserPassword(user);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.orange,
+              foregroundColor: Colors.white,
+            ),
+            child: Text('Reset Password'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _resetUserPassword(User user) async {
+    final userProvider = context.read<UserProvider>();
+    final success = await userProvider.resetUserPassword(user.id);
+
+    if (success) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Password reset email sent to "${user.email}"',
+            ),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Failed to reset password: ${userProvider.errorMessage}',
+            ),
             backgroundColor: Colors.red,
           ),
         );
@@ -190,7 +257,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showCreateUserDialog,
-        tooltip: 'Add User',
+        tooltip: AppLocalizations.of(context).add_user,
         child: const Icon(Icons.add),
       ),
     );
@@ -209,8 +276,8 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                   child: TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
-                      labelText: 'Search Users',
-                      hintText: 'Name or phone...',
+                      labelText: AppLocalizations.of(context).search_users,
+                      hintText: AppLocalizations.of(context).name_or_phone,
                       prefixIcon: const Icon(Icons.search),
                       border: OutlineInputBorder(),
                       isDense: true,
@@ -237,17 +304,17 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                   child: DropdownButtonFormField<UserRole>(
                     initialValue: _roleFilter,
                     decoration: InputDecoration(
-                      labelText: 'Role',
+                      labelText: AppLocalizations.of(context).role,
                       border: OutlineInputBorder(),
                       isDense: true,
                     ),
                     items: [
                       DropdownMenuItem<UserRole>(
                         value: null,
-                        child: Text('All Roles'),
+                        child: Text(AppLocalizations.of(context).all_roles),
                       ),
-                      ...UserRole.values.map((role) =>
-                        DropdownMenuItem<UserRole>(
+                      ...UserRole.values.map(
+                        (role) => DropdownMenuItem<UserRole>(
                           value: role,
                           child: Text(role.displayName),
                         ),
@@ -266,14 +333,14 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
               Row(
                 children: [
                   Text(
-                    'Filters applied',
+                    AppLocalizations.of(context).filters_applied,
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   const Spacer(),
                   TextButton.icon(
                     onPressed: _clearFilters,
                     icon: const Icon(Icons.clear, size: 16),
-                    label: Text('Clear All'),
+                    label: Text(AppLocalizations.of(context).clear_all),
                   ),
                 ],
               ),
@@ -293,19 +360,19 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
             Icon(Icons.people_outline, size: 64, color: Colors.grey),
             const SizedBox(height: 16),
             Text(
-              'No users found',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Colors.grey,
-              ),
+              AppLocalizations.of(context).no_users_found,
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(color: Colors.grey),
             ),
             const SizedBox(height: 8),
             Text(
               _searchQuery.isNotEmpty || _roleFilter != null
-                  ? 'Try adjusting your filters'
-                  : 'Add users to get started',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey,
-              ),
+                  ? AppLocalizations.of(context).try_adjusting_filters
+                  : AppLocalizations.of(context).add_users_to_get_started,
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
             ),
           ],
         ),
@@ -356,21 +423,23 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                     children: [
                       Text(
                         user.name,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       Text(
                         user.phone,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey,
-                        ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
                       ),
                     ],
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: roleColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
@@ -387,20 +456,29 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                 ),
                 const SizedBox(width: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
-                    color: user.isActive 
+                    color: user.isActive
                         ? AppTheme.successColor.withValues(alpha: 0.1)
                         : Colors.grey.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: user.isActive ? AppTheme.successColor : Colors.grey,
+                      color: user.isActive
+                          ? AppTheme.successColor
+                          : Colors.grey,
                     ),
                   ),
                   child: Text(
-                    user.isActive ? 'Active' : 'Inactive',
+                    user.isActive
+                        ? AppLocalizations.of(context).active
+                        : AppLocalizations.of(context).inactive,
                     style: TextStyle(
-                      color: user.isActive ? AppTheme.successColor : Colors.grey,
+                      color: user.isActive
+                          ? AppTheme.successColor
+                          : Colors.grey,
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
@@ -414,7 +492,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                         children: [
                           const Icon(Icons.edit, size: 18),
                           const SizedBox(width: 8),
-                          Text('Edit'),
+                          Text(AppLocalizations.of(context).edit),
                         ],
                       ),
                     ),
@@ -425,10 +503,24 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                           Icon(
                             user.isActive ? Icons.block : Icons.check_circle,
                             size: 18,
-                            color: user.isActive ? Colors.orange : Colors.green,
+                            color: user.isActive ? Colors.blue : Colors.green,
                           ),
                           const SizedBox(width: 8),
-                          Text(user.isActive ? 'Deactivate' : 'Activate'),
+                          Text(
+                            user.isActive
+                                ? AppLocalizations.of(context).deactivate
+                                : AppLocalizations.of(context).activate,
+                          ),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      onTap: () => _showResetPasswordDialog(user),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.lock_reset, size: 18, color: Colors.orange),
+                          const SizedBox(width: 8),
+                          Text('Reset Password'),
                         ],
                       ),
                     ),
@@ -438,7 +530,10 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                         children: [
                           const Icon(Icons.delete, size: 18, color: Colors.red),
                           const SizedBox(width: 8),
-                          Text('Delete', style: TextStyle(color: Colors.red)),
+                          Text(
+                            AppLocalizations.of(context).delete,
+                            style: TextStyle(color: Colors.red),
+                          ),
                         ],
                       ),
                     ),
@@ -452,10 +547,10 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                 Icon(Icons.calendar_today, size: 16, color: Colors.grey),
                 const SizedBox(width: 8),
                 Text(
-                  'Created: ${user.createdAt.toString().split(' ')[0]}',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.grey,
-                  ),
+                  '${AppLocalizations.of(context).created}: ${user.createdAt.toString().split(' ')[0]}',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(color: Colors.grey),
                 ),
               ],
             ),
@@ -521,7 +616,7 @@ class _UserDialogState extends State<UserDialog> {
     try {
       final userProvider = context.read<UserProvider>();
       bool success;
-      
+
       if (widget.user == null) {
         // Create new user with 'user' role only
         final newUser = User(
@@ -546,23 +641,27 @@ class _UserDialogState extends State<UserDialog> {
         );
         success = await userProvider.updateUser(updatedUser);
       }
-      
+
       if (mounted) {
         if (success) {
           Navigator.pop(context);
           widget.onUserSaved?.call();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(widget.user == null 
-                  ? 'User created successfully' 
-                  : 'User updated successfully'),
+              content: Text(
+                widget.user == null
+                    ? AppLocalizations.of(context).user_created_successfully
+                    : AppLocalizations.of(context).user_updated_successfully,
+              ),
               backgroundColor: Colors.green,
             ),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Operation failed: ${userProvider.errorMessage}'),
+              content: Text(
+                '${AppLocalizations.of(context).operation_failed}: ${userProvider.errorMessage}',
+              ),
               backgroundColor: Colors.red,
             ),
           );
@@ -572,7 +671,9 @@ class _UserDialogState extends State<UserDialog> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Operation failed: $e'),
+            content: Text(
+              '${AppLocalizations.of(context).operation_failed}: $e',
+            ),
             backgroundColor: Colors.red,
           ),
         );
@@ -589,7 +690,11 @@ class _UserDialogState extends State<UserDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(widget.user == null ? 'Create User' : 'Edit User'),
+      title: Text(
+        widget.user == null
+            ? AppLocalizations.of(context).create_user
+            : AppLocalizations.of(context).edit_user,
+      ),
       content: SizedBox(
         width: MediaQuery.of(context).size.width * 0.8,
         child: Form(
@@ -600,13 +705,13 @@ class _UserDialogState extends State<UserDialog> {
               TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(
-                  labelText: 'Full Name',
-                  hintText: 'Enter user\'s full name',
+                  labelText: AppLocalizations.of(context).full_name,
+                  hintText: AppLocalizations.of(context).enter_users_full_name,
                   prefixIcon: const Icon(Icons.person),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Name is required';
+                    return AppLocalizations.of(context).name_is_required;
                   }
                   return null;
                 },
@@ -615,17 +720,21 @@ class _UserDialogState extends State<UserDialog> {
               TextFormField(
                 controller: _emailController,
                 decoration: InputDecoration(
-                  labelText: 'Email Address',
-                  hintText: 'Enter email address',
+                  labelText: AppLocalizations.of(context).email_address,
+                  hintText: AppLocalizations.of(context).enter_email_address,
                   prefixIcon: const Icon(Icons.email),
                 ),
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Email is required';
+                    return AppLocalizations.of(context).email_is_required;
                   }
-                  if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                    return 'Please enter a valid email address';
+                  if (!RegExp(
+                    r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                  ).hasMatch(value)) {
+                    return AppLocalizations.of(
+                      context,
+                    ).please_enter_valid_email;
                   }
                   return null;
                 },
@@ -636,12 +745,14 @@ class _UserDialogState extends State<UserDialog> {
                 TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(
-                    labelText: 'Password',
-                    hintText: 'Enter password',
+                    labelText: AppLocalizations.of(context).password,
+                    hintText: AppLocalizations.of(context).enter_password,
                     prefixIcon: const Icon(Icons.lock),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                        _isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                       ),
                       onPressed: () {
                         setState(() {
@@ -653,10 +764,10 @@ class _UserDialogState extends State<UserDialog> {
                   obscureText: !_isPasswordVisible,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Password is required';
+                      return AppLocalizations.of(context).password_is_required;
                     }
                     if (value.length < 6) {
-                      return 'Password must be at least 6 characters';
+                      return AppLocalizations.of(context).password_min_length;
                     }
                     return null;
                   },
@@ -666,14 +777,16 @@ class _UserDialogState extends State<UserDialog> {
               TextFormField(
                 controller: _phoneController,
                 decoration: InputDecoration(
-                  labelText: 'Phone Number',
-                  hintText: 'Enter phone number',
+                  labelText: AppLocalizations.of(context).phone_number,
+                  hintText: AppLocalizations.of(context).enter_phone_number,
                   prefixIcon: const Icon(Icons.phone),
                 ),
                 keyboardType: TextInputType.phone,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Phone number is required';
+                    return AppLocalizations.of(
+                      context,
+                    ).phone_number_is_required;
                   }
                   return null;
                 },
@@ -684,26 +797,28 @@ class _UserDialogState extends State<UserDialog> {
                 DropdownButtonFormField<UserRole>(
                   initialValue: _selectedRole,
                   decoration: InputDecoration(
-                    labelText: 'Role',
+                    labelText: AppLocalizations.of(context).role,
                     prefixIcon: const Icon(Icons.security),
                   ),
-                  items: UserRole.values.map((role) =>
-                    DropdownMenuItem<UserRole>(
-                      value: role,
-                      child: Row(
-                        children: [
-                          Icon(
-                            role == UserRole.admin 
-                                ? Icons.admin_panel_settings 
-                                : Icons.person,
-                            size: 20,
+                  items: UserRole.values
+                      .map(
+                        (role) => DropdownMenuItem<UserRole>(
+                          value: role,
+                          child: Row(
+                            children: [
+                              Icon(
+                                role == UserRole.admin
+                                    ? Icons.admin_panel_settings
+                                    : Icons.person,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(role.displayName),
+                            ],
                           ),
-                          const SizedBox(width: 8),
-                          Text(role.displayName),
-                        ],
-                      ),
-                    ),
-                  ).toList(),
+                        ),
+                      )
+                      .toList(),
                   onChanged: (value) {
                     if (value != null) {
                       setState(() {
@@ -728,14 +843,14 @@ class _UserDialogState extends State<UserDialog> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Role',
+                            AppLocalizations.of(context).role,
                             style: TextStyle(
                               fontSize: 12,
                               color: Colors.grey.shade600,
                             ),
                           ),
                           Text(
-                            'User',
+                            AppLocalizations.of(context).user,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
@@ -745,13 +860,16 @@ class _UserDialogState extends State<UserDialog> {
                       ),
                       const Spacer(),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.blue.shade50,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
-                          'Default',
+                          AppLocalizations.of(context).default_role,
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.blue.shade700,
@@ -764,8 +882,10 @@ class _UserDialogState extends State<UserDialog> {
                 ),
               const SizedBox(height: 16),
               SwitchListTile(
-                title: Text('Active User'),
-                subtitle: Text('User can login and access the system'),
+                title: Text(AppLocalizations.of(context).active_user),
+                subtitle: Text(
+                  AppLocalizations.of(context).user_can_login_access_system,
+                ),
                 value: _isActive,
                 onChanged: (value) {
                   setState(() {
@@ -786,7 +906,11 @@ class _UserDialogState extends State<UserDialog> {
           onPressed: _isLoading ? null : _saveUser,
           child: _isLoading
               ? const CircularProgressIndicator()
-              : Text(widget.user == null ? 'Create' : 'Update'),
+              : Text(
+                  widget.user == null
+                      ? AppLocalizations.of(context).create
+                      : AppLocalizations.of(context).update,
+                ),
         ),
       ],
     );

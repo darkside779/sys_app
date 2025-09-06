@@ -7,6 +7,7 @@ import '../../providers/company_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/driver_model.dart';
 import '../../models/company_model.dart';
+import '../../localization/app_localizations.dart';
 import '../../app/theme.dart';
 
 class ManageDriversScreen extends StatefulWidget {
@@ -55,12 +56,12 @@ class _ManageDriversScreenState extends State<ManageDriversScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Delete Driver'),
-        content: Text('Are you sure you want to delete this driver?'),
+        title: Text(AppLocalizations.of(context).delete_driver),
+        content: Text(AppLocalizations.of(context).delete_driver_confirm),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('Cancel'),
+            child: Text(AppLocalizations.of(context).cancel),
           ),
           TextButton(
             onPressed: () {
@@ -69,14 +70,14 @@ class _ManageDriversScreenState extends State<ManageDriversScreen> {
                 if (success && mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Driver deleted successfully'),
+                      content: Text(AppLocalizations.of(context).driver_deleted),
                       backgroundColor: Colors.green,
                     ),
                   );
                 }
               });
             },
-            child: Text('Delete'),
+            child: Text(AppLocalizations.of(context).delete),
           ),
         ],
       ),
@@ -106,12 +107,12 @@ class _ManageDriversScreenState extends State<ManageDriversScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Manage Drivers'),
+        title: Text(AppLocalizations.of(context).manage_drivers),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () => context.read<DriverProvider>().loadAllDrivers(),
-            tooltip: 'Refresh',
+            tooltip: AppLocalizations.of(context).refresh,
           ),
         ],
       ),
@@ -125,8 +126,8 @@ class _ManageDriversScreenState extends State<ManageDriversScreen> {
                 TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
-                    labelText: 'Search Drivers',
-                    hintText: 'Enter driver name or phone...',
+                    labelText: AppLocalizations.of(context).search_drivers,
+                    hintText: AppLocalizations.of(context).enter_driver_search,
                     prefixIcon: const Icon(Icons.search),
                     suffixIcon: _searchQuery.isNotEmpty
                         ? IconButton(
@@ -154,14 +155,14 @@ class _ManageDriversScreenState extends State<ManageDriversScreen> {
                     return DropdownButtonFormField<String>(
                       initialValue: _selectedCompanyFilter,
                       decoration: InputDecoration(
-                        labelText: 'Filter by Company',
+                        labelText: AppLocalizations.of(context).filter_by_company,
                         border: const OutlineInputBorder(),
                         prefixIcon: const Icon(Icons.business),
                       ),
                       items: [
                         DropdownMenuItem<String>(
                           value: null,
-                          child: Text('All Companies'),
+                          child: Text(AppLocalizations.of(context).all_companies),
                         ),
                         ...companyProvider.companies.map((company) =>
                           DropdownMenuItem<String>(
@@ -212,7 +213,7 @@ class _ManageDriversScreenState extends State<ManageDriversScreen> {
                           const SizedBox(height: 8),
                           ElevatedButton(
                             onPressed: () => driverProvider.loadAllDrivers(),
-                            child: Text('Retry'),
+                            child: Text(AppLocalizations.of(context).retry),
                           ),
                         ],
                       ),
@@ -235,8 +236,8 @@ class _ManageDriversScreenState extends State<ManageDriversScreen> {
                         const SizedBox(height: 16),
                         Text(
                           _searchQuery.isNotEmpty || _selectedCompanyFilter != null
-                              ? 'No drivers found matching your filters'
-                              : 'No drivers available',
+                              ? AppLocalizations.of(context).no_drivers_filter
+                              : AppLocalizations.of(context).no_drivers_available,
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         if (_searchQuery.isEmpty && _selectedCompanyFilter == null) ...[
@@ -244,7 +245,7 @@ class _ManageDriversScreenState extends State<ManageDriversScreen> {
                           ElevatedButton.icon(
                             onPressed: _showCreateDriverDialog,
                             icon: const Icon(Icons.add),
-                            label: Text('Create Driver'),
+                            label: Text(AppLocalizations.of(context).create_driver),
                           ),
                         ],
                       ],
@@ -277,7 +278,7 @@ class _ManageDriversScreenState extends State<ManageDriversScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _showCreateDriverDialog,
         icon: const Icon(Icons.add),
-        label: Text('Create Driver'),
+        label: Text(AppLocalizations.of(context).create_driver),
       ),
     );
   }
@@ -324,7 +325,7 @@ class DriverCard extends StatelessWidget {
                         children: [
                           const Icon(Icons.edit, size: 18),
                           const SizedBox(width: 8),
-                          Text('Edit'),
+                          Text(AppLocalizations.of(context).edit),
                         ],
                       ),
                     ),
@@ -334,7 +335,7 @@ class DriverCard extends StatelessWidget {
                         children: [
                           const Icon(Icons.delete, size: 18, color: Colors.red),
                           const SizedBox(width: 8),
-                          Text('Delete', style: const TextStyle(color: Colors.red)),
+                          Text(AppLocalizations.of(context).delete, style: const TextStyle(color: Colors.red)),
                         ],
                       ),
                     ),
@@ -345,7 +346,7 @@ class DriverCard extends StatelessWidget {
             const SizedBox(height: 12),
             _buildInfoRow(Icons.phone, driver.phone),
             const SizedBox(height: 8),
-            _buildInfoRow(Icons.business, company?.name ?? 'Unknown Company'),
+            _buildInfoRow(Icons.business, company?.name ?? AppLocalizations.of(context).unknown_company),
             const SizedBox(height: 12),
             Row(
               children: [
@@ -356,7 +357,7 @@ class DriverCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    driver.isActive ? 'Active' : 'Inactive',
+                    driver.isActive ? AppLocalizations.of(context).active : AppLocalizations.of(context).inactive,
                     style: TextStyle(
                       color: driver.isActive ? Colors.green.shade800 : Colors.red.shade800,
                       fontSize: 12,
@@ -366,7 +367,7 @@ class DriverCard extends StatelessWidget {
                 ),
                 const Spacer(),
                 Text(
-                  'Created ${driver.createdAt.toString().split(' ')[0]}',
+                  '${AppLocalizations.of(context).created} ${driver.createdAt.toString().split(' ')[0]}',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
@@ -433,7 +434,7 @@ class _DriverDialogState extends State<DriverDialog> {
     if (_selectedCompanyId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Please select a company'),
+          content: Text(AppLocalizations.of(context).please_select_company),
           backgroundColor: Colors.red,
         ),
       );
@@ -463,7 +464,7 @@ class _DriverDialogState extends State<DriverDialog> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Driver created successfully'),
+              content: Text(AppLocalizations.of(context).driver_created),
               backgroundColor: Colors.green,
             ),
           );
@@ -480,7 +481,7 @@ class _DriverDialogState extends State<DriverDialog> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Driver updated successfully'),
+              content: Text(AppLocalizations.of(context).driver_updated),
               backgroundColor: Colors.green,
             ),
           );
@@ -494,7 +495,7 @@ class _DriverDialogState extends State<DriverDialog> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Operation failed: $e'),
+            content: Text('${AppLocalizations.of(context).operation_failed}: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -512,8 +513,8 @@ class _DriverDialogState extends State<DriverDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(widget.driver == null
-          ? 'Create Driver'
-          : 'Edit Driver'),
+          ? AppLocalizations.of(context).create_driver
+          : AppLocalizations.of(context).edit_driver),
       content: SizedBox(
         width: MediaQuery.of(context).size.width * 0.8,
         child: Form(
@@ -524,13 +525,13 @@ class _DriverDialogState extends State<DriverDialog> {
               TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(
-                  labelText: 'Driver Name',
-                  hintText: 'Enter driver name',
+                  labelText: AppLocalizations.of(context).driver_name,
+                  hintText: AppLocalizations.of(context).enter_driver_name,
                   prefixIcon: const Icon(Icons.person),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Driver name is required';
+                    return AppLocalizations.of(context).driver_name_required;
                   }
                   return null;
                 },
@@ -539,14 +540,14 @@ class _DriverDialogState extends State<DriverDialog> {
               TextFormField(
                 controller: _phoneController,
                 decoration: InputDecoration(
-                  labelText: 'Phone Number',
-                  hintText: 'Enter phone number',
+                  labelText: AppLocalizations.of(context).phone_number,
+                  hintText: AppLocalizations.of(context).enter_phone_number,
                   prefixIcon: const Icon(Icons.phone),
                 ),
                 keyboardType: TextInputType.phone,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Phone number is required';
+                    return AppLocalizations.of(context).phone_number_required;
                   }
                   return null;
                 },
@@ -557,7 +558,7 @@ class _DriverDialogState extends State<DriverDialog> {
                   return DropdownButtonFormField<String>(
                     value: _selectedCompanyId,
                     decoration: InputDecoration(
-                      labelText: 'Company',
+                      labelText: AppLocalizations.of(context).company,
                       prefixIcon: const Icon(Icons.business),
                     ),
                     items: companyProvider.companies.map((company) =>
@@ -573,7 +574,7 @@ class _DriverDialogState extends State<DriverDialog> {
                     },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please select a company';
+                        return AppLocalizations.of(context).please_select_company;
                       }
                       return null;
                     },
@@ -582,7 +583,7 @@ class _DriverDialogState extends State<DriverDialog> {
               ),
               const SizedBox(height: 16),
               CheckboxListTile(
-                title: Text('Active Driver'),
+                title: Text(AppLocalizations.of(context).active_driver),
                 value: _isActive,
                 onChanged: (value) {
                   setState(() {
@@ -605,8 +606,8 @@ class _DriverDialogState extends State<DriverDialog> {
           child: _isLoading
               ? const CircularProgressIndicator()
               : Text(widget.driver == null
-                  ? 'Create'
-                  : 'Update'),
+                  ? AppLocalizations.of(context).create
+                  : AppLocalizations.of(context).update),
         ),
       ],
     );

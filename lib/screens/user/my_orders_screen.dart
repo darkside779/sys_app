@@ -42,7 +42,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
     final userProvider = context.read<UserProvider>();
     await orderProvider.initialize(); // Fetch from Firebase
     await userProvider.loadUsers(); // Load users to resolve createdBy names
-    _loadOrders(); // Then filter for user orders
+    await _loadOrders(); // Then filter for user orders
   }
 
   @override
@@ -51,13 +51,18 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
     super.dispose();
   }
 
-  void _loadOrders() {
+  Future<void> _loadOrders() async {
     final orderProvider = context.read<OrderProvider>();
     final authProvider = context.read<AuthProvider>();
 
+    // Refresh data from Firebase to get latest changes
+    await orderProvider.loadAllOrders();
+
     print('DEBUG MyOrders: Current user ID: ${authProvider.user?.id}');
-    print('DEBUG MyOrders: Total orders in provider: ${orderProvider.orders.length}');
-    
+    print(
+      'DEBUG MyOrders: Total orders in provider: ${orderProvider.orders.length}',
+    );
+
     // Filter orders created by current user
     final userOrders = orderProvider.orders
         .where((order) => order.createdBy == authProvider.user?.id)
@@ -65,7 +70,9 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
 
     print('DEBUG MyOrders: User orders found: ${userOrders.length}');
     for (var order in userOrders) {
-      print('DEBUG MyOrders: Order - ${order.orderNumber}, createdBy: ${order.createdBy}');
+      print(
+        'DEBUG MyOrders: Order - ${order.orderNumber}, createdBy: ${order.createdBy}',
+      );
     }
 
     setState(() {
@@ -118,20 +125,114 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
     });
   }
 
-  void _clearFilters() {
+  Future<void> _clearFilters() async {
     setState(() {
       _searchController.clear();
       _searchQuery = '';
       _statusFilter = null;
     });
-    _loadOrders();
+    await _loadOrders();
   }
 
   Future<void> _updateOrderStatus(Order order, OrderState newStatus) async {
+    if (newStatus == OrderState.returned) {
+      _showReturnReasonDialog(order);
+      return;
+    }
+
     try {
       final orderProvider = context.read<OrderProvider>();
 
       final updates = {'state': newStatus.value};
+
+      await orderProvider.updateOrder(order.id, updates);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(context.tr.update_success),
+            backgroundColor: Colors.green,
+          ),
+        );
+        _loadOrders(); // Refresh the list
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to update status: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  void _showReturnReasonDialog(Order order) {
+    final TextEditingController reasonController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(context.tr.return_reason),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Order #${order.orderNumber}'),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: reasonController,
+              decoration: InputDecoration(
+                labelText: context.tr.enter_return_reason,
+                prefixIcon: const Icon(Icons.help_outline),
+                border: const OutlineInputBorder(),
+              ),
+              maxLines: 3,
+              autofocus: true,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(context.tr.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final reason = reasonController.text.trim();
+              if (reason.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(context.tr.return_reason_required),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+                return;
+              }
+
+              Navigator.pop(context);
+              await _updateOrderStatusWithReason(
+                order,
+                OrderState.returned,
+                reason,
+              );
+            },
+            child: Text(context.tr.update),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _updateOrderStatusWithReason(
+    Order order,
+    OrderState newStatus,
+    String? returnReason,
+  ) async {
+    try {
+      final orderProvider = context.read<OrderProvider>();
+
+      final updates = {'state': newStatus.value, 'returnReason': returnReason};
 
       await orderProvider.updateOrder(order.id, updates);
 
@@ -189,7 +290,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
       context,
       MaterialPageRoute(builder: (context) => const CreateOrderScreen()),
     );
-    
+
     if (result == true && mounted) {
       // Refresh orders after creating a new one
       final orderProvider = context.read<OrderProvider>();
@@ -288,39 +389,51 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
 
   Widget _buildOrdersList() {
     if (_filteredOrders.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.inbox, size: 64, color: Colors.grey),
-            const SizedBox(height: 16),
-            Text(
-              context.tr.no_orders_found,
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(color: Colors.grey),
+      return RefreshIndicator(
+        onRefresh: _loadOrders,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.6,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.inbox, size: 64, color: Colors.grey),
+                  const SizedBox(height: 16),
+                  Text(
+                    context.tr.no_orders_found,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleMedium?.copyWith(color: Colors.grey),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    _searchQuery.isNotEmpty || _statusFilter != null
+                        ? context.tr.try_adjusting_filters
+                        : context.tr.no_orders_created_yet,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              _searchQuery.isNotEmpty || _statusFilter != null
-                  ? context.tr.try_adjusting_filters
-                  : context.tr.no_orders_created_yet,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
-            ),
-          ],
+          ),
         ),
       );
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: _filteredOrders.length,
-      itemBuilder: (context, index) {
-        final order = _filteredOrders[index];
-        return _buildOrderCard(order);
-      },
+    return RefreshIndicator(
+      onRefresh: _loadOrders,
+      child: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: _filteredOrders.length,
+        itemBuilder: (context, index) {
+          final order = _filteredOrders[index];
+          return _buildOrderCard(order);
+        },
+      ),
     );
   }
 
@@ -329,8 +442,12 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
     IconData statusIcon;
     switch (order.state) {
       case OrderState.received:
-        statusColor = AppTheme.warningColor;
+        statusColor = Colors.blue;
         statusIcon = Icons.pending;
+        break;
+      case OrderState.outForDelivery:
+        statusColor = Colors.blue;
+        statusIcon = Icons.local_shipping;
         break;
       case OrderState.returned:
         statusColor = AppTheme.successColor;
@@ -369,19 +486,39 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: statusColor),
                   ),
-                  child: Row(
+                  child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(statusIcon, color: statusColor, size: 16),
-                      const SizedBox(width: 4),
-                      Text(
-                        order.state.getLocalizedDisplayName(context),
-                        style: TextStyle(
-                          color: statusColor,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(statusIcon, color: statusColor, size: 16),
+                          const SizedBox(width: 4),
+                          Text(
+                            order.state.getLocalizedDisplayName(context),
+                            style: TextStyle(
+                              color: statusColor,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
+                      if (order.state == OrderState.returned &&
+                          order.returnReason != null &&
+                          order.returnReason!.isNotEmpty) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          order.returnReason!,
+                          style: TextStyle(
+                            color: statusColor,
+                            fontSize: 10,
+                            fontStyle: FontStyle.italic,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -434,9 +571,17 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
               ],
             ),
             const SizedBox(height: 12),
-            _buildInfoRow(Icons.person, context.tr.customer, order.customerName),
+            _buildInfoRow(
+              Icons.person,
+              context.tr.customer,
+              order.customerName,
+            ),
             const SizedBox(height: 8),
-            _buildInfoRow(Icons.location_on, context.tr.address, order.customerAddress),
+            _buildInfoRow(
+              Icons.location_on,
+              context.tr.address,
+              order.customerAddress,
+            ),
             const SizedBox(height: 8),
             _buildInfoRow(
               Icons.attach_money,
@@ -450,9 +595,17 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
               DateFormat('MMM dd, yyyy').format(order.date),
             ),
             const SizedBox(height: 8),
-            _buildInfoRow(Icons.person_add, context.tr.created_by, _getCreatedByName(order.createdBy)),
+            _buildInfoRow(
+              Icons.person_add,
+              context.tr.created_by,
+              _getCreatedByName(order.createdBy),
+            ),
             const SizedBox(height: 8),
-            _buildInfoRow(Icons.access_time, context.tr.created_at, DateFormat('MMM dd, yyyy - HH:mm').format(order.createdAt)),
+            _buildInfoRow(
+              Icons.access_time,
+              context.tr.created_at,
+              DateFormat('MMM dd, yyyy - HH:mm').format(order.createdAt),
+            ),
             if (order.note != null && order.note!.isNotEmpty) ...[
               const SizedBox(height: 8),
               _buildInfoRow(Icons.note, context.tr.note, order.note!),
@@ -502,6 +655,10 @@ class _OrderDetailsDialog extends StatelessWidget {
       case OrderState.received:
         statusColor = AppTheme.warningColor;
         statusIcon = Icons.pending;
+        break;
+      case OrderState.outForDelivery:
+        statusColor = Colors.blue;
+        statusIcon = Icons.local_shipping;
         break;
       case OrderState.returned:
         statusColor = AppTheme.successColor;
@@ -567,7 +724,11 @@ class _OrderDetailsDialog extends StatelessWidget {
               // Customer Information
               _buildSectionTitle(context.tr.customer_information),
               const SizedBox(height: 8),
-              _buildDetailRow(Icons.person, context.tr.name, order.customerName),
+              _buildDetailRow(
+                Icons.person,
+                context.tr.name,
+                order.customerName,
+              ),
               _buildDetailRow(
                 Icons.location_on,
                 context.tr.address,
@@ -641,13 +802,21 @@ class _OrderDetailsDialog extends StatelessWidget {
                     children: [
                       _buildSectionTitle(context.tr.company_information),
                       const SizedBox(height: 8),
-                      _buildDetailRow(Icons.business, context.tr.company, company.name),
+                      _buildDetailRow(
+                        Icons.business,
+                        context.tr.company,
+                        company.name,
+                      ),
                       _buildDetailRow(
                         Icons.location_city,
                         context.tr.address,
                         company.address,
                       ),
-                      _buildDetailRow(Icons.phone, context.tr.contact, company.contact),
+                      _buildDetailRow(
+                        Icons.phone,
+                        context.tr.contact,
+                        company.contact,
+                      ),
                     ],
                   );
                 },
@@ -716,5 +885,4 @@ class _OrderDetailsDialog extends StatelessWidget {
     final user = userProvider.getUserById(userId);
     return user?.name ?? 'Unknown User';
   }
-
 }

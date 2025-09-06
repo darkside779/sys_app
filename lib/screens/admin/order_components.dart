@@ -11,6 +11,7 @@ import '../../providers/auth_provider.dart';
 import '../../models/order_model.dart';
 import '../../models/company_model.dart';
 import '../../models/driver_model.dart';
+import '../../localization/app_localizations.dart';
 
 class OrderCard extends StatelessWidget {
   final Order order;
@@ -33,6 +34,8 @@ class OrderCard extends StatelessWidget {
   Color _getStatusColor(OrderState status) {
     switch (status) {
       case OrderState.received:
+        return Colors.blue;
+      case OrderState.outForDelivery:
         return Colors.blue;
       case OrderState.returned:
         return Colors.green;
@@ -61,19 +64,40 @@ class OrderCard extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: _getStatusColor(order.state).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: _getStatusColor(order.state)),
                   ),
-                  child: Text(
-                    order.state.getLocalizedDisplayName(context),
-                    style: TextStyle(
-                      color: _getStatusColor(order.state),
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        order.state.getLocalizedDisplayName(context),
+                        style: TextStyle(
+                          color: _getStatusColor(order.state),
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      if (order.state == OrderState.returned && order.returnReason != null && order.returnReason!.isNotEmpty) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          order.returnReason!,
+                          style: TextStyle(
+                            color: _getStatusColor(order.state),
+                            fontSize: 10,
+                            fontStyle: FontStyle.italic,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ],
                   ),
                 ),
                 PopupMenuButton(
@@ -84,7 +108,7 @@ class OrderCard extends StatelessWidget {
                         children: [
                           const Icon(Icons.update, size: 18),
                           const SizedBox(width: 8),
-                          Text('Update Status'),
+                          Text(AppLocalizations.of(context).update_status),
                         ],
                       ),
                     ),
@@ -94,7 +118,7 @@ class OrderCard extends StatelessWidget {
                         children: [
                           const Icon(Icons.edit, size: 18),
                           const SizedBox(width: 8),
-                          Text('Edit'),
+                          Text(AppLocalizations.of(context).edit),
                         ],
                       ),
                     ),
@@ -104,7 +128,10 @@ class OrderCard extends StatelessWidget {
                         children: [
                           const Icon(Icons.delete, size: 18, color: Colors.red),
                           const SizedBox(width: 8),
-                          Text('Delete', style: const TextStyle(color: Colors.red)),
+                          Text(
+                            AppLocalizations.of(context).delete,
+                            style: const TextStyle(color: Colors.red),
+                          ),
                         ],
                       ),
                     ),
@@ -113,24 +140,60 @@ class OrderCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            _buildInfoRow(Icons.person, 'Customer', order.customerName),
+            _buildInfoRow(
+              Icons.person,
+              AppLocalizations.of(context).customer,
+              order.customerName,
+            ),
             const SizedBox(height: 8),
-            _buildInfoRow(Icons.location_on, 'Address', order.customerAddress),
+            _buildInfoRow(
+              Icons.location_on,
+              AppLocalizations.of(context).address,
+              order.customerAddress,
+            ),
             const SizedBox(height: 8),
-            _buildInfoRow(Icons.business, 'Company', company?.name ?? 'Unknown'),
+            _buildInfoRow(
+              Icons.business,
+              AppLocalizations.of(context).company,
+              company?.name ?? AppLocalizations.of(context).unknown_company,
+            ),
             const SizedBox(height: 8),
-            _buildInfoRow(Icons.local_shipping, 'Driver', driver?.name ?? 'Unknown'),
+            _buildInfoRow(
+              Icons.local_shipping,
+              AppLocalizations.of(context).driver,
+              driver?.name ?? 'Unknown',
+            ),
             const SizedBox(height: 8),
-            _buildInfoRow(Icons.attach_money, 'Cost', 'AED ${order.cost.toStringAsFixed(2)}'),
+            _buildInfoRow(
+              Icons.attach_money,
+              AppLocalizations.of(context).cost,
+              'AED ${order.cost.toStringAsFixed(2)}',
+            ),
             const SizedBox(height: 8),
-            _buildInfoRow(Icons.calendar_today, 'Date', order.date.toString().split(' ')[0]),
+            _buildInfoRow(
+              Icons.calendar_today,
+              AppLocalizations.of(context).date,
+              order.date.toString().split(' ')[0],
+            ),
             const SizedBox(height: 8),
-            _buildInfoRow(Icons.person_add, 'Created By', _getCreatedByName(context, order.createdBy)),
+            _buildInfoRow(
+              Icons.person_add,
+              AppLocalizations.of(context).created_by,
+              _getCreatedByName(context, order.createdBy),
+            ),
             const SizedBox(height: 8),
-            _buildInfoRow(Icons.access_time, 'Created At', DateFormat('MMM dd, yyyy - HH:mm').format(order.createdAt)),
+            _buildInfoRow(
+              Icons.access_time,
+              AppLocalizations.of(context).created_at,
+              DateFormat('MMM dd, yyyy - HH:mm').format(order.createdAt),
+            ),
             if (order.note != null && order.note!.isNotEmpty) ...[
               const SizedBox(height: 8),
-              _buildInfoRow(Icons.note, 'Note', order.note!),
+              _buildInfoRow(
+                Icons.note,
+                AppLocalizations.of(context).note,
+                order.note!,
+              ),
             ],
           ],
         ),
@@ -151,10 +214,7 @@ class OrderCard extends StatelessWidget {
           ),
         ),
         Flexible(
-          child: Text(
-            value,
-            style: const TextStyle(color: Colors.black87),
-          ),
+          child: Text(value, style: const TextStyle(color: Colors.black87)),
         ),
       ],
     );
@@ -183,10 +243,10 @@ class _OrderDialogState extends State<OrderDialog> {
   final _customerAddressController = TextEditingController();
   final _costController = TextEditingController();
   final _noteController = TextEditingController();
-  
+
   String? _selectedCompanyId;
   String? _selectedDriverId;
-  OrderState _selectedStatus = OrderState.received;
+  OrderState _selectedStatus = OrderState.outForDelivery;
   DateTime _selectedDate = DateTime.now();
   bool _isLoading = false;
 
@@ -235,7 +295,8 @@ class _OrderDialogState extends State<OrderDialog> {
     try {
       final orderProvider = context.read<OrderProvider>();
       final authProvider = context.read<AuthProvider>();
-      
+      final currentUserId = authProvider.user?.id ?? 'admin';
+
       if (widget.order == null) {
         // Create new order
         final newOrder = Order(
@@ -248,8 +309,10 @@ class _OrderDialogState extends State<OrderDialog> {
           cost: double.parse(_costController.text.trim()),
           orderNumber: _orderNumberController.text.trim(),
           state: _selectedStatus,
-          note: _noteController.text.trim().isEmpty ? null : _noteController.text.trim(),
-          createdBy: authProvider.user?.id ?? 'unknown_user',
+          note: _noteController.text.trim().isEmpty
+              ? null
+              : _noteController.text.trim(),
+          createdBy: currentUserId,
           createdAt: DateTime.now(),
         );
         await orderProvider.createOrder(newOrder);
@@ -272,7 +335,9 @@ class _OrderDialogState extends State<OrderDialog> {
           'cost': double.parse(_costController.text.trim()),
           'orderNumber': _orderNumberController.text.trim(),
           'state': _selectedStatus.value,
-          'note': _noteController.text.trim().isEmpty ? null : _noteController.text.trim(),
+          'note': _noteController.text.trim().isEmpty
+              ? null
+              : _noteController.text.trim(),
         };
         await orderProvider.updateOrder(widget.order!.id, updates);
         if (mounted) {
@@ -284,7 +349,7 @@ class _OrderDialogState extends State<OrderDialog> {
           );
         }
       }
-      
+
       if (mounted) {
         Navigator.pop(context);
       }
@@ -386,18 +451,29 @@ class _OrderDialogState extends State<OrderDialog> {
                 const SizedBox(height: 16),
                 Consumer<CompanyProvider>(
                   builder: (context, companyProvider, child) {
+                    // Ensure the selected company exists in the available companies
+                    final validCompanyId =
+                        _selectedCompanyId != null &&
+                            companyProvider.companies.any(
+                              (c) => c.id == _selectedCompanyId,
+                            )
+                        ? _selectedCompanyId
+                        : null;
+
                     return DropdownButtonFormField<String>(
-                      value: _selectedCompanyId,
+                      value: validCompanyId,
                       decoration: InputDecoration(
                         labelText: 'Company',
                         prefixIcon: const Icon(Icons.business),
                       ),
-                      items: companyProvider.companies.map((company) =>
-                        DropdownMenuItem<String>(
-                          value: company.id,
-                          child: Text(company.name),
-                        ),
-                      ).toList(),
+                      items: companyProvider.companies
+                          .map(
+                            (company) => DropdownMenuItem<String>(
+                              value: company.id,
+                              child: Text(company.name),
+                            ),
+                          )
+                          .toList(),
                       onChanged: (value) {
                         setState(() {
                           _selectedCompanyId = value;
@@ -417,21 +493,38 @@ class _OrderDialogState extends State<OrderDialog> {
                 Consumer<DriverProvider>(
                   builder: (context, driverProvider, child) {
                     final availableDrivers = _selectedCompanyId != null
-                        ? driverProvider.drivers.where((d) => d.companyId == _selectedCompanyId).toList()
+                        ? driverProvider.drivers
+                              .where((d) => d.companyId == _selectedCompanyId)
+                              .toList()
                         : <Driver>[];
-                    
+
+                    // Ensure the selected driver exists in the available drivers
+                    final validDriverId =
+                        _selectedDriverId != null &&
+                            availableDrivers.any(
+                              (d) => d.id == _selectedDriverId,
+                            )
+                        ? _selectedDriverId
+                        : null;
+
                     return DropdownButtonFormField<String>(
-                      value: _selectedDriverId,
+                      value: validDriverId,
                       decoration: InputDecoration(
                         labelText: 'Driver',
                         prefixIcon: const Icon(Icons.local_shipping),
                       ),
-                      items: availableDrivers.map((driver) =>
+                      items: [
                         DropdownMenuItem<String>(
-                          value: driver.id,
-                          child: Text(driver.name),
+                          value: 'unassigned',
+                          child: Text(AppLocalizations.of(context).unassigned),
                         ),
-                      ).toList(),
+                        ...availableDrivers.map(
+                          (driver) => DropdownMenuItem<String>(
+                            value: driver.id,
+                            child: Text(driver.name),
+                          ),
+                        ),
+                      ],
                       onChanged: (value) {
                         setState(() {
                           _selectedDriverId = value;
@@ -453,12 +546,14 @@ class _OrderDialogState extends State<OrderDialog> {
                     labelText: 'Status',
                     prefixIcon: const Icon(Icons.info),
                   ),
-                  items: OrderState.values.map((status) =>
-                    DropdownMenuItem<OrderState>(
-                      value: status,
-                      child: Text(status.getLocalizedDisplayName(context)),
-                    ),
-                  ).toList(),
+                  items: OrderState.values
+                      .map(
+                        (status) => DropdownMenuItem<OrderState>(
+                          value: status,
+                          child: Text(status.getLocalizedDisplayName(context)),
+                        ),
+                      )
+                      .toList(),
                   onChanged: (value) {
                     setState(() {
                       _selectedStatus = value!;
@@ -468,7 +563,9 @@ class _OrderDialogState extends State<OrderDialog> {
                 const SizedBox(height: 16),
                 ListTile(
                   leading: const Icon(Icons.calendar_today),
-                  title: Text('Date: ${_selectedDate.toString().split(' ')[0]}'),
+                  title: Text(
+                    'Date: ${_selectedDate.toString().split(' ')[0]}',
+                  ),
                   trailing: const Icon(Icons.edit),
                   onTap: () async {
                     final DateTime? picked = await showDatePicker(
@@ -527,6 +624,7 @@ class UpdateStatusDialog extends StatefulWidget {
 class _UpdateStatusDialogState extends State<UpdateStatusDialog> {
   late OrderState _selectedStatus;
   final _noteController = TextEditingController();
+  final _returnReasonController = TextEditingController();
   bool _isLoading = false;
 
   @override
@@ -534,11 +632,13 @@ class _UpdateStatusDialogState extends State<UpdateStatusDialog> {
     super.initState();
     _selectedStatus = widget.order.state;
     _noteController.text = widget.order.note ?? '';
+    _returnReasonController.text = widget.order.returnReason ?? '';
   }
 
   @override
   void dispose() {
     _noteController.dispose();
+    _returnReasonController.dispose();
     super.dispose();
   }
 
@@ -549,14 +649,21 @@ class _UpdateStatusDialogState extends State<UpdateStatusDialog> {
 
     try {
       final orderProvider = context.read<OrderProvider>();
-      
+
       final updates = {
         'state': _selectedStatus.value,
-        'note': _noteController.text.trim().isEmpty ? null : _noteController.text.trim(),
+        'note': _noteController.text.trim().isEmpty
+            ? null
+            : _noteController.text.trim(),
+        'returnReason': _selectedStatus == OrderState.returned
+            ? (_returnReasonController.text.trim().isEmpty
+                ? null
+                : _returnReasonController.text.trim())
+            : null,
       };
-      
+
       await orderProvider.updateOrder(widget.order.id, updates);
-      
+
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -599,12 +706,14 @@ class _UpdateStatusDialogState extends State<UpdateStatusDialog> {
               labelText: 'Status',
               prefixIcon: const Icon(Icons.info),
             ),
-            items: OrderState.values.map((status) =>
-              DropdownMenuItem<OrderState>(
-                value: status,
-                child: Text(status.getLocalizedDisplayName(context)),
-              ),
-            ).toList(),
+            items: OrderState.values
+                .map(
+                  (status) => DropdownMenuItem<OrderState>(
+                    value: status,
+                    child: Text(status.getLocalizedDisplayName(context)),
+                  ),
+                )
+                .toList(),
             onChanged: (value) {
               setState(() {
                 _selectedStatus = value!;
@@ -612,6 +721,25 @@ class _UpdateStatusDialogState extends State<UpdateStatusDialog> {
             },
           ),
           const SizedBox(height: 16),
+          if (_selectedStatus == OrderState.returned) ...[
+            TextFormField(
+              controller: _returnReasonController,
+              decoration: InputDecoration(
+                labelText: 'Return Reason',
+                hintText: 'Why was this order returned?',
+                prefixIcon: const Icon(Icons.help_outline),
+              ),
+              maxLines: 2,
+              validator: (value) {
+                if (_selectedStatus == OrderState.returned && 
+                    (value == null || value.trim().isEmpty)) {
+                  return 'Return reason is required';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+          ],
           TextFormField(
             controller: _noteController,
             decoration: InputDecoration(

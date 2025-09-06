@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sys_app/screens/admin/order_components.dart';
 import '../../providers/order_provider.dart';
 import '../../providers/company_provider.dart';
 import '../../providers/driver_provider.dart';
@@ -10,7 +9,10 @@ import '../../providers/user_provider.dart';
 import '../../models/order_model.dart';
 import '../../models/company_model.dart';
 import '../../models/driver_model.dart';
+import '../../widgets/common_widgets.dart';
+import '../../localization/app_localizations.dart';
 import '../../app/theme.dart';
+import 'order_components.dart';
 
 class ManageOrdersScreen extends StatefulWidget {
   const ManageOrdersScreen({super.key});
@@ -62,12 +64,12 @@ class _ManageOrdersScreenState extends State<ManageOrdersScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Delete Order'),
+        title: Text(AppLocalizations.of(context).delete),
         content: Text('Are you sure you want to delete this order?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('Cancel'),
+            child: Text(AppLocalizations.of(context).cancel),
           ),
           TextButton(
             onPressed: () {
@@ -83,7 +85,7 @@ class _ManageOrdersScreenState extends State<ManageOrdersScreen> {
                 }
               });
             },
-            child: Text('Delete'),
+            child: Text(AppLocalizations.of(context).delete),
           ),
         ],
       ),
@@ -160,17 +162,17 @@ class _ManageOrdersScreenState extends State<ManageOrdersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Manage Orders'),
+        title: Text(AppLocalizations.of(context).manage_orders),
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list_off),
             onPressed: _clearFilters,
-            tooltip: 'Clear Filters',
+            tooltip: AppLocalizations.of(context).filter,
           ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () => context.read<OrderProvider>().loadAllOrders(),
-            tooltip: 'Refresh',
+            tooltip: AppLocalizations.of(context).refresh,
           ),
         ],
       ),
@@ -184,7 +186,7 @@ class _ManageOrdersScreenState extends State<ManageOrdersScreen> {
                 TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
-                    labelText: 'Search Orders',
+                    labelText: AppLocalizations.of(context).search_orders,
                     hintText: 'Enter order number, customer name, or address...',
                     prefixIcon: const Icon(Icons.search),
                     suffixIcon: _searchQuery.isNotEmpty
@@ -220,14 +222,14 @@ class _ManageOrdersScreenState extends State<ManageOrdersScreen> {
                             child: DropdownButtonFormField<String>(
                               initialValue: _selectedCompanyFilter,
                               decoration: InputDecoration(
-                                labelText: 'Company',
+                                labelText: AppLocalizations.of(context).company,
                                 border: const OutlineInputBorder(),
                                 isDense: true,
                               ),
                               items: [
                                 DropdownMenuItem<String>(
                                   value: null,
-                                  child: Text('All'),
+                                  child: Text(AppLocalizations.of(context).all_companies),
                                 ),
                                 ...companyProvider.companies.map((company) =>
                                   DropdownMenuItem<String>(
@@ -259,14 +261,14 @@ class _ManageOrdersScreenState extends State<ManageOrdersScreen> {
                             child: DropdownButtonFormField<String>(
                               initialValue: _selectedDriverFilter,
                               decoration: InputDecoration(
-                                labelText: 'Driver',
+                                labelText: AppLocalizations.of(context).driver,
                                 border: const OutlineInputBorder(),
                                 isDense: true,
                               ),
                               items: [
                                 DropdownMenuItem<String>(
                                   value: null,
-                                  child: Text('All'),
+                                  child: Text(AppLocalizations.of(context).all_drivers),
                                 ),
                                 ...availableDrivers.map((driver) =>
                                   DropdownMenuItem<String>(
@@ -291,14 +293,14 @@ class _ManageOrdersScreenState extends State<ManageOrdersScreen> {
                         child: DropdownButtonFormField<OrderState>(
                           initialValue: _selectedStatusFilter,
                           decoration: InputDecoration(
-                            labelText: 'Status',
+                            labelText: AppLocalizations.of(context).status,
                             border: const OutlineInputBorder(),
                             isDense: true,
                           ),
                           items: [
                             DropdownMenuItem<OrderState>(
                               value: null,
-                              child: Text('All'),
+                              child: Text(AppLocalizations.of(context).all_statuses),
                             ),
                             ...OrderState.values.map((status) =>
                               DropdownMenuItem<OrderState>(

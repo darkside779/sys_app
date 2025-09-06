@@ -1,16 +1,18 @@
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/user_model.dart';
+import '../models/user_model.dart' as models;
+import '../services/auth_service.dart';
 
 class UserProvider with ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final AuthService _authService = AuthService();
   
-  List<User> _users = [];
+  List<models.User> _users = [];
   bool _isLoading = false;
   String? _errorMessage;
 
   // Getters
-  List<User> get users => _users;
+  List<models.User> get users => _users;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
@@ -26,7 +28,7 @@ class UserProvider with ChangeNotifier {
           .get();
       
       _users = snapshot.docs.map((doc) {
-        return User.fromFirestore(doc);
+        return models.User.fromFirestore(doc);
       }).toList();
       
       _setLoading(false);
@@ -37,7 +39,7 @@ class UserProvider with ChangeNotifier {
   }
 
   // Create new user
-  Future<bool> createUser(User user) async {
+  Future<bool> createUser(models.User user) async {
     try {
       _setLoading(true);
       _clearError();
@@ -56,7 +58,7 @@ class UserProvider with ChangeNotifier {
   }
 
   // Update existing user
-  Future<bool> updateUser(User user) async {
+  Future<bool> updateUser(models.User user) async {
     try {
       _setLoading(true);
       _clearError();
@@ -129,8 +131,36 @@ class UserProvider with ChangeNotifier {
     }
   }
 
+  // Reset user password using Firebase Auth
+  Future<bool> resetUserPassword(String userId) async {
+    try {
+      _setLoading(true);
+      _clearError();
+      
+      // Find user by ID to get their email
+      final userDoc = await _firestore.collection('users').doc(userId).get();
+      if (!userDoc.exists) {
+        _setError('User not found');
+        _setLoading(false);
+        return false;
+      }
+      
+      final userData = models.User.fromFirestore(userDoc);
+      
+      // Send password reset email using AuthService
+      await _authService.resetPassword(userData.email);
+      
+      _setLoading(false);
+      return true;
+    } catch (e) {
+      _setError('Failed to send password reset email: $e');
+      _setLoading(false);
+      return false;
+    }
+  }
+
   // Get user by ID
-  User? getUserById(String id) {
+  models.User? getUserById(String id) {
     try {
       return _users.firstWhere((user) => user.id == id);
     } catch (e) {
@@ -139,8 +169,8 @@ class UserProvider with ChangeNotifier {
   }
 
   // Search users
-  List<User> searchUsers({String? query, UserRole? role}) {
-    List<User> filtered = List.from(_users);
+  List<models.User> searchUsers({String? query, models.UserRole? role}) {
+    List<models.User> filtered = List.from(_users);
     
     if (query != null && query.isNotEmpty) {
       filtered = filtered.where((user) =>

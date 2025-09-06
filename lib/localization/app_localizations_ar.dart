@@ -84,7 +84,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get clear => 'مسح';
 
   @override
-  String get loading => 'جاري التحميل...';
+  String get loading => 'جار التحميل...';
 
   @override
   String get error => 'خطأ';
@@ -126,7 +126,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get today_orders => 'طلبات اليوم';
 
   @override
-  String get orders => 'الطلبات';
+  String get orders => ' طلبات';
 
   @override
   String get order_number => 'رقم الطلب';
@@ -220,7 +220,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get contact_info => 'معلومات الاتصال';
 
   @override
-  String get enter_contact_info => 'أدخل البريد الإلكتروني أو الهاتف';
+  String get enter_contact_info => 'أدخل البريد الإلكتروني أو رقم الهاتف';
 
   @override
   String get contact_info_required => 'معلومات الاتصال مطلوبة';
@@ -235,7 +235,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get address => 'العنوان';
 
   @override
-  String get enter_address => 'أدخل عنوان الشركة';
+  String get enter_address => 'أدخل العنوان';
 
   @override
   String get address_required => 'العنوان مطلوب';
@@ -265,7 +265,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get driver_details => 'تفاصيل السائق';
 
   @override
-  String get create_driver => 'إضافة سائق';
+  String get create_driver => 'إنشاء سائق';
 
   @override
   String get update_driver => 'تحديث السائق';
@@ -380,7 +380,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get company_deleted_success => 'تم حذف الشركة بنجاح';
 
   @override
-  String get operation_failed => 'فشلت العملية. يرجى المحاولة مرة أخرى';
+  String get operation_failed => 'فشلت العملية';
 
   @override
   String get today => 'اليوم';
@@ -485,7 +485,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get completed => 'مكتمل';
 
   @override
-  String get not_returned => 'غير مرتجع';
+  String get not_returned => 'غير مُرجع';
 
   @override
   String get are_you_sure_logout => 'هل أنت متأكد من تسجيل الخروج؟';
@@ -506,7 +506,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get amount => 'المبلغ';
 
   @override
-  String get order_hash => 'طلب #';
+  String get order_hash => 'الطلب #';
 
   @override
   String get view_reports => 'عرض التقارير';
@@ -527,7 +527,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get clear_all => 'مسح الكل';
 
   @override
-  String get no_orders_found => 'لم يتم العثور على طلبات';
+  String get no_orders_found => 'لا توجد طلبات';
 
   @override
   String get try_adjusting_filters => 'حاول تعديل المرشحات';
@@ -600,23 +600,293 @@ class AppLocalizationsAr extends AppLocalizations {
   String get status_not_returned => 'لم يتم الإرجاع';
 
   @override
-  String get change_password => 'Change Password';
+  String get change_password => 'تغيير كلمة المرور';
 
   @override
-  String get current_password => 'Current Password';
+  String get current_password => 'كلمة المرور الحالية';
 
   @override
-  String get new_password => 'New Password';
+  String get new_password => 'كلمة المرور الجديدة';
 
   @override
-  String get update_password => 'Update Password';
+  String get update_password => 'تحديث كلمة المرور';
 
   @override
-  String get password_updated => 'Password updated successfully';
+  String get password_updated => 'تم تحديث كلمة المرور بنجاح';
 
   @override
-  String get incorrect_password => 'Current password is incorrect';
+  String get incorrect_password => 'كلمة المرور الحالية غير صحيحة';
 
   @override
-  String get password_mismatch => 'Passwords do not match';
+  String get password_mismatch => 'كلمات المرور غير متطابقة';
+
+  @override
+  String get manage_orders => 'إدارة الطلبات';
+
+  @override
+  String get all_statuses => 'جميع الحالات';
+
+  @override
+  String get all_drivers => 'جميع السائقين';
+
+  @override
+  String get all_companies => 'الكل';
+
+  @override
+  String get driver => 'السائق';
+
+  @override
+  String get update_status => 'تحديث الحالة';
+
+  @override
+  String get cost => 'التكلفة';
+
+  @override
+  String get select_status => 'اختر الحالة';
+
+  @override
+  String get select_driver => 'اختر السائق';
+
+  @override
+  String get select_company => 'اختر الشركة';
+
+  @override
+  String get unknown_user => 'مستخدم غير معروف';
+
+  @override
+  String get delete_company_confirm => 'هل أنت متأكد أنك تريد حذف هذه الشركة؟';
+
+  @override
+  String get company_deleted => 'تم حذف الشركة بنجاح';
+
+  @override
+  String get company_created => 'تم إنشاء الشركة بنجاح';
+
+  @override
+  String get company_updated => 'تم تحديث الشركة بنجاح';
+
+  @override
+  String get no_companies_search => 'لا توجد شركات تطابق بحثك';
+
+  @override
+  String get created_on => 'تم الإنشاء في';
+
+  @override
+  String get manage_drivers => 'إدارة السائقين';
+
+  @override
+  String get search_drivers => 'البحث في السائقين';
+
+  @override
+  String get enter_driver_search => 'أدخل اسم السائق أو رقم الهاتف...';
+
+  @override
+  String get filter_by_company => 'تصفية حسب الشركة';
+
+  @override
+  String get delete_driver_confirm => 'هل أنت متأكد أنك تريد حذف هذا السائق؟';
+
+  @override
+  String get driver_deleted => 'تم حذف السائق بنجاح';
+
+  @override
+  String get driver_created => 'تم إنشاء السائق بنجاح';
+
+  @override
+  String get driver_updated => 'تم تحديث السائق بنجاح';
+
+  @override
+  String get no_drivers_filter => 'لا توجد سائقين تطابق مرشحاتك';
+
+  @override
+  String get no_drivers_available => 'لا توجد سائقين متاحين';
+
+  @override
+  String get edit_driver => 'تعديل السائق';
+
+  @override
+  String get created => 'تم الإنشاء';
+
+  @override
+  String get enter_driver_name => 'أدخل اسم السائق';
+
+  @override
+  String get driver_name_required => 'اسم السائق مطلوب';
+
+  @override
+  String get phone_number => 'رقم الهاتف';
+
+  @override
+  String get enter_phone_number => 'أدخل رقم الهاتف';
+
+  @override
+  String get phone_number_required => 'رقم الهاتف مطلوب';
+
+  @override
+  String get please_select_company => 'يرجى اختيار شركة';
+
+  @override
+  String get active_driver => 'سائق نشط';
+
+  @override
+  String get filters => 'المرشحات';
+
+  @override
+  String get apply => 'تطبيق';
+
+  @override
+  String get select_date_range => 'اختر نطاق التاريخ';
+
+  @override
+  String get summary_statistics => 'إحصائيات ملخصة';
+
+  @override
+  String get received => 'مستلم';
+
+  @override
+  String get returned => 'مُرجع';
+
+  @override
+  String get total_revenue => 'إجمالي الإيرادات';
+
+  @override
+  String get average_order => 'متوسط الطلب';
+
+  @override
+  String get company_performance => 'أداء الشركة';
+
+  @override
+  String get driver_performance => 'أداء السائق';
+
+  @override
+  String get unknown_driver => 'سائق غير معروف';
+
+  @override
+  String get filtered_orders => 'الطلبات المرشحة';
+
+  @override
+  String get unassigned => 'غير مخصص';
+
+  @override
+  String get add_user => 'إضافة مستخدم';
+
+  @override
+  String get search_users => 'البحث في المستخدمين';
+
+  @override
+  String get name_or_phone => 'الاسم أو الهاتف...';
+
+  @override
+  String get all_roles => 'جميع الأدوار';
+
+  @override
+  String get no_users_found => 'لم يتم العثور على مستخدمين';
+
+  @override
+  String get add_users_to_get_started => 'أضف مستخدمين للبدء';
+
+  @override
+  String get delete_user => 'حذف المستخدم';
+
+  @override
+  String get are_you_sure_delete_user => 'هل أنت متأكد من حذف';
+
+  @override
+  String get action_cannot_be_undone => 'لا يمكن التراجع عن هذا الإجراء.';
+
+  @override
+  String get deleted_successfully => 'تم الحذف بنجاح';
+
+  @override
+  String get failed_to_delete_user => 'فشل في حذف المستخدم';
+
+  @override
+  String get activated => 'تم التفعيل';
+
+  @override
+  String get deactivated => 'تم إلغاء التفعيل';
+
+  @override
+  String get failed_to_update_user_status => 'فشل في تحديث حالة المستخدم';
+
+  @override
+  String get user_created_successfully => 'تم إنشاء المستخدم بنجاح';
+
+  @override
+  String get user_updated_successfully => 'تم تحديث المستخدم بنجاح';
+
+  @override
+  String get create_user => 'إنشاء مستخدم';
+
+  @override
+  String get edit_user => 'تعديل المستخدم';
+
+  @override
+  String get full_name => 'الاسم الكامل';
+
+  @override
+  String get enter_users_full_name => 'أدخل الاسم الكامل للمستخدم';
+
+  @override
+  String get name_is_required => 'الاسم مطلوب';
+
+  @override
+  String get email_address => 'عنوان البريد الإلكتروني';
+
+  @override
+  String get enter_email_address => 'أدخل عنوان البريد الإلكتروني';
+
+  @override
+  String get email_is_required => 'البريد الإلكتروني مطلوب';
+
+  @override
+  String get please_enter_valid_email => 'يرجى إدخال عنوان بريد إلكتروني صحيح';
+
+  @override
+  String get enter_password => 'أدخل كلمة المرور';
+
+  @override
+  String get password_is_required => 'كلمة المرور مطلوبة';
+
+  @override
+  String get password_min_length => 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+
+  @override
+  String get phone_number_is_required => 'رقم الهاتف مطلوب';
+
+  @override
+  String get default_role => 'افتراضي';
+
+  @override
+  String get active_user => 'مستخدم نشط';
+
+  @override
+  String get user_can_login_access_system =>
+      'يمكن للمستخدم تسجيل الدخول والوصول للنظام';
+
+  @override
+  String get role => 'الدور';
+
+  @override
+  String get deactivate => 'إلغاء التفعيل';
+
+  @override
+  String get activate => 'تفعيل';
+
+  @override
+  String get status_out_for_delivery => 'خرج للتوصيل';
+
+  @override
+  String get return_reason => 'سبب الإرجاع';
+
+  @override
+  String get enter_return_reason => 'أدخل سبب الإرجاع';
+
+  @override
+  String get return_reason_required => 'سبب الإرجاع مطلوب';
+
+  @override
+  String returned_reason(Object reason) {
+    return 'مرتجع: $reason';
+  }
 }

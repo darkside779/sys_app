@@ -89,17 +89,15 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   Future<void> _updateOrderStatus(OrderState newStatus) async {
     try {
       final orderProvider = context.read<OrderProvider>();
-      
-      final updates = {
-        'state': newStatus.value,
-      };
-      
+
+      final updates = {'state': newStatus.value};
+
       await orderProvider.updateOrder(_order!.id, updates);
-      
+
       setState(() {
         _order = _order!.copyWith(state: newStatus);
       });
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -131,7 +129,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             final isSelected = status == _order!.state;
             return ListTile(
               leading: Icon(
-                isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
+                isSelected
+                    ? Icons.radio_button_checked
+                    : Icons.radio_button_off,
                 color: isSelected ? AppTheme.primaryColor : Colors.grey,
               ),
               title: Text(status.getLocalizedDisplayName(context)),
@@ -160,23 +160,27 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_order != null ? 'Order #${_order!.orderNumber}' : 'Order Details'),
-        actions: _order != null ? [
-          PopupMenuButton(
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                onTap: _showUpdateStatusDialog,
-                child: Row(
-                  children: [
-                    const Icon(Icons.update, size: 18),
-                    const SizedBox(width: 8),
-                    Text('Update Status'),
+        title: Text(
+          _order != null ? 'Order #${_order!.orderNumber}' : 'Order Details',
+        ),
+        actions: _order != null
+            ? [
+                PopupMenuButton(
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      onTap: _showUpdateStatusDialog,
+                      child: Row(
+                        children: [
+                          const Icon(Icons.update, size: 18),
+                          const SizedBox(width: 8),
+                          Text('Update Status'),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
-              ),
-            ],
-          ),
-        ] : null,
+              ]
+            : null,
       ),
       body: _buildBody(),
     );
@@ -201,16 +205,13 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             const SizedBox(height: 8),
             Text(
               _error!,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _loadOrderDetails,
-              child: Text('Retry'),
-            ),
+            ElevatedButton(onPressed: _loadOrderDetails, child: Text('Retry')),
           ],
         ),
       );
@@ -225,9 +226,9 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             const SizedBox(height: 16),
             Text(
               'Order not found',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Colors.grey,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(color: Colors.grey),
             ),
           ],
         ),
@@ -267,6 +268,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         statusColor = AppTheme.warningColor;
         statusIcon = Icons.pending;
         break;
+      case OrderState.outForDelivery:
+        statusColor = Colors.blue;
+        statusIcon = Icons.local_shipping;
+        break;
       case OrderState.returned:
         statusColor = AppTheme.successColor;
         statusIcon = Icons.check_circle;
@@ -290,22 +295,24 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     children: [
                       Text(
                         'Order #${_order!.orderNumber}',
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.headlineSmall
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         'Created: ${DateFormat('MMM dd, yyyy HH:mm').format(_order!.createdAt)}',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey,
-                        ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
                       ),
                     ],
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
                     color: statusColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(20),
@@ -335,11 +342,17 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
               decoration: BoxDecoration(
                 color: AppTheme.primaryColor.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppTheme.primaryColor.withOpacity(0.3)),
+                border: Border.all(
+                  color: AppTheme.primaryColor.withOpacity(0.3),
+                ),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.attach_money, color: AppTheme.primaryColor, size: 28),
+                  Icon(
+                    Icons.attach_money,
+                    color: AppTheme.primaryColor,
+                    size: 28,
+                  ),
                   const SizedBox(width: 12),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -353,10 +366,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       ),
                       Text(
                         '\$${_order!.cost.toStringAsFixed(2)}',
-                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: AppTheme.primaryColor,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.headlineMedium
+                            ?.copyWith(
+                              color: AppTheme.primaryColor,
+                              fontWeight: FontWeight.bold,
+                            ),
                       ),
                     ],
                   ),
@@ -379,8 +393,11 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         const SizedBox(height: 12),
         _buildInfoRow(Icons.location_on, 'Address', _order!.customerAddress),
         const SizedBox(height: 12),
-        _buildInfoRow(Icons.calendar_today, 'Delivery Date', 
-          DateFormat('MMM dd, yyyy').format(_order!.date)),
+        _buildInfoRow(
+          Icons.calendar_today,
+          'Delivery Date',
+          DateFormat('MMM dd, yyyy').format(_order!.date),
+        ),
       ],
     );
   }
@@ -421,15 +438,25 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
       children: [
         _buildInfoRow(Icons.numbers, 'Order Number', _order!.orderNumber),
         const SizedBox(height: 12),
-        _buildInfoRow(Icons.attach_money, 'Cost', '\$${_order!.cost.toStringAsFixed(2)}'),
+        _buildInfoRow(
+          Icons.attach_money,
+          'Cost',
+          '\$${_order!.cost.toStringAsFixed(2)}',
+        ),
         const SizedBox(height: 12),
-        _buildInfoRow(Icons.calendar_today, 'Order Date', 
-          DateFormat('MMM dd, yyyy').format(_order!.date)),
+        _buildInfoRow(
+          Icons.calendar_today,
+          'Order Date',
+          DateFormat('MMM dd, yyyy').format(_order!.date),
+        ),
         const SizedBox(height: 12),
         _buildInfoRow(Icons.person, 'Created By', _order!.createdBy),
         const SizedBox(height: 12),
-        _buildInfoRow(Icons.schedule, 'Created At', 
-          DateFormat('MMM dd, yyyy HH:mm').format(_order!.createdAt)),
+        _buildInfoRow(
+          Icons.schedule,
+          'Created At',
+          DateFormat('MMM dd, yyyy HH:mm').format(_order!.createdAt),
+        ),
       ],
     );
   }
@@ -495,7 +522,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: () => _updateOrderStatus(OrderState.notReturned),
+                      onPressed: () =>
+                          _updateOrderStatus(OrderState.notReturned),
                       icon: const Icon(Icons.cancel),
                       label: Text('Mark as Not Returned'),
                       style: ElevatedButton.styleFrom(

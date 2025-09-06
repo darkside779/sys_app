@@ -39,7 +39,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
     if (shouldLogout == true && mounted) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       await authProvider.signOut();
-      
+
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -98,18 +98,21 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
     );
   }
 
-  Widget _buildNavigationDrawer(BuildContext context, AuthProvider authProvider) {
+  Widget _buildNavigationDrawer(
+    BuildContext context,
+    AuthProvider authProvider,
+  ) {
     final tr = AppLocalizations.of(context);
-    
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
+            decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+            accountName: Text(
+              authProvider.user?.name ?? context.tr.driver_user,
             ),
-            accountName: Text(authProvider.user?.name ?? context.tr.driver_user),
             accountEmail: Text(authProvider.user?.phone ?? ''),
             currentAccountPicture: CircleAvatar(
               backgroundColor: Colors.white,
@@ -193,19 +196,16 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
     return Consumer2<OrderProvider, AuthProvider>(
       builder: (context, orderProvider, authProvider, _) {
         if (orderProvider.isLoading) {
-          return CommonWidgets.localizedLoading(
-            context,
-            (tr) => tr.loading,
-          );
+          return CommonWidgets.localizedLoading(context, (tr) => tr.loading);
         }
 
         // Filter orders for current user/driver
-        final userOrders = orderProvider.orders.where((order) => 
-          order.driverId == authProvider.user?.id
-        ).toList();
-        
+        final userOrders = orderProvider.orders
+            .where((order) => order.driverId == authProvider.user?.id)
+            .toList();
+
         final orderStats = _getOrderStatistics(userOrders);
-        
+
         return SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -232,16 +232,16 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   ],
                 ),
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // Statistics Grid
               Text(
                 context.tr.my_statistics,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               const SizedBox(height: 12),
-              
+
               GridView.count(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -280,16 +280,16 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 24),
-              
+
               // Recent Orders
               Text(
                 context.tr.recent_orders,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               const SizedBox(height: 12),
-              
+
               if (userOrders.isEmpty)
                 CommonWidgets.localizedCard(
                   context: context,
@@ -300,9 +300,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                         const SizedBox(height: 16),
                         Text(
                           context.tr.no_orders_assigned,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: Colors.grey,
-                          ),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleMedium?.copyWith(color: Colors.grey),
                         ),
                       ],
                     ),
@@ -310,7 +310,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                 )
               else
                 ...userOrders.take(5).map((order) => _buildOrderCard(order)),
-              
+
               if (userOrders.length > 5) ...[
                 const SizedBox(height: 16),
                 Center(
@@ -337,11 +337,19 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
       'total': orders.length,
       'received': orders.where((o) => o.state == OrderState.received).length,
       'returned': orders.where((o) => o.state == OrderState.returned).length,
-      'notReturned': orders.where((o) => o.state == OrderState.notReturned).length,
+      'notReturned': orders
+          .where((o) => o.state == OrderState.notReturned)
+          .length,
     };
   }
 
-  Widget _buildStatCard(BuildContext context, String title, String value, IconData icon, Color color) {
+  Widget _buildStatCard(
+    BuildContext context,
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -369,9 +377,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             const SizedBox(height: 8),
             Text(
               title,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
@@ -386,6 +394,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
     switch (order.state) {
       case OrderState.received:
         statusColor = AppTheme.warningColor;
+        break;
+      case OrderState.outForDelivery:
+        statusColor = Colors.blue;
         break;
       case OrderState.returned:
         statusColor = AppTheme.successColor;
@@ -413,7 +424,10 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: statusColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
@@ -437,15 +451,15 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             ),
             Text(
               '${context.tr.address}: ${order.customerAddress}',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.grey,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: Colors.grey),
             ),
             Text(
               '${context.tr.amount}: \$${order.cost.toStringAsFixed(2)}',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
           ],
         ),
