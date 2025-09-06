@@ -1,16 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import '../localization/app_localizations.dart';
 
 enum OrderState { received, returned, notReturned }
 
 extension OrderStateExtension on OrderState {
-  String get displayName {
+  String getLocalizedDisplayName(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     switch (this) {
       case OrderState.received:
-        return 'Received';
+        return localizations.status_received;
       case OrderState.returned:
-        return 'Returned';
+        return localizations.status_returned;
       case OrderState.notReturned:
-        return 'Not returned';
+        return localizations.status_not_returned;
     }
   }
 
@@ -149,7 +152,7 @@ class Order {
 
   @override
   String toString() {
-    return 'Order(id: $id, orderNumber: $orderNumber, customerName: $customerName, state: ${state.displayName}, cost: $cost)';
+    return 'Order(id: $id, orderNumber: $orderNumber, customerName: $customerName, state: ${state.value}, cost: $cost)';
   }
 
   @override

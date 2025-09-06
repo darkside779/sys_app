@@ -314,7 +314,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       ...OrderState.values.map((status) =>
                         DropdownMenuItem<OrderState>(
                           value: status,
-                          child: Text(status.displayName),
+                          child: Text(status.getLocalizedDisplayName(context)),
                         ),
                       ),
                     ],
@@ -639,12 +639,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 border: Border.all(color: statusColor),
               ),
               child: Text(
-                order.state.displayName,
+                order.state.getLocalizedDisplayName(context),
                 style: TextStyle(color: statusColor, fontSize: 12),
               ),
             ),
           ),
-          Expanded(child: Text('\$${order.cost.toStringAsFixed(2)}')),
+          Expanded(child: Text('AED ${order.cost.toStringAsFixed(2)}')),
           Expanded(child: Text(DateFormat('MMM dd, yyyy').format(order.date))),
         ],
       ),

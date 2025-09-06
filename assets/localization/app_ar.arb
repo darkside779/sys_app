@@ -203,5 +203,12 @@
     "date": "التاريخ",
     "note": "ملاحظة",
     "status": "الحالة",
-    "currency_symbol": "د.إ"
+    "currency_symbol": "د.إ",
+  "created_by": "أنشئ من قبل",
+  "order_created_by": "الطلب أنشئ من قبل",
+  "created_at": "تاريخ الإنشاء",
+  "order_created_at": "تاريخ إنشاء الطلب",
+  "status_received": "مستلم",
+  "status_returned": "تم الإرجاع",
+  "status_not_returned": "لم يتم الإرجاع"
   }

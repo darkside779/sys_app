@@ -1019,7 +1019,7 @@ abstract class AppLocalizations {
   /// No description provided for @manage_privacy_settings.
   ///
   /// In en, this message translates to:
-  /// **'Manage your privacy settings'**
+  /// **'Manage privacy settings'**
   String get manage_privacy_settings;
 
   /// No description provided for @my_statistics.
@@ -1231,6 +1231,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'AED'**
   String get currency_symbol;
+
+  /// No description provided for @created_by.
+  ///
+  /// In en, this message translates to:
+  /// **'Created By'**
+  String get created_by;
+
+  /// No description provided for @order_created_by.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Created By'**
+  String get order_created_by;
+
+  /// No description provided for @created_at.
+  ///
+  /// In en, this message translates to:
+  /// **'Created At'**
+  String get created_at;
+
+  /// No description provided for @order_created_at.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Created At'**
+  String get order_created_at;
+
+  /// No description provided for @status_received.
+  ///
+  /// In en, this message translates to:
+  /// **'Received'**
+  String get status_received;
+
+  /// No description provided for @status_returned.
+  ///
+  /// In en, this message translates to:
+  /// **'Returned'**
+  String get status_returned;
+
+  /// No description provided for @status_not_returned.
+  ///
+  /// In en, this message translates to:
+  /// **'Not returned'**
+  String get status_not_returned;
+
+  /// No description provided for @change_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Password'**
+  String get change_password;
+
+  /// No description provided for @current_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Password'**
+  String get current_password;
+
+  /// No description provided for @new_password.
+  ///
+  /// In en, this message translates to:
+  /// **'New Password'**
+  String get new_password;
+
+  /// No description provided for @update_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Password'**
+  String get update_password;
+
+  /// No description provided for @password_updated.
+  ///
+  /// In en, this message translates to:
+  /// **'Password updated successfully'**
+  String get password_updated;
+
+  /// No description provided for @incorrect_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password is incorrect'**
+  String get incorrect_password;
+
+  /// No description provided for @password_mismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get password_mismatch;
 }
 
 class _AppLocalizationsDelegate

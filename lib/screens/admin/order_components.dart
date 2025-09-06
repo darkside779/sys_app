@@ -2,9 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import '../../providers/order_provider.dart';
 import '../../providers/company_provider.dart';
 import '../../providers/driver_provider.dart';
+import '../../providers/user_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/order_model.dart';
 import '../../models/company_model.dart';
@@ -66,7 +68,7 @@ class OrderCard extends StatelessWidget {
                     border: Border.all(color: _getStatusColor(order.state)),
                   ),
                   child: Text(
-                    order.state.displayName,
+                    order.state.getLocalizedDisplayName(context),
                     style: TextStyle(
                       color: _getStatusColor(order.state),
                       fontSize: 12,
@@ -119,9 +121,13 @@ class OrderCard extends StatelessWidget {
             const SizedBox(height: 8),
             _buildInfoRow(Icons.local_shipping, 'Driver', driver?.name ?? 'Unknown'),
             const SizedBox(height: 8),
-            _buildInfoRow(Icons.attach_money, 'Cost', '\$${order.cost.toStringAsFixed(2)}'),
+            _buildInfoRow(Icons.attach_money, 'Cost', 'AED ${order.cost.toStringAsFixed(2)}'),
             const SizedBox(height: 8),
             _buildInfoRow(Icons.calendar_today, 'Date', order.date.toString().split(' ')[0]),
+            const SizedBox(height: 8),
+            _buildInfoRow(Icons.person_add, 'Created By', _getCreatedByName(context, order.createdBy)),
+            const SizedBox(height: 8),
+            _buildInfoRow(Icons.access_time, 'Created At', DateFormat('MMM dd, yyyy - HH:mm').format(order.createdAt)),
             if (order.note != null && order.note!.isNotEmpty) ...[
               const SizedBox(height: 8),
               _buildInfoRow(Icons.note, 'Note', order.note!),
@@ -152,6 +158,12 @@ class OrderCard extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  String _getCreatedByName(BuildContext context, String userId) {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final user = userProvider.getUserById(userId);
+    return user?.name ?? 'Unknown User';
   }
 }
 
@@ -444,7 +456,7 @@ class _OrderDialogState extends State<OrderDialog> {
                   items: OrderState.values.map((status) =>
                     DropdownMenuItem<OrderState>(
                       value: status,
-                      child: Text(status.displayName),
+                      child: Text(status.getLocalizedDisplayName(context)),
                     ),
                   ).toList(),
                   onChanged: (value) {
@@ -590,7 +602,7 @@ class _UpdateStatusDialogState extends State<UpdateStatusDialog> {
             items: OrderState.values.map((status) =>
               DropdownMenuItem<OrderState>(
                 value: status,
-                child: Text(status.displayName),
+                child: Text(status.getLocalizedDisplayName(context)),
               ),
             ).toList(),
             onChanged: (value) {

@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../../providers/order_provider.dart';
-import '../../providers/auth_provider.dart';
 import '../../providers/company_provider.dart';
+import '../../providers/user_provider.dart';
+import '../../providers/auth_provider.dart';
 import '../../models/order_model.dart';
 import '../../models/company_model.dart';
 import '../../localization/app_localizations.dart';
@@ -38,7 +39,9 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
 
   Future<void> _initializeAndLoadOrders() async {
     final orderProvider = context.read<OrderProvider>();
+    final userProvider = context.read<UserProvider>();
     await orderProvider.initialize(); // Fetch from Firebase
+    await userProvider.loadUsers(); // Load users to resolve createdBy names
     _loadOrders(); // Then filter for user orders
   }
 
@@ -248,7 +251,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                       ...OrderState.values.map(
                         (status) => DropdownMenuItem<OrderState>(
                           value: status,
-                          child: Text(status.displayName),
+                          child: Text(status.getLocalizedDisplayName(context)),
                         ),
                       ),
                     ],
@@ -372,7 +375,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                       Icon(statusIcon, color: statusColor, size: 16),
                       const SizedBox(width: 4),
                       Text(
-                        order.state.displayName,
+                        order.state.getLocalizedDisplayName(context),
                         style: TextStyle(
                           color: statusColor,
                           fontSize: 12,
@@ -446,6 +449,10 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
               context.tr.date,
               DateFormat('MMM dd, yyyy').format(order.date),
             ),
+            const SizedBox(height: 8),
+            _buildInfoRow(Icons.person_add, context.tr.created_by, _getCreatedByName(order.createdBy)),
+            const SizedBox(height: 8),
+            _buildInfoRow(Icons.access_time, context.tr.created_at, DateFormat('MMM dd, yyyy - HH:mm').format(order.createdAt)),
             if (order.note != null && order.note!.isNotEmpty) ...[
               const SizedBox(height: 8),
               _buildInfoRow(Icons.note, context.tr.note, order.note!),
@@ -473,6 +480,12 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
         ),
       ],
     );
+  }
+
+  String _getCreatedByName(String userId) {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final user = userProvider.getUserById(userId);
+    return user?.name ?? 'Unknown User';
   }
 }
 
@@ -536,9 +549,10 @@ class _OrderDetailsDialog extends StatelessWidget {
                         Icon(statusIcon, color: statusColor, size: 18),
                         const SizedBox(width: 6),
                         Text(
-                          order.state.displayName,
+                          order.state.getLocalizedDisplayName(context),
                           style: TextStyle(
                             color: statusColor,
+                            fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -574,6 +588,16 @@ class _OrderDetailsDialog extends StatelessWidget {
                 Icons.calendar_today,
                 context.tr.date,
                 DateFormat('MMM dd, yyyy').format(order.date),
+              ),
+              _buildDetailRow(
+                Icons.person_add,
+                context.tr.created_by,
+                _getCreatedByNameForDialog(context, order.createdBy),
+              ),
+              _buildDetailRow(
+                Icons.access_time,
+                context.tr.created_at,
+                DateFormat('MMM dd, yyyy - HH:mm').format(order.createdAt),
               ),
 
               if (order.note != null && order.note!.isNotEmpty) ...[
@@ -686,4 +710,11 @@ class _OrderDetailsDialog extends StatelessWidget {
       ),
     );
   }
+
+  String _getCreatedByNameForDialog(BuildContext context, String userId) {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final user = userProvider.getUserById(userId);
+    return user?.name ?? 'Unknown User';
+  }
+
 }

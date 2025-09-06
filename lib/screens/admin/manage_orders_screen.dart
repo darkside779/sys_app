@@ -6,6 +6,7 @@ import 'package:sys_app/screens/admin/order_components.dart';
 import '../../providers/order_provider.dart';
 import '../../providers/company_provider.dart';
 import '../../providers/driver_provider.dart';
+import '../../providers/user_provider.dart';
 import '../../models/order_model.dart';
 import '../../models/company_model.dart';
 import '../../models/driver_model.dart';
@@ -33,6 +34,7 @@ class _ManageOrdersScreenState extends State<ManageOrdersScreen> {
       context.read<OrderProvider>().loadAllOrders();
       context.read<CompanyProvider>().loadAllCompanies();
       context.read<DriverProvider>().loadAllDrivers();
+      context.read<UserProvider>().loadUsers();
     });
   }
 
@@ -301,7 +303,7 @@ class _ManageOrdersScreenState extends State<ManageOrdersScreen> {
                             ...OrderState.values.map((status) =>
                               DropdownMenuItem<OrderState>(
                                 value: status,
-                                child: Text(status.displayName),
+                                child: Text(status.getLocalizedDisplayName(context)),
                               ),
                             ),
                           ],

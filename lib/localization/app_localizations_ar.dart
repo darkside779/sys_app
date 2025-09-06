@@ -577,4 +577,46 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get currency_symbol => 'د.إ';
+
+  @override
+  String get created_by => 'أنشئ من قبل';
+
+  @override
+  String get order_created_by => 'الطلب أنشئ من قبل';
+
+  @override
+  String get created_at => 'تاريخ الإنشاء';
+
+  @override
+  String get order_created_at => 'تاريخ إنشاء الطلب';
+
+  @override
+  String get status_received => 'مستلم';
+
+  @override
+  String get status_returned => 'تم الإرجاع';
+
+  @override
+  String get status_not_returned => 'لم يتم الإرجاع';
+
+  @override
+  String get change_password => 'Change Password';
+
+  @override
+  String get current_password => 'Current Password';
+
+  @override
+  String get new_password => 'New Password';
+
+  @override
+  String get update_password => 'Update Password';
+
+  @override
+  String get password_updated => 'Password updated successfully';
+
+  @override
+  String get incorrect_password => 'Current password is incorrect';
+
+  @override
+  String get password_mismatch => 'Passwords do not match';
 }

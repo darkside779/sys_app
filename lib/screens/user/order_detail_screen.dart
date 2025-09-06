@@ -134,7 +134,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                 isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
                 color: isSelected ? AppTheme.primaryColor : Colors.grey,
               ),
-              title: Text(status.displayName),
+              title: Text(status.getLocalizedDisplayName(context)),
               onTap: () {
                 Navigator.pop(context);
                 if (status != _order!.state) {
@@ -317,7 +317,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       Icon(statusIcon, color: statusColor, size: 20),
                       const SizedBox(width: 8),
                       Text(
-                        _order!.state.displayName,
+                        _order!.state.getLocalizedDisplayName(context),
                         style: TextStyle(
                           color: statusColor,
                           fontWeight: FontWeight.bold,

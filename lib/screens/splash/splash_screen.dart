@@ -35,36 +35,34 @@ class _SplashScreenState extends State<SplashScreen>
       vsync: this,
     );
 
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.0, 0.6, curve: Curves.easeInOut),
-    ));
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.0, 0.6, curve: Curves.easeInOut),
+      ),
+    );
 
-    _scaleAnimation = Tween<double>(
-      begin: 0.5,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.0, 0.8, curve: Curves.elasticOut),
-    ));
+    _scaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.0, 0.8, curve: Curves.elasticOut),
+      ),
+    );
 
     _animationController.forward();
   }
 
   void _checkAuthenticationStatus() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    
+
     // Wait for animation to complete
     await Future.delayed(const Duration(seconds: 3));
-    
+
     // Initialize auth provider and check status
     await authProvider.initialize();
-    
+
     if (!mounted) return;
-    
+
     _navigateBasedOnAuthState(authProvider);
   }
 
@@ -95,10 +93,7 @@ class _SplashScreenState extends State<SplashScreen>
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => screen,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: animation,
-            child: child,
-          );
+          return FadeTransition(opacity: animation, child: child);
         },
         transitionDuration: const Duration(milliseconds: 600),
       ),
@@ -115,7 +110,7 @@ class _SplashScreenState extends State<SplashScreen>
         ),
       );
     }
-    
+
     Future.delayed(const Duration(seconds: 1), () {
       _navigateToScreen(const LoginScreen());
     });
@@ -149,7 +144,6 @@ class _SplashScreenState extends State<SplashScreen>
                           width: 120,
                           height: 120,
                           decoration: BoxDecoration(
-                            color: Colors.white,
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
@@ -159,19 +153,23 @@ class _SplashScreenState extends State<SplashScreen>
                               ),
                             ],
                           ),
-                          child: const Icon(
-                            Icons.local_shipping,
-                            size: 60,
-                            color: AppTheme.primaryColor,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Image.asset(
+                              'favicon.png',
+                              width: 200,
+                              height: 200,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),
                     );
                   },
                 ),
-                
+
                 const SizedBox(height: 32),
-                
+
                 // App Name with Animation
                 AnimatedBuilder(
                   animation: _fadeAnimation,
@@ -180,18 +178,19 @@ class _SplashScreenState extends State<SplashScreen>
                       opacity: _fadeAnimation,
                       child: Text(
                         AppLocalizations.of(context).app_name,
-                        style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.headlineLarge
+                            ?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                         textAlign: TextAlign.center,
                       ),
                     );
                   },
                 ),
-                
+
                 const SizedBox(height: 16),
-                
+
                 // Subtitle with Animation
                 AnimatedBuilder(
                   animation: _fadeAnimation,
@@ -200,17 +199,16 @@ class _SplashScreenState extends State<SplashScreen>
                       opacity: _fadeAnimation,
                       child: Text(
                         AppLocalizations.of(context).welcome,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: Colors.white.withOpacity(0.9),
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(color: Colors.white.withOpacity(0.9)),
                         textAlign: TextAlign.center,
                       ),
                     );
                   },
                 ),
-                
+
                 const SizedBox(height: 48),
-                
+
                 // Loading Indicator
                 AnimatedBuilder(
                   animation: _fadeAnimation,
@@ -223,16 +221,19 @@ class _SplashScreenState extends State<SplashScreen>
                             width: 40,
                             height: 40,
                             child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
                               strokeWidth: 3,
                             ),
                           ),
                           const SizedBox(height: 16),
                           Text(
                             _getLoadingText(authProvider.state),
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Colors.white.withOpacity(0.8),
-                            ),
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: Colors.white.withOpacity(0.8),
+                                ),
                           ),
                         ],
                       ),
@@ -249,7 +250,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   String _getLoadingText(AuthState state) {
     final tr = AppLocalizations.of(context);
-    
+
     switch (state) {
       case AuthState.loading:
         return tr.loading;

@@ -353,11 +353,15 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Icon(icon, color: color, size: 28),
-                Text(
-                  value,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: color,
+                Flexible(
+                  child: Text(
+                    value,
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: color,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.end,
                   ),
                 ),
               ],
@@ -416,7 +420,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     border: Border.all(color: statusColor),
                   ),
                   child: Text(
-                    order.state.displayName,
+                    order.state.getLocalizedDisplayName(context),
                     style: TextStyle(
                       color: statusColor,
                       fontSize: 12,

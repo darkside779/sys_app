@@ -203,5 +203,22 @@
   "date": "Date",
   "note": "Note",
   "status": "Status",
-  "currency_symbol": "AED"
+  "currency_symbol": "AED",
+  "created_by": "Created By",
+  "order_created_by": "Order Created By",
+  "created_at": "Created At",
+  "order_created_at": "Order Created At",
+  "status_received": "Received",
+  "status_returned": "Returned",
+  "status_not_returned": "Not returned",
+  "privacy_security": "Privacy & Security",
+  "manage_privacy_settings": "Manage privacy settings",
+  "change_password": "Change Password",
+  "current_password": "Current Password",
+  "new_password": "New Password",
+  "confirm_password": "Confirm Password",
+  "update_password": "Update Password",
+  "password_updated": "Password updated successfully",
+  "incorrect_password": "Current password is incorrect",
+  "password_mismatch": "Passwords do not match"
 }

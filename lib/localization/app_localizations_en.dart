@@ -473,7 +473,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacy_security => 'Privacy & Security';
 
   @override
-  String get manage_privacy_settings => 'Manage your privacy settings';
+  String get manage_privacy_settings => 'Manage privacy settings';
 
   @override
   String get my_statistics => 'My Statistics';
@@ -580,4 +580,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get currency_symbol => 'AED';
+
+  @override
+  String get created_by => 'Created By';
+
+  @override
+  String get order_created_by => 'Order Created By';
+
+  @override
+  String get created_at => 'Created At';
+
+  @override
+  String get order_created_at => 'Order Created At';
+
+  @override
+  String get status_received => 'Received';
+
+  @override
+  String get status_returned => 'Returned';
+
+  @override
+  String get status_not_returned => 'Not returned';
+
+  @override
+  String get change_password => 'Change Password';
+
+  @override
+  String get current_password => 'Current Password';
+
+  @override
+  String get new_password => 'New Password';
+
+  @override
+  String get update_password => 'Update Password';
+
+  @override
+  String get password_updated => 'Password updated successfully';
+
+  @override
+  String get incorrect_password => 'Current password is incorrect';
+
+  @override
+  String get password_mismatch => 'Passwords do not match';
 }
