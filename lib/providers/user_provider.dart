@@ -38,18 +38,32 @@ class UserProvider with ChangeNotifier {
     }
   }
 
-  // Create new user
-  Future<bool> createUser(models.User user) async {
+  // Create new user with Firebase Auth and Firestore
+  Future<bool> createUser(models.User user, String password) async {
     try {
       _setLoading(true);
       _clearError();
       
-      final docRef = await _firestore.collection('users').add(user.toFirestore());
-      final newUser = user.copyWith(id: docRef.id);
+      // Create Firebase Auth account first
+      final createdUser = await _authService.registerWithEmailAndPassword(
+        email: user.email,
+        password: password,
+        name: user.name,
+        phone: user.phone,
+        role: user.role,
+        language: user.language,
+      );
       
-      _users.insert(0, newUser);
-      _setLoading(false);
-      return true;
+      if (createdUser != null) {
+        // Add to local list
+        _users.insert(0, createdUser);
+        _setLoading(false);
+        return true;
+      } else {
+        _setError('Failed to create user account');
+        _setLoading(false);
+        return false;
+      }
     } catch (e) {
       _setError('Failed to create user: $e');
       _setLoading(false);

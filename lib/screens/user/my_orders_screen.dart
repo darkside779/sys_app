@@ -52,33 +52,27 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
   }
 
   Future<void> _loadOrders() async {
+    if (!mounted) return;
+    
     final orderProvider = context.read<OrderProvider>();
     final authProvider = context.read<AuthProvider>();
 
     // Refresh data from Firebase to get latest changes
     await orderProvider.loadAllOrders();
 
-    print('DEBUG MyOrders: Current user ID: ${authProvider.user?.id}');
-    print(
-      'DEBUG MyOrders: Total orders in provider: ${orderProvider.orders.length}',
-    );
+    if (!mounted) return;
 
     // Filter orders created by current user
     final userOrders = orderProvider.orders
         .where((order) => order.createdBy == authProvider.user?.id)
         .toList();
 
-    print('DEBUG MyOrders: User orders found: ${userOrders.length}');
-    for (var order in userOrders) {
-      print(
-        'DEBUG MyOrders: Order - ${order.orderNumber}, createdBy: ${order.createdBy}',
-      );
+    if (mounted) {
+      setState(() {
+        _filteredOrders = userOrders;
+      });
+      _applyFilters();
     }
-
-    setState(() {
-      _filteredOrders = userOrders;
-    });
-    _applyFilters();
   }
 
   void _applyFilters() {
@@ -335,8 +329,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                SizedBox(
-                  width: 150,
+                Flexible(
                   child: DropdownButtonFormField<OrderState>(
                     initialValue: _statusFilter,
                     decoration: InputDecoration(

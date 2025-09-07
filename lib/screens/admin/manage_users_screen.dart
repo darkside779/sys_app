@@ -221,9 +221,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              'Password reset email sent to "${user.email}"',
-            ),
+            content: Text('Password reset email sent to "${user.email}"'),
             backgroundColor: Colors.green,
           ),
         );
@@ -518,7 +516,11 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                       onTap: () => _showResetPasswordDialog(user),
                       child: Row(
                         children: [
-                          const Icon(Icons.lock_reset, size: 18, color: Colors.orange),
+                          const Icon(
+                            Icons.lock_reset,
+                            size: 18,
+                            color: Colors.orange,
+                          ),
                           const SizedBox(width: 8),
                           Text('Reset Password'),
                         ],
@@ -629,7 +631,7 @@ class _UserDialogState extends State<UserDialog> {
           createdAt: DateTime.now(),
           isActive: _isActive,
         );
-        success = await userProvider.createUser(newUser);
+        success = await userProvider.createUser(newUser, _passwordController.text.trim());
       } else {
         // Update existing user
         final updatedUser = widget.user!.copyWith(

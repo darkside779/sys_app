@@ -212,7 +212,7 @@ class _UserDashboardState extends State<UserDashboard> {
         final userOrders = orderProvider.orders
             .where(
               (order) =>
-                  order.driverId ==
+                  order.createdBy ==
                   Provider.of<AuthProvider>(context, listen: false).user?.id,
             )
             .toList();
