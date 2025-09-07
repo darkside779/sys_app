@@ -83,8 +83,13 @@ class DeliverySystemApp extends StatelessWidget {
             
             // Builder to handle RTL support
             builder: (context, child) {
+              // Safely get text direction without accessing deactivated context
+              final authProvider = Provider.of<AuthProvider>(context, listen: false);
+              final locale = _getLocale(authProvider) ?? const Locale('en');
+              final textDirection = locale.languageCode == 'ar' ? TextDirection.rtl : TextDirection.ltr;
+              
               return Directionality(
-                textDirection: _getTextDirection(context),
+                textDirection: textDirection,
                 child: child!,
               );
             },
@@ -103,10 +108,6 @@ class DeliverySystemApp extends StatelessWidget {
     return Locale(authProvider.currentLanguage);
   }
 
-  TextDirection _getTextDirection(BuildContext context) {
-    final locale = Localizations.localeOf(context);
-    return locale.languageCode == 'ar' ? TextDirection.rtl : TextDirection.ltr;
-  }
 
   Widget _getInitialScreen(AuthProvider authProvider) {
     // Route to appropriate screen based on authentication state
