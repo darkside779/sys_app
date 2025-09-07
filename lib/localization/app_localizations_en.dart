@@ -895,4 +895,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String returned_reason(Object reason) {
     return 'Returned: $reason';
   }
+
+  @override
+  String get reports => 'Reports';
+
+  @override
+  String get print => 'Print';
+
+  @override
+  String get export_excel => 'Export to Excel';
+
+  @override
+  String get export_successful => 'Export successful';
+
+  @override
+  String get error_occurred => 'An error occurred';
+
+  @override
+  String get date_range => 'Date Range';
 }

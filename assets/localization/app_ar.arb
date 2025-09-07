@@ -361,5 +361,11 @@
   "return_reason": "سبب الإرجاع",
   "enter_return_reason": "أدخل سبب الإرجاع",
   "return_reason_required": "سبب الإرجاع مطلوب",
-  "returned_reason": "مرتجع: {reason}"
+  "returned_reason": "مرتجع: {reason}",
+  "reports": "التقارير",
+  "print": "طباعة",
+  "export_excel": "تصدير إلى Excel",
+  "export_successful": "تم التصدير بنجاح",
+  "error_occurred": "حدث خطأ",
+  "date_range": "نطاق التاريخ"
 }

@@ -889,4 +889,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String returned_reason(Object reason) {
     return 'مرتجع: $reason';
   }
+
+  @override
+  String get reports => 'التقارير';
+
+  @override
+  String get print => 'طباعة';
+
+  @override
+  String get export_excel => 'تصدير إلى Excel';
+
+  @override
+  String get export_successful => 'تم التصدير بنجاح';
+
+  @override
+  String get error_occurred => 'حدث خطأ';
+
+  @override
+  String get date_range => 'نطاق التاريخ';
 }

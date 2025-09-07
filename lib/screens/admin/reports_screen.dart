@@ -1,11 +1,21 @@
-// ignore_for_file: unused_import, deprecated_member_use
+// ignore_for_file: unused_import, deprecated_member_use, avoid_print, unnecessary_import
 
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart' show Border, BorderSide;
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'dart:io';
+import 'package:printing/printing.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:excel/excel.dart' as excel;
+import 'package:path_provider/path_provider.dart';
+import 'package:universal_html/html.dart' as html;
+import 'package:flutter/foundation.dart';
 import '../../providers/order_provider.dart';
 import '../../providers/company_provider.dart';
 import '../../providers/driver_provider.dart';
+import '../../providers/user_provider.dart';
 import '../../models/order_model.dart';
 import '../../models/company_model.dart';
 import '../../models/driver_model.dart';
@@ -46,6 +56,13 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
   void _loadInitialData() {
     final orderProvider = context.read<OrderProvider>();
+    final userProvider = context.read<UserProvider>();
+    
+    // Load users if not already loaded
+    if (userProvider.users.isEmpty) {
+      userProvider.loadUsers();
+    }
+    
     setState(() {
       _filteredOrders = orderProvider.orders;
     });
@@ -179,6 +196,313 @@ class _ReportsScreenState extends State<ReportsScreen> {
         _startDate = picked.start;
         _endDate = picked.end;
       });
+    }
+  }
+
+  Future<void> _printReport() async {
+    try {
+      final pdf = await _generatePdfReport();
+      await Printing.layoutPdf(
+        onLayout: (PdfPageFormat format) async => pdf.save(),
+      );
+    } catch (e) {
+      if (mounted) {
+        CommonWidgets.showLocalizedSnackBar(
+          context: context,
+          getMessage: (tr) => 'An error occurred while printing',
+          type: SnackBarType.error,
+        );
+      }
+    }
+  }
+
+  Future<pw.Document> _generatePdfReport() async {
+    final pdf = pw.Document();
+    final stats = _generateStatistics();
+    final companyProvider = context.read<CompanyProvider>();
+    final driverProvider = context.read<DriverProvider>();
+    final userProvider = context.read<UserProvider>();
+    
+    // Ensure users are loaded
+    if (userProvider.users.isEmpty) {
+      await userProvider.loadUsers();
+    }
+
+    
+    pdf.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context context) {
+          return [
+            // Title
+            pw.Header(
+              level: 0,
+              child: pw.Text(
+                'Order Reports',
+                style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold),
+              ),
+            ),
+            pw.SizedBox(height: 20),
+
+            // Date range
+            if (_startDate != null && _endDate != null)
+              pw.Text(
+                'Date Range: ${DateFormat('MMM dd, yyyy').format(_startDate!)} - ${DateFormat('MMM dd, yyyy').format(_endDate!)}',
+                style: pw.TextStyle(fontSize: 12),
+              ),
+            pw.Text(
+              'Generated on: ${DateFormat('MMM dd, yyyy HH:mm').format(DateTime.now())}',
+              style: pw.TextStyle(fontSize: 10),
+            ),
+            pw.SizedBox(height: 20),
+
+            // Statistics
+            pw.Header(
+              level: 1,
+              child: pw.Text('Summary Statistics'),
+            ),
+            pw.Table.fromTextArray(
+              headers: ['Metric', 'Value'],
+              data: [
+                ['Total Orders', stats['totalOrders'].toString()],
+                ['Received Orders', stats['receivedOrders'].toString()],
+                ['Returned Orders', stats['returnedOrders'].toString()],
+                ['Not Returned Orders', stats['notReturnedOrders'].toString()],
+                ['Total Revenue', 'AED ${stats['totalRevenue'].toStringAsFixed(2)}'],
+                ['Average Order Value', 'AED ${stats['averageOrderValue'].toStringAsFixed(2)}'],
+              ],
+            ),
+            pw.SizedBox(height: 20),
+
+            // Orders table
+            pw.Header(
+              level: 1,
+              child: pw.Text('Order Details (${_filteredOrders.length} orders)'),
+            ),
+            if (_filteredOrders.isEmpty)
+              pw.Text(
+                'No orders found. Please check your filters or ensure orders are loaded.',
+                style: pw.TextStyle(fontSize: 12, color: PdfColors.red),
+              )
+            else
+              pw.Table.fromTextArray(
+                headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10),
+                cellStyle: pw.TextStyle(fontSize: 9),
+                headers: [
+                  'Order #',
+                  'Customer',
+                  'Address',
+                  'Company',
+                  'Driver',
+                  'Status',
+                  'Amount',
+                  'Date',
+                  'Created By',
+                  'Notes',
+                ],
+                data: _filteredOrders.map((order) {
+                  final company = companyProvider.companies.where(
+                    (c) => c.id == order.companyId
+                  ).firstOrNull;
+                  final driver = driverProvider.drivers.where(
+                    (d) => d.id == order.driverId
+                  ).firstOrNull;
+                  final createdByUser = userProvider.getUserById(order.createdBy);
+                  print('DEBUG PDF: Looking for user ID: ${order.createdBy}, found: ${createdByUser?.name ?? 'NULL'}');
+                  print('DEBUG PDF: Available users: ${userProvider.users.map((u) => '${u.id}:${u.name}').join(', ')}');
+                  return [
+                    order.orderNumber,
+                    order.customerName,
+                    order.customerAddress,
+                    company?.name ?? 'Unknown',
+                    driver?.name ?? 'Unassigned',
+                    order.state.name,
+                    'AED ${order.cost.toStringAsFixed(2)}',
+                    DateFormat('MMM dd, yyyy').format(order.date),
+                    createdByUser?.name ?? 'Unknown User',
+                    (order.note?.isNotEmpty ?? false) ? order.note! : 'N/A',
+                  ];
+                }).toList(),
+              ),
+          ];
+        },
+      ),
+    );
+
+    return pdf;
+  }
+
+  Future<void> _exportToExcel() async {
+    try {
+      final excelFile = excel.Excel.createExcel();
+      final sheet = excelFile['Order Reports'];
+      final stats = _generateStatistics();
+      final companyProvider = context.read<CompanyProvider>();
+      final driverProvider = context.read<DriverProvider>();
+      final userProvider = context.read<UserProvider>();
+      
+      // Ensure users are loaded
+      if (userProvider.users.isEmpty) {
+        await userProvider.loadUsers();
+      }
+
+
+      int currentRow = 0;
+
+      // Title
+      sheet.cell(excel.CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: currentRow))
+        ..value = excel.TextCellValue('Order Reports')
+        ..cellStyle = excel.CellStyle(bold: true, fontSize: 16);
+      currentRow += 2;
+
+      // Generation info
+      sheet.cell(excel.CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: currentRow))
+        .value = excel.TextCellValue('Generated on: ${DateFormat('MMM dd, yyyy HH:mm').format(DateTime.now())}');
+      currentRow++;
+      
+      // Date range
+      if (_startDate != null && _endDate != null) {
+        sheet.cell(excel.CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: currentRow))
+          .value = excel.TextCellValue(
+            'Date Range: ${DateFormat('MMM dd, yyyy').format(_startDate!)} - ${DateFormat('MMM dd, yyyy').format(_endDate!)}'
+          );
+        currentRow += 2;
+      } else {
+        sheet.cell(excel.CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: currentRow))
+          .value = excel.TextCellValue('Date Range: All dates');
+        currentRow += 2;
+      }
+
+      // Statistics section
+      sheet.cell(excel.CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: currentRow))
+        ..value = excel.TextCellValue('Summary Statistics')
+        ..cellStyle = excel.CellStyle(bold: true, fontSize: 14);
+      currentRow++;
+
+      // Statistics data
+      final statisticsData = [
+        ['Metric', 'Value'],
+        ['Total Orders', stats['totalOrders'].toString()],
+        ['Received Orders', stats['receivedOrders'].toString()],
+        ['Returned Orders', stats['returnedOrders'].toString()],
+        ['Not Returned Orders', stats['notReturnedOrders'].toString()],
+        ['Total Revenue', 'AED ${stats['totalRevenue'].toStringAsFixed(2)}'],
+        ['Average Order Value', 'AED ${stats['averageOrderValue'].toStringAsFixed(2)}'],
+      ];
+
+      for (int i = 0; i < statisticsData.length; i++) {
+        for (int j = 0; j < statisticsData[i].length; j++) {
+          final cell = sheet.cell(excel.CellIndex.indexByColumnRow(columnIndex: j, rowIndex: currentRow + i));
+          cell.value = excel.TextCellValue(statisticsData[i][j]);
+          if (i == 0) {
+            cell.cellStyle = excel.CellStyle(bold: true);
+          }
+        }
+      }
+      currentRow += statisticsData.length + 2;
+
+      // Orders section
+      sheet.cell(excel.CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: currentRow))
+        ..value = excel.TextCellValue('Order Details (${_filteredOrders.length} orders)')
+        ..cellStyle = excel.CellStyle(bold: true, fontSize: 14);
+      currentRow++;
+
+      if (_filteredOrders.isEmpty) {
+        sheet.cell(excel.CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: currentRow))
+          .value = excel.TextCellValue('No orders found. Please check your filters or ensure orders are loaded.');
+        currentRow++;
+      } else {
+        // Headers
+        final headers = [
+          'Order Number',
+          'Customer Name',
+          'Customer Address',
+          'Company',
+          'Driver',
+          'Status',
+          'Amount (AED)',
+          'Order Date',
+          'Created At',
+          'Created By',
+          'Notes',
+        ];
+
+        for (int i = 0; i < headers.length; i++) {
+          sheet.cell(excel.CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow))
+            ..value = excel.TextCellValue(headers[i])
+            ..cellStyle = excel.CellStyle(bold: true);
+        }
+        currentRow++;
+
+        // Orders data
+        for (final order in _filteredOrders) {
+          final company = companyProvider.companies.where(
+            (c) => c.id == order.companyId
+          ).firstOrNull;
+          final driver = driverProvider.drivers.where(
+            (d) => d.id == order.driverId
+          ).firstOrNull;
+          final createdByUser = userProvider.getUserById(order.createdBy);
+          final rowData = [
+            order.orderNumber,
+            order.customerName,
+            order.customerAddress,
+            company?.name ?? 'Unknown Company',
+            driver?.name ?? 'Unassigned',
+            order.state.name,
+            order.cost.toStringAsFixed(2),
+            DateFormat('MMM dd, yyyy').format(order.date),
+            DateFormat('MMM dd, yyyy HH:mm').format(order.createdAt),
+            createdByUser?.name ?? 'Unknown User',
+            (order.note?.isNotEmpty ?? false) ? order.note! : 'No notes',
+          ];
+
+          for (int i = 0; i < rowData.length; i++) {
+            sheet.cell(excel.CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow))
+              .value = excel.TextCellValue(rowData[i].toString());
+          }
+          currentRow++;
+        }
+      }
+
+      // Save the file
+      final excelBytes = excelFile.save()!;
+      final fileName = 'Order_Reports_${DateFormat('yyyy-MM-dd_HH-mm').format(DateTime.now())}.xlsx';
+
+      if (kIsWeb) {
+        // Web platform
+        final blob = html.Blob([excelBytes]);
+        final url = html.Url.createObjectUrlFromBlob(blob);
+        final anchor = html.document.createElement('a') as html.AnchorElement
+          ..href = url
+          ..style.display = 'none'
+          ..download = fileName;
+        html.document.body?.children.add(anchor);
+        anchor.click();
+        html.document.body?.children.remove(anchor);
+        html.Url.revokeObjectUrl(url);
+      } else {
+        // Mobile/Desktop platforms
+        final directory = await getApplicationDocumentsDirectory();
+        final file = File('${directory.path}/$fileName');
+        await file.writeAsBytes(excelBytes);
+      }
+
+      if (mounted) {
+        CommonWidgets.showLocalizedSnackBar(
+          context: context,
+          getMessage: (tr) => 'Export successful: $fileName (${_filteredOrders.length} orders)',
+          type: SnackBarType.success,
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        CommonWidgets.showLocalizedSnackBar(
+          context: context,
+          getMessage: (tr) => 'Export failed: ${e.toString()}',
+          type: SnackBarType.error,
+        );
+      }
     }
   }
 
@@ -406,6 +730,33 @@ class _ReportsScreenState extends State<ReportsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Action buttons
+          Row(
+            children: [
+              ElevatedButton.icon(
+                onPressed: _printReport,
+                icon: const Icon(Icons.print),
+                label: Text('Print'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.primaryColor,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+              const SizedBox(width: 16),
+              ElevatedButton.icon(
+                onPressed: _exportToExcel,
+                icon: const Icon(Icons.file_download),
+                label: Text('Export to Excel'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.successColor,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+              const Spacer(),
+            ],
+          ),
+          const SizedBox(height: 24),
+
           // Summary Statistics
           Text(
             AppLocalizations.of(context).summary_statistics,

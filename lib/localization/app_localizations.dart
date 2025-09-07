@@ -1849,6 +1849,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Returned: {reason}'**
   String returned_reason(Object reason);
+
+  /// No description provided for @reports.
+  ///
+  /// In en, this message translates to:
+  /// **'Reports'**
+  String get reports;
+
+  /// No description provided for @print.
+  ///
+  /// In en, this message translates to:
+  /// **'Print'**
+  String get print;
+
+  /// No description provided for @export_excel.
+  ///
+  /// In en, this message translates to:
+  /// **'Export to Excel'**
+  String get export_excel;
+
+  /// No description provided for @export_successful.
+  ///
+  /// In en, this message translates to:
+  /// **'Export successful'**
+  String get export_successful;
+
+  /// No description provided for @error_occurred.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred'**
+  String get error_occurred;
+
+  /// No description provided for @date_range.
+  ///
+  /// In en, this message translates to:
+  /// **'Date Range'**
+  String get date_range;
 }
 
 class _AppLocalizationsDelegate

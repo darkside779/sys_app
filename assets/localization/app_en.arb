@@ -363,5 +363,11 @@
   "return_reason": "Return Reason",
   "enter_return_reason": "Enter return reason",
   "return_reason_required": "Return reason is required",
-  "returned_reason": "Returned: {reason}"
+  "returned_reason": "Returned: {reason}",
+  "reports": "Reports",
+  "print": "Print",
+  "export_excel": "Export to Excel",
+  "export_successful": "Export successful",
+  "error_occurred": "An error occurred",
+  "date_range": "Date Range"
 }
