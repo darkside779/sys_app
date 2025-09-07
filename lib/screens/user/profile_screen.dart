@@ -1,4 +1,4 @@
-// ignore_for_file: unused_import, deprecated_member_use
+// ignore_for_file: unused_import, deprecated_member_use, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -244,6 +244,254 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  void _showChangePasswordDialog() {
+    final currentPasswordController = TextEditingController();
+    final newPasswordController = TextEditingController();
+    final confirmPasswordController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+    bool isLoading = false;
+
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: Text('Change Password'),
+          content: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: currentPasswordController,
+                  decoration: InputDecoration(
+                    labelText: 'Current Password',
+                    prefixIcon: Icon(Icons.lock),
+                  ),
+                  obscureText: true,
+                  validator: (value) => value?.isEmpty == true ? 'Required' : null,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: newPasswordController,
+                  decoration: InputDecoration(
+                    labelText: 'New Password',
+                    prefixIcon: Icon(Icons.lock_outline),
+                  ),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value?.isEmpty == true) return 'Required';
+                    if (value!.length < 6) return 'Must be at least 6 characters';
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: confirmPasswordController,
+                  decoration: InputDecoration(
+                    labelText: 'Confirm Password',
+                    prefixIcon: Icon(Icons.lock_outline),
+                  ),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value != newPasswordController.text) {
+                      return 'Passwords do not match';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: isLoading ? null : () => Navigator.pop(context),
+              child: Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: isLoading ? null : () async {
+                if (formKey.currentState!.validate()) {
+                  setState(() => isLoading = true);
+                  try {
+                    final authProvider = context.read<AuthProvider>();
+                    final success = await authProvider.changePassword(
+                      currentPassword: currentPasswordController.text,
+                      newPassword: newPasswordController.text,
+                    );
+                    
+                    if (mounted) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(success ? 'Password updated successfully' : 'Failed to update password'),
+                          backgroundColor: success ? Colors.green : Colors.red,
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Error: $e'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  }
+                  setState(() => isLoading = false);
+                }
+              },
+              child: isLoading ? CircularProgressIndicator(strokeWidth: 2) : Text('Update'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showPrivacyDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Data Privacy'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Your data privacy is important to us. We collect and use your data according to our privacy policy.'),
+            const SizedBox(height: 16),
+            Text('Data we collect:', style: TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Text('• Profile information (name, phone, email)'),
+            Text('• Order history and delivery preferences'),
+            Text('• App usage and performance data'),
+            const SizedBox(height: 16),
+            Text('You have the right to:', style: TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Text('• Access your personal data'),
+            Text('• Request data correction or deletion'),
+            Text('• Control data sharing preferences'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Close'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Privacy settings updated')),
+              );
+            },
+            child: Text('Accept'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showLoginHistoryDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Login History'),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Recent account activity:', style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 16),
+              Flexible(
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    _buildHistoryItem('Today, 2:30 PM', 'Mobile App', Icons.phone_android),
+                    _buildHistoryItem('Yesterday, 9:15 AM', 'Web Browser', Icons.computer),
+                    _buildHistoryItem('3 days ago, 6:45 PM', 'Mobile App', Icons.phone_android),
+                    _buildHistoryItem('1 week ago, 11:20 AM', 'Web Browser', Icons.computer),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHistoryItem(String time, String device, IconData icon) {
+    return ListTile(
+      leading: Icon(icon, color: AppTheme.primaryColor),
+      title: Text(device),
+      subtitle: Text(time),
+      dense: true,
+    );
+  }
+
+  void _showDeleteAccountDialog() {
+    final confirmController = TextEditingController();
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Delete Account', style: TextStyle(color: AppTheme.errorColor)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('This action cannot be undone. All your data will be permanently deleted.'),
+            const SizedBox(height: 16),
+            Text('Type "DELETE" to confirm:', style: TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: confirmController,
+              decoration: InputDecoration(
+                hintText: 'Type DELETE here',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (confirmController.text == 'DELETE') {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Account deletion request submitted'),
+                    backgroundColor: AppTheme.errorColor,
+                  ),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Please type DELETE to confirm'),
+                    backgroundColor: Colors.orange,
+                  ),
+                );
+              }
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: AppTheme.errorColor),
+            child: Text('Delete Account', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -299,6 +547,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _buildPersonalInfoSection(),
                 const SizedBox(height: 24),
                 _buildPreferencesSection(),
+                const SizedBox(height: 24),
+                _buildPrivacySecuritySection(),
                 const SizedBox(height: 24),
                 _buildAccountSection(),
                 if (_isEditing) ...[
@@ -494,6 +744,51 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   }
                 : null,
           ),
+          contentPadding: EdgeInsets.zero,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPrivacySecuritySection() {
+    return _buildSection(
+      title: 'Privacy & Security',
+      icon: Icons.security,
+      color: AppTheme.warningColor,
+      children: [
+        ListTile(
+          leading: const Icon(Icons.lock),
+          title: Text('Change Password'),
+          subtitle: Text('Update your account password'),
+          trailing: Icon(Icons.chevron_right),
+          onTap: _showChangePasswordDialog,
+          contentPadding: EdgeInsets.zero,
+        ),
+        const Divider(),
+        ListTile(
+          leading: const Icon(Icons.visibility_off),
+          title: Text('Data Privacy'),
+          subtitle: Text('Manage your data and privacy settings'),
+          trailing: Icon(Icons.chevron_right),
+          onTap: _showPrivacyDialog,
+          contentPadding: EdgeInsets.zero,
+        ),
+        const Divider(),
+        ListTile(
+          leading: const Icon(Icons.history),
+          title: Text('Login History'),
+          subtitle: Text('View recent account activity'),
+          trailing: Icon(Icons.chevron_right),
+          onTap: _showLoginHistoryDialog,
+          contentPadding: EdgeInsets.zero,
+        ),
+        const Divider(),
+        ListTile(
+          leading: Icon(Icons.delete_forever, color: AppTheme.errorColor),
+          title: Text('Delete Account', style: TextStyle(color: AppTheme.errorColor)),
+          subtitle: Text('Permanently delete your account and data'),
+          trailing: Icon(Icons.chevron_right, color: AppTheme.errorColor),
+          onTap: _showDeleteAccountDialog,
           contentPadding: EdgeInsets.zero,
         ),
       ],

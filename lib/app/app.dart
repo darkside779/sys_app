@@ -75,6 +75,12 @@ class DeliverySystemApp extends StatelessWidget {
             // Initial route - always start with splash screen
             home: const SplashScreen(),
             
+            // Named routes
+            routes: {
+              '/login': (context) => const LoginScreen(),
+              '/dashboard': (context) => const UserDashboard(),
+            },
+            
             // Builder to handle RTL support
             builder: (context, child) {
               return Directionality(

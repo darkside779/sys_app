@@ -2,13 +2,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../providers/auth_provider.dart';
+import '../../app/theme.dart';
 import '../../localization/app_localizations.dart';
-import '../../localization/localization_extension.dart';
+import '../../screens/admin/admin_dashboard.dart';
+import '../../screens/user/user_dashboard.dart';
+import '../../screens/super_admin/super_admin_dashboard.dart';
+import '../../screens/common/system_locked_screen.dart';
+import '../../models/user_model.dart';
 import '../../widgets/common_widgets.dart';
-import 'register_screen.dart';
-import '../admin/admin_dashboard.dart';
-import '../user/user_dashboard.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -65,24 +68,65 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  void _navigateBasedOnRole(AuthProvider authProvider) {
-    Widget destination;
-
-    if (authProvider.isAdmin) {
-      destination = const AdminDashboard();
-    } else {
-      destination = const UserDashboard();
+  Future<void> _navigateBasedOnRole(AuthProvider authProvider) async {
+    // Super admins can always access the system
+    if (authProvider.user?.role == UserRole.superAdmin) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const SuperAdminDashboard()),
+      );
+      return;
     }
 
-    Navigator.of(
-      context,
-    ).pushReplacement(MaterialPageRoute(builder: (context) => destination));
+    // Check if system is locked for non-super admin users
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection('system_settings')
+          .doc('security')
+          .get();
+      
+      final isSystemLocked = doc.data()?['is_locked'] ?? false;
+      
+      if (isSystemLocked) {
+        // System is locked, redirect to locked screen
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const SystemLockedScreen()),
+          );
+        }
+        return;
+      }
+    } catch (e) {
+      // If we can't check the lock status, assume system is unlocked
+      // and continue with normal navigation
+    }
+
+    // System is unlocked, navigate based on role
+    Widget destination;
+    switch (authProvider.user?.role) {
+      case UserRole.admin:
+        destination = const AdminDashboard();
+        break;
+      case UserRole.user:
+      default:
+        destination = const UserDashboard();
+        break;
+    }
+
+    if (mounted) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => destination),
+      );
+    }
   }
 
   void _navigateToRegister() {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (context) => const RegisterScreen()));
+    // Registration functionality can be added here later
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Registration feature coming soon'),
+        backgroundColor: Colors.blue,
+      ),
+    );
   }
 
   String? _validateEmail(String? value) {

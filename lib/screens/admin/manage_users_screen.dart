@@ -50,6 +50,9 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
     final userProvider = context.read<UserProvider>();
     List<User> users = List.from(userProvider.users);
 
+    // Filter out super admin users for regular admins
+    users = users.where((user) => user.role != UserRole.superAdmin).toList();
+
     // Apply search filter
     if (_searchQuery.isNotEmpty) {
       users = users
@@ -256,6 +259,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: _showCreateUserDialog,
         tooltip: AppLocalizations.of(context).add_user,
+        heroTag: "manage_users_fab",
         child: const Icon(Icons.add),
       ),
     );
@@ -297,8 +301,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                SizedBox(
-                  width: 150,
+                Expanded(
                   child: DropdownButtonFormField<UserRole>(
                     initialValue: _roleFilter,
                     decoration: InputDecoration(
@@ -311,12 +314,14 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                         value: null,
                         child: Text(AppLocalizations.of(context).all_roles),
                       ),
-                      ...UserRole.values.map(
-                        (role) => DropdownMenuItem<UserRole>(
-                          value: role,
-                          child: Text(role.displayName),
-                        ),
-                      ),
+                      ...UserRole.values
+                          .where((role) => role != UserRole.superAdmin)
+                          .map(
+                            (role) => DropdownMenuItem<UserRole>(
+                              value: role,
+                              child: Text(role.displayName),
+                            ),
+                          ),
                     ],
                     onChanged: (value) {
                       setState(() => _roleFilter = value);
@@ -391,6 +396,10 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
     Color roleColor;
     IconData roleIcon;
     switch (user.role) {
+      case UserRole.superAdmin:
+        roleColor = Colors.deepPurple;
+        roleIcon = Icons.security;
+        break;
       case UserRole.admin:
         roleColor = AppTheme.errorColor;
         roleIcon = Icons.admin_panel_settings;
@@ -803,6 +812,7 @@ class _UserDialogState extends State<UserDialog> {
                     prefixIcon: const Icon(Icons.security),
                   ),
                   items: UserRole.values
+                      .where((role) => role != UserRole.superAdmin)
                       .map(
                         (role) => DropdownMenuItem<UserRole>(
                           value: role,

@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum UserRole { 
+  superAdmin,
   admin, 
   user;
   
   String get displayName {
     switch (this) {
+      case UserRole.superAdmin:
+        return 'Super Administrator';
       case UserRole.admin:
         return 'Administrator';
       case UserRole.user:

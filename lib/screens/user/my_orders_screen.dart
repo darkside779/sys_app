@@ -274,6 +274,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => _navigateToCreateOrder(context),
         backgroundColor: AppTheme.primaryColor,
+        heroTag: "my_orders_fab",
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );

@@ -439,6 +439,7 @@ class _ManageOrdersScreenState extends State<ManageOrdersScreen> {
         onPressed: _showCreateOrderDialog,
         icon: const Icon(Icons.add),
         label: Text('Create Order'),
+        heroTag: "manage_orders_fab",
       ),
     );
   }

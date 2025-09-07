@@ -253,6 +253,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             const SizedBox(height: 24),
             _buildNotesSection(),
           ],
+          if (_order!.returnReason != null && _order!.returnReason!.isNotEmpty) ...[
+            const SizedBox(height: 24),
+            _buildReturnReasonSection(),
+          ],
           const SizedBox(height: 24),
           _buildStatusUpdateSection(),
         ],
@@ -478,6 +482,44 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           child: Text(
             _order!.note!,
             style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildReturnReasonSection() {
+    return _buildSection(
+      title: 'Return Reason',
+      icon: Icons.reply,
+      color: AppTheme.errorColor,
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppTheme.errorColor.withOpacity(0.05),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: AppTheme.errorColor.withOpacity(0.3)),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.warning,
+                color: AppTheme.errorColor,
+                size: 20,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  _order!.returnReason!,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppTheme.errorColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ],

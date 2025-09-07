@@ -279,6 +279,7 @@ class _ManageDriversScreenState extends State<ManageDriversScreen> {
         onPressed: _showCreateDriverDialog,
         icon: const Icon(Icons.add),
         label: Text(AppLocalizations.of(context).create_driver),
+        heroTag: "manage_drivers_fab",
       ),
     );
   }

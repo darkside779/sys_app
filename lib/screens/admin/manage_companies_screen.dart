@@ -230,6 +230,7 @@ class _ManageCompaniesScreenState extends State<ManageCompaniesScreen> {
         onPressed: _showCreateCompanyDialog,
         icon: const Icon(Icons.add),
         label: Text(AppLocalizations.of(context).create_company),
+        heroTag: "manage_companies_fab",
       ),
     );
   }
