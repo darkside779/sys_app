@@ -191,9 +191,9 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Reset Password'),
+        title: Text('Send Password Reset Email'),
         content: Text(
-          'Are you sure you want to reset the password for "${user.name}" to the default password "user1234"?',
+          'Are you sure you want to send a password reset email to "${user.email}"?\n\nThe user will receive an email with instructions to reset their password.',
         ),
         actions: [
           TextButton(
@@ -209,7 +209,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
               backgroundColor: Colors.orange,
               foregroundColor: Colors.white,
             ),
-            child: Text('Reset Password'),
+            child: Text('Send Reset Email'),
           ),
         ],
       ),
@@ -491,10 +491,26 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                     ),
                   ),
                 ),
-                PopupMenuButton(
+                PopupMenuButton<String>(
+                  onSelected: (value) {
+                    switch (value) {
+                      case 'edit':
+                        _showEditUserDialog(user);
+                        break;
+                      case 'toggle_status':
+                        _toggleUserStatus(user);
+                        break;
+                      case 'reset_password':
+                        _showResetPasswordDialog(user);
+                        break;
+                      case 'delete':
+                        _showDeleteUserDialog(user);
+                        break;
+                    }
+                  },
                   itemBuilder: (context) => [
                     PopupMenuItem(
-                      onTap: () => _showEditUserDialog(user),
+                      value: 'edit',
                       child: Row(
                         children: [
                           const Icon(Icons.edit, size: 18),
@@ -504,7 +520,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                       ),
                     ),
                     PopupMenuItem(
-                      onTap: () => _toggleUserStatus(user),
+                      value: 'toggle_status',
                       child: Row(
                         children: [
                           Icon(
@@ -522,7 +538,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                       ),
                     ),
                     PopupMenuItem(
-                      onTap: () => _showResetPasswordDialog(user),
+                      value: 'reset_password',
                       child: Row(
                         children: [
                           const Icon(
@@ -531,12 +547,12 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                             color: Colors.orange,
                           ),
                           const SizedBox(width: 8),
-                          Text('Reset Password'),
+                          Text('Send Reset Email'),
                         ],
                       ),
                     ),
                     PopupMenuItem(
-                      onTap: () => _showDeleteUserDialog(user),
+                      value: 'delete',
                       child: Row(
                         children: [
                           const Icon(Icons.delete, size: 18, color: Colors.red),
