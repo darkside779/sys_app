@@ -20,6 +20,9 @@ class OrderCard extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onDelete;
   final VoidCallback onUpdateStatus;
+  final bool isSelected;
+  final bool isSelectionMode;
+  final Function(bool) onSelectionChanged;
 
   const OrderCard({
     super.key,
@@ -29,6 +32,9 @@ class OrderCard extends StatelessWidget {
     required this.onEdit,
     required this.onDelete,
     required this.onUpdateStatus,
+    this.isSelected = false,
+    this.isSelectionMode = false,
+    required this.onSelectionChanged,
   });
 
   Color _getStatusColor(OrderState status) {
@@ -48,21 +54,31 @@ class OrderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Order #${order.orderNumber}',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
+      color: isSelected ? Colors.blue.withOpacity(0.1) : null,
+      child: InkWell(
+        onTap: isSelectionMode ? () => onSelectionChanged(!isSelected) : null,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  if (isSelectionMode) ...[
+                    Checkbox(
+                      value: isSelected,
+                      onChanged: (bool? value) => onSelectionChanged(value ?? false),
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                  Expanded(
+                    child: Text(
+                      'Order #${order.orderNumber}',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8,
@@ -194,8 +210,9 @@ class OrderCard extends StatelessWidget {
                 AppLocalizations.of(context).note,
                 order.note!,
               ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

@@ -38,13 +38,16 @@ class Order {
   final String companyId; // Reference to delivery_companies/companyId
   final String driverId; // Reference to drivers/driverId
   final String customerName;
+  final String? customerNumber; // Customer phone/ID number
   final String customerAddress;
+  final String? products; // Order contents/products description
   final DateTime date;
   final double cost;
   final String orderNumber;
   final OrderState state;
   final String? note; // Optional
   final String? returnReason; // Reason why order was returned
+  final DateTime? cashArrivalDate; // Cash arrival date
   final String createdBy; // Reference to users/userId
   final DateTime createdAt;
 
@@ -53,13 +56,16 @@ class Order {
     required this.companyId,
     required this.driverId,
     required this.customerName,
+    this.customerNumber,
     required this.customerAddress,
+    this.products,
     required this.date,
     required this.cost,
     required this.orderNumber,
     required this.state,
     this.note,
     this.returnReason,
+    this.cashArrivalDate,
     required this.createdBy,
     required this.createdAt,
   });
@@ -74,13 +80,16 @@ class Order {
           ? FirebaseFirestore.instance.doc('drivers/$driverId')
           : null,
       'customerName': customerName,
+      'customerNumber': customerNumber,
       'customerAddress': customerAddress,
+      'products': products,
       'date': Timestamp.fromDate(date),
       'cost': cost,
       'orderNumber': orderNumber,
       'state': state.value,
       'note': note,
       'returnReason': returnReason,
+      'cashArrivalDate': cashArrivalDate != null ? Timestamp.fromDate(cashArrivalDate!) : null,
       'createdBy': FirebaseFirestore.instance.doc('users/$createdBy'),
       'createdAt': Timestamp.fromDate(createdAt),
     };
@@ -103,7 +112,9 @@ class Order {
       companyId: extractId(data['companyId'], ''),
       driverId: extractId(data['driverId'], 'unassigned'),
       customerName: data['customerName'] ?? '',
+      customerNumber: data['customerNumber'],
       customerAddress: data['customerAddress'] ?? '',
+      products: data['products'],
       date: (data['date'] as Timestamp).toDate(),
       cost: (data['cost'] ?? 0).toDouble(),
       orderNumber: data['orderNumber'] ?? '',
@@ -113,6 +124,7 @@ class Order {
       ),
       note: data['note'],
       returnReason: data['returnReason'],
+      cashArrivalDate: data['cashArrivalDate'] != null ? (data['cashArrivalDate'] as Timestamp).toDate() : null,
       createdBy: extractId(data['createdBy'], ''),
       createdAt: (data['createdAt'] as Timestamp).toDate(),
     );
@@ -146,13 +158,16 @@ class Order {
     String? companyId,
     String? driverId,
     String? customerName,
+    String? customerNumber,
     String? customerAddress,
+    String? products,
     DateTime? date,
     double? cost,
     String? orderNumber,
     OrderState? state,
     String? note,
     String? returnReason,
+    DateTime? cashArrivalDate,
     String? createdBy,
     DateTime? createdAt,
   }) {
@@ -161,13 +176,16 @@ class Order {
       companyId: companyId ?? this.companyId,
       driverId: driverId ?? this.driverId,
       customerName: customerName ?? this.customerName,
+      customerNumber: customerNumber ?? this.customerNumber,
       customerAddress: customerAddress ?? this.customerAddress,
+      products: products ?? this.products,
       date: date ?? this.date,
       cost: cost ?? this.cost,
       orderNumber: orderNumber ?? this.orderNumber,
       state: state ?? this.state,
       note: note ?? this.note,
       returnReason: returnReason ?? this.returnReason,
+      cashArrivalDate: cashArrivalDate ?? this.cashArrivalDate,
       createdBy: createdBy ?? this.createdBy,
       createdAt: createdAt ?? this.createdAt,
     );

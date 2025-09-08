@@ -95,8 +95,6 @@ class SystemLockedScreen extends StatelessWidget {
                       const SizedBox(height: 16),
                       Text(
                         '• This lock affects all user and admin accounts\n'
-                        '• Super Admin access remains available\n'
-                        '• The system will return to normal once unlocked\n'
                         '• Your data and account information remain secure',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Colors.grey.shade700,
