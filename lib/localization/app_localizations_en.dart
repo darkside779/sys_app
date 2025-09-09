@@ -1061,4 +1061,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String stale_order_tooltip(Object days) {
     return 'This order needs attention - no status change for $days days';
   }
+
+  @override
+  String days_stale(Object days) {
+    return '$days days stale';
+  }
+
+  @override
+  String stale_order_detail_message(Object days) {
+    return 'This order has been $days days without status change and may need attention.';
+  }
 }

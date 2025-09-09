@@ -442,5 +442,7 @@
   "no_message_available": "لا توجد رسالة متاحة",
   "ai_dashboard": "لوحة الذكاء الاصطناعي",
   "stale_order_warning": "الطلب لم يتغير حالته منذ {days} أيام!",
-  "stale_order_tooltip": "هذا الطلب يحتاج انتباه - لا تغيير في الحالة منذ {days} أيام"
+  "stale_order_tooltip": "هذا الطلب يحتاج انتباه - لا تغيير في الحالة منذ {days} أيام",
+  "days_stale": "{days} أيام بدون تحديث",
+  "stale_order_detail_message": "هذا الطلب لم يتغير لمدة {days} أيام وقد يحتاج إلى انتباه."
 }

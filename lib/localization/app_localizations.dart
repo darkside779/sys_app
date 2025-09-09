@@ -2155,6 +2155,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This order needs attention - no status change for {days} days'**
   String stale_order_tooltip(Object days);
+
+  /// No description provided for @days_stale.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} days stale'**
+  String days_stale(Object days);
+
+  /// No description provided for @stale_order_detail_message.
+  ///
+  /// In en, this message translates to:
+  /// **'This order has been {days} days without status change and may need attention.'**
+  String stale_order_detail_message(Object days);
 }
 
 class _AppLocalizationsDelegate

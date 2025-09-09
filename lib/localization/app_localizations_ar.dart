@@ -1054,4 +1054,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String stale_order_tooltip(Object days) {
     return 'هذا الطلب يحتاج انتباه - لا تغيير في الحالة منذ $days أيام';
   }
+
+  @override
+  String days_stale(Object days) {
+    return '$days أيام بدون تحديث';
+  }
+
+  @override
+  String stale_order_detail_message(Object days) {
+    return 'هذا الطلب لم يتغير لمدة $days أيام وقد يحتاج إلى انتباه.';
+  }
 }
