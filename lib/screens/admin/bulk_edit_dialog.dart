@@ -6,6 +6,7 @@ import '../../models/order_model.dart';
 import '../../providers/order_provider.dart';
 import '../../providers/company_provider.dart';
 import '../../providers/driver_provider.dart';
+import '../../localization/app_localizations.dart';
 
 class BulkEditDialog extends StatefulWidget {
   final List<String> selectedOrderIds;
@@ -37,7 +38,7 @@ class _BulkEditDialogState extends State<BulkEditDialog> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Select the fields you want to update for all selected orders:',
+              'Select fields to update:',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 16),
@@ -53,7 +54,7 @@ class _BulkEditDialogState extends State<BulkEditDialog> {
                   items: [
                     DropdownMenuItem<String>(
                       value: null,
-                      child: Text('No change'),
+                      child: Text(AppLocalizations.of(context).no_change),
                     ),
                     ...companyProvider.companies.map(
                       (company) => DropdownMenuItem<String>(
@@ -92,11 +93,11 @@ class _BulkEditDialogState extends State<BulkEditDialog> {
                   items: [
                     DropdownMenuItem<String>(
                       value: null,
-                      child: Text('No change'),
+                      child: Text(AppLocalizations.of(context).no_change),
                     ),
                     DropdownMenuItem<String>(
                       value: 'unassigned',
-                      child: Text('Unassigned'),
+                      child: Text(AppLocalizations.of(context).unassigned),
                     ),
                     ...availableDrivers.map(
                       (driver) => DropdownMenuItem<String>(
@@ -124,7 +125,7 @@ class _BulkEditDialogState extends State<BulkEditDialog> {
               items: [
                 DropdownMenuItem<OrderState>(
                   value: null,
-                  child: Text('No change'),
+                  child: Text(AppLocalizations.of(context).no_change),
                 ),
                 ...OrderState.values.map(
                   (status) => DropdownMenuItem<OrderState>(
@@ -145,7 +146,7 @@ class _BulkEditDialogState extends State<BulkEditDialog> {
       actions: [
         TextButton(
           onPressed: _isLoading ? null : () => Navigator.of(context).pop(),
-          child: Text('Cancel'),
+          child: Text(AppLocalizations.of(context).cancel),
         ),
         ElevatedButton(
           onPressed: _isLoading ? null : _saveChanges,
@@ -241,7 +242,7 @@ class _BulkEditDialogState extends State<BulkEditDialog> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to update orders: $e'),
+            content: Text('Failed to update orders: ${e.toString()}'),
             backgroundColor: Colors.red,
           ),
         );

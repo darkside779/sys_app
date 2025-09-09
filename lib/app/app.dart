@@ -9,6 +9,7 @@ import '../providers/order_provider.dart';
 import '../providers/company_provider.dart';
 import '../providers/driver_provider.dart';
 import '../providers/user_provider.dart';
+import '../providers/ai_provider.dart';
 import '../services/notification_service.dart';
 import '../screens/splash/splash_screen.dart';
 import '../screens/auth/login_screen.dart';
@@ -32,6 +33,7 @@ class DeliverySystemApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CompanyProvider()),
         ChangeNotifierProvider(create: (_) => DriverProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => AIProvider()),
       ],
       child: Consumer<AuthProvider>(
         builder: (context, authProvider, _) {

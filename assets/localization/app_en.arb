@@ -369,5 +369,78 @@
   "export_excel": "Export to Excel",
   "export_successful": "Export successful",
   "error_occurred": "An error occurred",
-  "date_range": "Date Range"
+  "date_range": "Date Range",
+
+  "edit_orders": "Edit {count} Orders",
+  "@edit_orders": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "select_fields_to_update": "Select fields to update:",
+  "company_optional": "Company (Optional)",
+  "leave_empty_to_keep_current": "Leave empty to keep current",
+  "driver_optional": "Driver (Optional)",
+  "status_optional": "Status (Optional)",
+  "update_orders": "Update Orders",
+  "please_select_field_to_update": "Please select at least one field to update",
+  "updating_orders": "Updating orders...",
+  "updated_orders_count": "Updated {success} of {total} orders",
+  "@updated_orders_count": {
+    "placeholders": {
+      "success": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "failed_to_update_orders": "Failed to update orders: {error}",
+  "@failed_to_update_orders": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "no_change": "No change",
+
+  "quick_actions": "Quick Actions",
+  "quick_analysis": "Quick Analysis",
+  "analyze_current_data": "Analyze current data",
+  "export_report": "Export Report",
+  "export_comprehensive_report": "Export comprehensive report",
+  "share_results": "Share Results",
+  "share_key_findings": "Share key findings",
+  "refresh_data": "Refresh Data",
+  "refresh_all_data": "Refresh all data",
+  "analyzing": "Analyzing...",
+  "analysis_results": "Analysis Results",
+  "exporting": "Exporting...",
+  "comprehensive_report": "Comprehensive Report",
+  "report_exported_successfully": "Report exported successfully",
+  "share": "Share",
+  "system_results": "System Results",
+  "share_link_generated": "Share link generated",
+  "refreshing": "Refreshing...",
+  "data_refreshed_successfully": "Data refreshed successfully",
+  "error": "Error",
+
+  "ai_assistant": "AI Assistant",
+  "clear_chat": "Clear Chat",
+  "clear_chat_confirmation": "Are you sure you want to clear the chat history?",
+  "clear": "Clear",
+  "type_message": "Type a message...",
+  "hello_ai_assistant": "Hello! I'm your AI assistant.",
+  "ask_about_system": "Ask me about orders, drivers, companies, or analytics.",
+  "thinking": "Thinking...",
+  "show_todays_orders": "Show today's orders",
+  "analyze_performance": "Analyze performance",
+  "check_driver_status": "Check driver status",
+  "view_company_stats": "View company stats",
+  "no_message_available": "No message available",
+  "ai_dashboard": "AI Dashboard"
 }

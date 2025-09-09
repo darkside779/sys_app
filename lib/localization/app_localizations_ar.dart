@@ -443,7 +443,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get no_orders_assigned => 'لم يتم تخصيص طلبات';
 
   @override
-  String get quick_actions => 'الإجراءات السريعة';
+  String get quick_actions => 'إجراءات سريعة';
 
   @override
   String get refresh_orders => 'تحديث الطلبات';
@@ -907,4 +907,141 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get date_range => 'نطاق التاريخ';
+
+  @override
+  String edit_orders(int count) {
+    return 'تعديل $count طلبات';
+  }
+
+  @override
+  String get select_fields_to_update => 'اختر الحقول للتحديث:';
+
+  @override
+  String get company_optional => 'الشركة (اختياري)';
+
+  @override
+  String get leave_empty_to_keep_current => 'اتركه فارغاً للإبقاء على الحالي';
+
+  @override
+  String get driver_optional => 'السائق (اختياري)';
+
+  @override
+  String get status_optional => 'الحالة (اختياري)';
+
+  @override
+  String get update_orders => 'تحديث الطلبات';
+
+  @override
+  String get please_select_field_to_update =>
+      'يرجى اختيار حقل واحد على الأقل للتحديث';
+
+  @override
+  String get updating_orders => 'جاري تحديث الطلبات...';
+
+  @override
+  String updated_orders_count(int success, int total) {
+    return 'تم تحديث $success من $total طلب';
+  }
+
+  @override
+  String failed_to_update_orders(String error) {
+    return 'فشل في تحديث الطلبات: $error';
+  }
+
+  @override
+  String get no_change => 'بدون تغيير';
+
+  @override
+  String get quick_analysis => 'تحليل سريع';
+
+  @override
+  String get analyze_current_data => 'تحليل البيانات الحالية';
+
+  @override
+  String get export_report => 'تصدير التقرير';
+
+  @override
+  String get export_comprehensive_report => 'تصدير تقرير شامل';
+
+  @override
+  String get share_results => 'مشاركة النتائج';
+
+  @override
+  String get share_key_findings => 'مشاركة النتائج الرئيسية';
+
+  @override
+  String get refresh_data => 'تحديث البيانات';
+
+  @override
+  String get refresh_all_data => 'تحديث جميع البيانات';
+
+  @override
+  String get analyzing => 'جاري التحليل...';
+
+  @override
+  String get analysis_results => 'نتائج التحليل';
+
+  @override
+  String get exporting => 'جاري التصدير...';
+
+  @override
+  String get comprehensive_report => 'تقرير شامل';
+
+  @override
+  String get report_exported_successfully => 'تم تصدير التقرير بنجاح';
+
+  @override
+  String get share => 'مشاركة';
+
+  @override
+  String get system_results => 'نتائج النظام';
+
+  @override
+  String get share_link_generated => 'تم إنشاء رابط المشاركة';
+
+  @override
+  String get refreshing => 'جاري التحديث...';
+
+  @override
+  String get data_refreshed_successfully => 'تم تحديث البيانات بنجاح';
+
+  @override
+  String get ai_assistant => 'المساعد الذكي';
+
+  @override
+  String get clear_chat => 'مسح المحادثة';
+
+  @override
+  String get clear_chat_confirmation => 'هل أنت متأكد من مسح تاريخ المحادثة؟';
+
+  @override
+  String get type_message => 'اكتب رسالة...';
+
+  @override
+  String get hello_ai_assistant => 'مرحباً! أنا مساعدك الذكي.';
+
+  @override
+  String get ask_about_system =>
+      'اسألني عن الطلبات أو السائقين أو الشركات أو التحليلات.';
+
+  @override
+  String get thinking => 'جاري التفكير...';
+
+  @override
+  String get show_todays_orders => 'اعرض طلبات اليوم';
+
+  @override
+  String get analyze_performance => 'تحليل الأداء';
+
+  @override
+  String get check_driver_status => 'فحص حالة السائق';
+
+  @override
+  String get view_company_stats => 'عرض إحصائيات الشركة';
+
+  @override
+  String get no_message_available => 'لا توجد رسالة متاحة';
+
+  @override
+  String get ai_dashboard => 'لوحة الذكاء الاصطناعي';
 }

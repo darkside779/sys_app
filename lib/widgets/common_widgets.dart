@@ -55,6 +55,8 @@ class CommonWidgets {
                   child: Text(
                     getText(context.tr),
                     overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    softWrap: false,
                   ),
                 ),
               ],
@@ -90,6 +92,8 @@ class CommonWidgets {
                   child: Text(
                     getText(context.tr),
                     overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    softWrap: false,
                   ),
                 ),
               ],
@@ -162,6 +166,8 @@ class CommonWidgets {
                   child: Text(
                     getText(context.tr),
                     overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    softWrap: false,
                   ),
                 ),
               ],
@@ -200,6 +206,8 @@ class CommonWidgets {
                   child: Text(
                     getText(context.tr),
                     overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    softWrap: false,
                   ),
                 ),
               ],
@@ -238,6 +246,8 @@ class CommonWidgets {
                   child: Text(
                     getText(context.tr),
                     overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    softWrap: false,
                   ),
                 ),
               ],

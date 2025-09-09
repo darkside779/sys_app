@@ -913,4 +913,142 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get date_range => 'Date Range';
+
+  @override
+  String edit_orders(int count) {
+    return 'Edit $count Orders';
+  }
+
+  @override
+  String get select_fields_to_update => 'Select fields to update:';
+
+  @override
+  String get company_optional => 'Company (Optional)';
+
+  @override
+  String get leave_empty_to_keep_current => 'Leave empty to keep current';
+
+  @override
+  String get driver_optional => 'Driver (Optional)';
+
+  @override
+  String get status_optional => 'Status (Optional)';
+
+  @override
+  String get update_orders => 'Update Orders';
+
+  @override
+  String get please_select_field_to_update =>
+      'Please select at least one field to update';
+
+  @override
+  String get updating_orders => 'Updating orders...';
+
+  @override
+  String updated_orders_count(int success, int total) {
+    return 'Updated $success of $total orders';
+  }
+
+  @override
+  String failed_to_update_orders(String error) {
+    return 'Failed to update orders: $error';
+  }
+
+  @override
+  String get no_change => 'No change';
+
+  @override
+  String get quick_analysis => 'Quick Analysis';
+
+  @override
+  String get analyze_current_data => 'Analyze current data';
+
+  @override
+  String get export_report => 'Export Report';
+
+  @override
+  String get export_comprehensive_report => 'Export comprehensive report';
+
+  @override
+  String get share_results => 'Share Results';
+
+  @override
+  String get share_key_findings => 'Share key findings';
+
+  @override
+  String get refresh_data => 'Refresh Data';
+
+  @override
+  String get refresh_all_data => 'Refresh all data';
+
+  @override
+  String get analyzing => 'Analyzing...';
+
+  @override
+  String get analysis_results => 'Analysis Results';
+
+  @override
+  String get exporting => 'Exporting...';
+
+  @override
+  String get comprehensive_report => 'Comprehensive Report';
+
+  @override
+  String get report_exported_successfully => 'Report exported successfully';
+
+  @override
+  String get share => 'Share';
+
+  @override
+  String get system_results => 'System Results';
+
+  @override
+  String get share_link_generated => 'Share link generated';
+
+  @override
+  String get refreshing => 'Refreshing...';
+
+  @override
+  String get data_refreshed_successfully => 'Data refreshed successfully';
+
+  @override
+  String get ai_assistant => 'AI Assistant';
+
+  @override
+  String get clear_chat => 'Clear Chat';
+
+  @override
+  String get clear_chat_confirmation =>
+      'Are you sure you want to clear the chat history?';
+
+  @override
+  String get type_message => 'Type a message...';
+
+  @override
+  String get hello_ai_assistant => 'Hello! I\'m your AI assistant.';
+
+  @override
+  String get ask_about_system =>
+      'Ask me about orders, drivers, companies, or analytics.';
+
+  @override
+  String get thinking => 'Thinking...';
+
+  @override
+  String get show_todays_orders => 'Show today\'s orders';
+
+  @override
+  String get analyze_performance => 'Analyze performance';
+
+  @override
+  String get check_driver_status => 'Check driver status';
+
+  @override
+  String get view_company_stats => 'View company stats';
+
+  @override
+  String get no_message_available => 'No message available';
+
+  @override
+  String get ai_dashboard => 'AI Dashboard';
 }

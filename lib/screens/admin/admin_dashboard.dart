@@ -17,6 +17,8 @@ import 'manage_orders_screen.dart';
 import 'reports_screen.dart';
 import 'manage_users_screen.dart';
 import 'admin_settings_screen.dart';
+import 'ai_chat_screen.dart';
+import 'ai_dashboard_screen.dart';
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});
@@ -225,6 +227,18 @@ class _AdminDashboardState extends State<AdminDashboard> {
             onTap: () {
               setState(() => _selectedIndex = 5);
               Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.smart_toy),
+            title: Text('AI Assistant'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const AIChatScreen(),
+                ),
+              );
             },
           ),
           const Divider(),
@@ -454,6 +468,40 @@ class _AdminDashboardState extends State<AdminDashboard> {
                               setState(() => _selectedIndex = 4);
                             },
                             icon: Icons.analytics,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CommonWidgets.primaryButton(
+                            context: context,
+                            getText: (tr) => tr.ai_assistant,
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => const AIChatScreen(),
+                                ),
+                              );
+                            },
+                            icon: Icons.smart_toy,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: CommonWidgets.successButton(
+                            context: context,
+                            getText: (tr) => tr.ai_dashboard,
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => const AIDashboardScreen(),
+                                ),
+                              );
+                            },
+                            icon: Icons.dashboard,
                           ),
                         ),
                       ],

@@ -367,5 +367,78 @@
   "export_excel": "تصدير إلى Excel",
   "export_successful": "تم التصدير بنجاح",
   "error_occurred": "حدث خطأ",
-  "date_range": "نطاق التاريخ"
+  "date_range": "نطاق التاريخ",
+
+  "edit_orders": "تعديل {count} طلبات",
+  "@edit_orders": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "select_fields_to_update": "اختر الحقول للتحديث:",
+  "company_optional": "الشركة (اختياري)",
+  "leave_empty_to_keep_current": "اتركه فارغاً للإبقاء على الحالي",
+  "driver_optional": "السائق (اختياري)",
+  "status_optional": "الحالة (اختياري)",
+  "update_orders": "تحديث الطلبات",
+  "please_select_field_to_update": "يرجى اختيار حقل واحد على الأقل للتحديث",
+  "updating_orders": "جاري تحديث الطلبات...",
+  "updated_orders_count": "تم تحديث {success} من {total} طلب",
+  "@updated_orders_count": {
+    "placeholders": {
+      "success": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "failed_to_update_orders": "فشل في تحديث الطلبات: {error}",
+  "@failed_to_update_orders": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "no_change": "بدون تغيير",
+
+  "quick_actions": "إجراءات سريعة",
+  "quick_analysis": "تحليل سريع",
+  "analyze_current_data": "تحليل البيانات الحالية",
+  "export_report": "تصدير التقرير",
+  "export_comprehensive_report": "تصدير تقرير شامل",
+  "share_results": "مشاركة النتائج",
+  "share_key_findings": "مشاركة النتائج الرئيسية",
+  "refresh_data": "تحديث البيانات",
+  "refresh_all_data": "تحديث جميع البيانات",
+  "analyzing": "جاري التحليل...",
+  "analysis_results": "نتائج التحليل",
+  "exporting": "جاري التصدير...",
+  "comprehensive_report": "تقرير شامل",
+  "report_exported_successfully": "تم تصدير التقرير بنجاح",
+  "share": "مشاركة",
+  "system_results": "نتائج النظام",
+  "share_link_generated": "تم إنشاء رابط المشاركة",
+  "refreshing": "جاري التحديث...",
+  "data_refreshed_successfully": "تم تحديث البيانات بنجاح",
+  "error": "خطأ",
+
+  "ai_assistant": "المساعد الذكي",
+  "clear_chat": "مسح المحادثة",
+  "clear_chat_confirmation": "هل أنت متأكد من مسح تاريخ المحادثة؟",
+  "clear": "مسح",
+  "type_message": "اكتب رسالة...",
+  "hello_ai_assistant": "مرحباً! أنا مساعدك الذكي.",
+  "ask_about_system": "اسألني عن الطلبات أو السائقين أو الشركات أو التحليلات.",
+  "thinking": "جاري التفكير...",
+  "show_todays_orders": "اعرض طلبات اليوم",
+  "analyze_performance": "تحليل الأداء",
+  "check_driver_status": "فحص حالة السائق",
+  "view_company_stats": "عرض إحصائيات الشركة",
+  "no_message_available": "لا توجد رسالة متاحة",
+  "ai_dashboard": "لوحة الذكاء الاصطناعي"
 }

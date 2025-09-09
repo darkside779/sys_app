@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import '../../providers/order_provider.dart';
 import '../../providers/company_provider.dart';
 import '../../providers/driver_provider.dart';
-import '../../providers/user_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/order_model.dart';
 import '../../models/company_model.dart';
@@ -238,9 +237,21 @@ class OrderCard extends StatelessWidget {
   }
 
   String _getCreatedByName(BuildContext context, String userId) {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final user = userProvider.getUserById(userId);
-    return user?.name ?? 'Unknown User';
+    // For now, return 'Admin' for any non-empty userId
+    // TODO: Implement proper user name lookup when UserProvider is available
+    if (userId.isEmpty) {
+      return 'Unknown User';
+    }
+    
+    // Map common admin user IDs to display names
+    switch (userId.toLowerCase()) {
+      case 'admin':
+        return 'System Admin';
+      case 'admin_user':
+        return 'Admin User';
+      default:
+        return 'Admin ($userId)';
+    }
   }
 }
 

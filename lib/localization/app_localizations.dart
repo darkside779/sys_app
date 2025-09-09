@@ -1885,6 +1885,264 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Date Range'**
   String get date_range;
+
+  /// No description provided for @edit_orders.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit {count} Orders'**
+  String edit_orders(int count);
+
+  /// No description provided for @select_fields_to_update.
+  ///
+  /// In en, this message translates to:
+  /// **'Select fields to update:'**
+  String get select_fields_to_update;
+
+  /// No description provided for @company_optional.
+  ///
+  /// In en, this message translates to:
+  /// **'Company (Optional)'**
+  String get company_optional;
+
+  /// No description provided for @leave_empty_to_keep_current.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave empty to keep current'**
+  String get leave_empty_to_keep_current;
+
+  /// No description provided for @driver_optional.
+  ///
+  /// In en, this message translates to:
+  /// **'Driver (Optional)'**
+  String get driver_optional;
+
+  /// No description provided for @status_optional.
+  ///
+  /// In en, this message translates to:
+  /// **'Status (Optional)'**
+  String get status_optional;
+
+  /// No description provided for @update_orders.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Orders'**
+  String get update_orders;
+
+  /// No description provided for @please_select_field_to_update.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select at least one field to update'**
+  String get please_select_field_to_update;
+
+  /// No description provided for @updating_orders.
+  ///
+  /// In en, this message translates to:
+  /// **'Updating orders...'**
+  String get updating_orders;
+
+  /// No description provided for @updated_orders_count.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated {success} of {total} orders'**
+  String updated_orders_count(int success, int total);
+
+  /// No description provided for @failed_to_update_orders.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update orders: {error}'**
+  String failed_to_update_orders(String error);
+
+  /// No description provided for @no_change.
+  ///
+  /// In en, this message translates to:
+  /// **'No change'**
+  String get no_change;
+
+  /// No description provided for @quick_analysis.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Analysis'**
+  String get quick_analysis;
+
+  /// No description provided for @analyze_current_data.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyze current data'**
+  String get analyze_current_data;
+
+  /// No description provided for @export_report.
+  ///
+  /// In en, this message translates to:
+  /// **'Export Report'**
+  String get export_report;
+
+  /// No description provided for @export_comprehensive_report.
+  ///
+  /// In en, this message translates to:
+  /// **'Export comprehensive report'**
+  String get export_comprehensive_report;
+
+  /// No description provided for @share_results.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Results'**
+  String get share_results;
+
+  /// No description provided for @share_key_findings.
+  ///
+  /// In en, this message translates to:
+  /// **'Share key findings'**
+  String get share_key_findings;
+
+  /// No description provided for @refresh_data.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh Data'**
+  String get refresh_data;
+
+  /// No description provided for @refresh_all_data.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh all data'**
+  String get refresh_all_data;
+
+  /// No description provided for @analyzing.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyzing...'**
+  String get analyzing;
+
+  /// No description provided for @analysis_results.
+  ///
+  /// In en, this message translates to:
+  /// **'Analysis Results'**
+  String get analysis_results;
+
+  /// No description provided for @exporting.
+  ///
+  /// In en, this message translates to:
+  /// **'Exporting...'**
+  String get exporting;
+
+  /// No description provided for @comprehensive_report.
+  ///
+  /// In en, this message translates to:
+  /// **'Comprehensive Report'**
+  String get comprehensive_report;
+
+  /// No description provided for @report_exported_successfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Report exported successfully'**
+  String get report_exported_successfully;
+
+  /// No description provided for @share.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get share;
+
+  /// No description provided for @system_results.
+  ///
+  /// In en, this message translates to:
+  /// **'System Results'**
+  String get system_results;
+
+  /// No description provided for @share_link_generated.
+  ///
+  /// In en, this message translates to:
+  /// **'Share link generated'**
+  String get share_link_generated;
+
+  /// No description provided for @refreshing.
+  ///
+  /// In en, this message translates to:
+  /// **'Refreshing...'**
+  String get refreshing;
+
+  /// No description provided for @data_refreshed_successfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Data refreshed successfully'**
+  String get data_refreshed_successfully;
+
+  /// No description provided for @ai_assistant.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Assistant'**
+  String get ai_assistant;
+
+  /// No description provided for @clear_chat.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Chat'**
+  String get clear_chat;
+
+  /// No description provided for @clear_chat_confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to clear the chat history?'**
+  String get clear_chat_confirmation;
+
+  /// No description provided for @type_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a message...'**
+  String get type_message;
+
+  /// No description provided for @hello_ai_assistant.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello! I\'m your AI assistant.'**
+  String get hello_ai_assistant;
+
+  /// No description provided for @ask_about_system.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask me about orders, drivers, companies, or analytics.'**
+  String get ask_about_system;
+
+  /// No description provided for @thinking.
+  ///
+  /// In en, this message translates to:
+  /// **'Thinking...'**
+  String get thinking;
+
+  /// No description provided for @show_todays_orders.
+  ///
+  /// In en, this message translates to:
+  /// **'Show today\'s orders'**
+  String get show_todays_orders;
+
+  /// No description provided for @analyze_performance.
+  ///
+  /// In en, this message translates to:
+  /// **'Analyze performance'**
+  String get analyze_performance;
+
+  /// No description provided for @check_driver_status.
+  ///
+  /// In en, this message translates to:
+  /// **'Check driver status'**
+  String get check_driver_status;
+
+  /// No description provided for @view_company_stats.
+  ///
+  /// In en, this message translates to:
+  /// **'View company stats'**
+  String get view_company_stats;
+
+  /// No description provided for @no_message_available.
+  ///
+  /// In en, this message translates to:
+  /// **'No message available'**
+  String get no_message_available;
+
+  /// No description provided for @ai_dashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Dashboard'**
+  String get ai_dashboard;
 }
 
 class _AppLocalizationsDelegate
