@@ -470,51 +470,66 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
                     ),
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: statusColor),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: statusColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: statusColor),
+                      ),
+                      child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(statusIcon, color: statusColor, size: 16),
-                          const SizedBox(width: 4),
-                          Text(
-                            order.state.getLocalizedDisplayName(context),
-                            style: TextStyle(
-                              color: statusColor,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(statusIcon, color: statusColor, size: 16),
+                              const SizedBox(width: 4),
+                              Text(
+                                order.state.getLocalizedDisplayName(context),
+                                style: TextStyle(
+                                  color: statusColor,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
+                          if (order.state == OrderState.returned &&
+                              order.returnReason != null &&
+                              order.returnReason!.isNotEmpty) ...[
+                            const SizedBox(height: 2),
+                            Text(
+                              order.returnReason!,
+                              style: TextStyle(
+                                color: statusColor,
+                                fontSize: 10,
+                                fontStyle: FontStyle.italic,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
                         ],
                       ),
-                      if (order.state == OrderState.returned &&
-                          order.returnReason != null &&
-                          order.returnReason!.isNotEmpty) ...[
-                        const SizedBox(height: 2),
-                        Text(
-                          order.returnReason!,
-                          style: TextStyle(
-                            color: statusColor,
-                            fontSize: 10,
-                            fontStyle: FontStyle.italic,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                    ),
+                    if (order.isStale) ...[
+                      const SizedBox(width: 8),
+                      Tooltip(
+                        message: 'This order needs attention - no status change for ${order.daysSinceLastUpdate} days',
+                        child: const Icon(
+                          Icons.warning,
+                          color: Colors.orange,
+                          size: 16,
                         ),
-                      ],
+                      ),
                     ],
-                  ),
+                  ],
                 ),
                 PopupMenuButton(
                   itemBuilder: (context) => [

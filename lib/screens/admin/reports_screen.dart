@@ -57,12 +57,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
   void _loadInitialData() {
     final orderProvider = context.read<OrderProvider>();
     final userProvider = context.read<UserProvider>();
-    
+
     // Load users if not already loaded
     if (userProvider.users.isEmpty) {
       userProvider.loadUsers();
     }
-    
+
     setState(() {
       _filteredOrders = orderProvider.orders;
     });
@@ -222,13 +222,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
     final companyProvider = context.read<CompanyProvider>();
     final driverProvider = context.read<DriverProvider>();
     final userProvider = context.read<UserProvider>();
-    
+
     // Ensure users are loaded
     if (userProvider.users.isEmpty) {
       await userProvider.loadUsers();
     }
 
-    
     pdf.addPage(
       pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
@@ -239,7 +238,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
               level: 0,
               child: pw.Text(
                 'Order Reports',
-                style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold),
+                style: pw.TextStyle(
+                  fontSize: 24,
+                  fontWeight: pw.FontWeight.bold,
+                ),
               ),
             ),
             pw.SizedBox(height: 20),
@@ -257,10 +259,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
             pw.SizedBox(height: 20),
 
             // Statistics
-            pw.Header(
-              level: 1,
-              child: pw.Text('Summary Statistics'),
-            ),
+            pw.Header(level: 1, child: pw.Text('Summary Statistics')),
             pw.Table.fromTextArray(
               headers: ['Metric', 'Value'],
               data: [
@@ -268,8 +267,14 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 ['Received Orders', stats['receivedOrders'].toString()],
                 ['Returned Orders', stats['returnedOrders'].toString()],
                 ['Not Returned Orders', stats['notReturnedOrders'].toString()],
-                ['Total Revenue', 'AED ${stats['totalRevenue'].toStringAsFixed(2)}'],
-                ['Average Order Value', 'AED ${stats['averageOrderValue'].toStringAsFixed(2)}'],
+                [
+                  'Total Revenue',
+                  'AED ${stats['totalRevenue'].toStringAsFixed(2)}',
+                ],
+                [
+                  'Average Order Value',
+                  'AED ${stats['averageOrderValue'].toStringAsFixed(2)}',
+                ],
               ],
             ),
             pw.SizedBox(height: 20),
@@ -277,7 +282,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
             // Orders table
             pw.Header(
               level: 1,
-              child: pw.Text('Order Details (${_filteredOrders.length} orders)'),
+              child: pw.Text(
+                'Order Details (${_filteredOrders.length} orders)',
+              ),
             ),
             if (_filteredOrders.isEmpty)
               pw.Text(
@@ -286,7 +293,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
               )
             else
               pw.Table.fromTextArray(
-                headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10),
+                headerStyle: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  fontSize: 10,
+                ),
                 cellStyle: pw.TextStyle(fontSize: 9),
                 headers: [
                   'Order #',
@@ -301,15 +311,21 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   'Notes',
                 ],
                 data: _filteredOrders.map((order) {
-                  final company = companyProvider.companies.where(
-                    (c) => c.id == order.companyId
-                  ).firstOrNull;
-                  final driver = driverProvider.drivers.where(
-                    (d) => d.id == order.driverId
-                  ).firstOrNull;
-                  final createdByUser = userProvider.getUserById(order.createdBy);
-                  print('DEBUG PDF: Looking for user ID: ${order.createdBy}, found: ${createdByUser?.name ?? 'NULL'}');
-                  print('DEBUG PDF: Available users: ${userProvider.users.map((u) => '${u.id}:${u.name}').join(', ')}');
+                  final company = companyProvider.companies
+                      .where((c) => c.id == order.companyId)
+                      .firstOrNull;
+                  final driver = driverProvider.drivers
+                      .where((d) => d.id == order.driverId)
+                      .firstOrNull;
+                  final createdByUser = userProvider.getUserById(
+                    order.createdBy,
+                  );
+                  print(
+                    'DEBUG PDF: Looking for user ID: ${order.createdBy}, found: ${createdByUser?.name ?? 'NULL'}',
+                  );
+                  print(
+                    'DEBUG PDF: Available users: ${userProvider.users.map((u) => '${u.id}:${u.name}').join(', ')}',
+                  );
                   return [
                     order.orderNumber,
                     order.customerName,
@@ -340,41 +356,72 @@ class _ReportsScreenState extends State<ReportsScreen> {
       final companyProvider = context.read<CompanyProvider>();
       final driverProvider = context.read<DriverProvider>();
       final userProvider = context.read<UserProvider>();
-      
+
       // Ensure users are loaded
       if (userProvider.users.isEmpty) {
         await userProvider.loadUsers();
       }
 
-
       int currentRow = 0;
 
       // Title
-      sheet.cell(excel.CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: currentRow))
+      sheet.cell(
+          excel.CellIndex.indexByColumnRow(
+            columnIndex: 0,
+            rowIndex: currentRow,
+          ),
+        )
         ..value = excel.TextCellValue('Order Reports')
         ..cellStyle = excel.CellStyle(bold: true, fontSize: 16);
       currentRow += 2;
 
       // Generation info
-      sheet.cell(excel.CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: currentRow))
-        .value = excel.TextCellValue('Generated on: ${DateFormat('MMM dd, yyyy HH:mm').format(DateTime.now())}');
+      sheet
+          .cell(
+            excel.CellIndex.indexByColumnRow(
+              columnIndex: 0,
+              rowIndex: currentRow,
+            ),
+          )
+          .value = excel.TextCellValue(
+        'Generated on: ${DateFormat('MMM dd, yyyy HH:mm').format(DateTime.now())}',
+      );
       currentRow++;
-      
+
       // Date range
       if (_startDate != null && _endDate != null) {
-        sheet.cell(excel.CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: currentRow))
-          .value = excel.TextCellValue(
-            'Date Range: ${DateFormat('MMM dd, yyyy').format(_startDate!)} - ${DateFormat('MMM dd, yyyy').format(_endDate!)}'
-          );
+        sheet
+            .cell(
+              excel.CellIndex.indexByColumnRow(
+                columnIndex: 0,
+                rowIndex: currentRow,
+              ),
+            )
+            .value = excel.TextCellValue(
+          'Date Range: ${DateFormat('MMM dd, yyyy').format(_startDate!)} - ${DateFormat('MMM dd, yyyy').format(_endDate!)}',
+        );
         currentRow += 2;
       } else {
-        sheet.cell(excel.CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: currentRow))
-          .value = excel.TextCellValue('Date Range: All dates');
+        sheet
+            .cell(
+              excel.CellIndex.indexByColumnRow(
+                columnIndex: 0,
+                rowIndex: currentRow,
+              ),
+            )
+            .value = excel.TextCellValue(
+          'Date Range: All dates',
+        );
         currentRow += 2;
       }
 
       // Statistics section
-      sheet.cell(excel.CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: currentRow))
+      sheet.cell(
+          excel.CellIndex.indexByColumnRow(
+            columnIndex: 0,
+            rowIndex: currentRow,
+          ),
+        )
         ..value = excel.TextCellValue('Summary Statistics')
         ..cellStyle = excel.CellStyle(bold: true, fontSize: 14);
       currentRow++;
@@ -387,12 +434,20 @@ class _ReportsScreenState extends State<ReportsScreen> {
         ['Returned Orders', stats['returnedOrders'].toString()],
         ['Not Returned Orders', stats['notReturnedOrders'].toString()],
         ['Total Revenue', 'AED ${stats['totalRevenue'].toStringAsFixed(2)}'],
-        ['Average Order Value', 'AED ${stats['averageOrderValue'].toStringAsFixed(2)}'],
+        [
+          'Average Order Value',
+          'AED ${stats['averageOrderValue'].toStringAsFixed(2)}',
+        ],
       ];
 
       for (int i = 0; i < statisticsData.length; i++) {
         for (int j = 0; j < statisticsData[i].length; j++) {
-          final cell = sheet.cell(excel.CellIndex.indexByColumnRow(columnIndex: j, rowIndex: currentRow + i));
+          final cell = sheet.cell(
+            excel.CellIndex.indexByColumnRow(
+              columnIndex: j,
+              rowIndex: currentRow + i,
+            ),
+          );
           cell.value = excel.TextCellValue(statisticsData[i][j]);
           if (i == 0) {
             cell.cellStyle = excel.CellStyle(bold: true);
@@ -402,14 +457,29 @@ class _ReportsScreenState extends State<ReportsScreen> {
       currentRow += statisticsData.length + 2;
 
       // Orders section
-      sheet.cell(excel.CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: currentRow))
-        ..value = excel.TextCellValue('Order Details (${_filteredOrders.length} orders)')
+      sheet.cell(
+          excel.CellIndex.indexByColumnRow(
+            columnIndex: 0,
+            rowIndex: currentRow,
+          ),
+        )
+        ..value = excel.TextCellValue(
+          'Order Details (${_filteredOrders.length} orders)',
+        )
         ..cellStyle = excel.CellStyle(bold: true, fontSize: 14);
       currentRow++;
 
       if (_filteredOrders.isEmpty) {
-        sheet.cell(excel.CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: currentRow))
-          .value = excel.TextCellValue('No orders found. Please check your filters or ensure orders are loaded.');
+        sheet
+            .cell(
+              excel.CellIndex.indexByColumnRow(
+                columnIndex: 0,
+                rowIndex: currentRow,
+              ),
+            )
+            .value = excel.TextCellValue(
+          'No orders found. Please check your filters or ensure orders are loaded.',
+        );
         currentRow++;
       } else {
         // Headers
@@ -428,7 +498,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
         ];
 
         for (int i = 0; i < headers.length; i++) {
-          sheet.cell(excel.CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow))
+          sheet.cell(
+              excel.CellIndex.indexByColumnRow(
+                columnIndex: i,
+                rowIndex: currentRow,
+              ),
+            )
             ..value = excel.TextCellValue(headers[i])
             ..cellStyle = excel.CellStyle(bold: true);
         }
@@ -436,12 +511,12 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
         // Orders data
         for (final order in _filteredOrders) {
-          final company = companyProvider.companies.where(
-            (c) => c.id == order.companyId
-          ).firstOrNull;
-          final driver = driverProvider.drivers.where(
-            (d) => d.id == order.driverId
-          ).firstOrNull;
+          final company = companyProvider.companies
+              .where((c) => c.id == order.companyId)
+              .firstOrNull;
+          final driver = driverProvider.drivers
+              .where((d) => d.id == order.driverId)
+              .firstOrNull;
           final createdByUser = userProvider.getUserById(order.createdBy);
           final rowData = [
             order.orderNumber,
@@ -458,8 +533,16 @@ class _ReportsScreenState extends State<ReportsScreen> {
           ];
 
           for (int i = 0; i < rowData.length; i++) {
-            sheet.cell(excel.CellIndex.indexByColumnRow(columnIndex: i, rowIndex: currentRow))
-              .value = excel.TextCellValue(rowData[i].toString());
+            sheet
+                .cell(
+                  excel.CellIndex.indexByColumnRow(
+                    columnIndex: i,
+                    rowIndex: currentRow,
+                  ),
+                )
+                .value = excel.TextCellValue(
+              rowData[i].toString(),
+            );
           }
           currentRow++;
         }
@@ -467,7 +550,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
       // Save the file
       final excelBytes = excelFile.save()!;
-      final fileName = 'Order_Reports_${DateFormat('yyyy-MM-dd_HH-mm').format(DateTime.now())}.xlsx';
+      final fileName =
+          'Order_Reports_${DateFormat('yyyy-MM-dd_HH-mm').format(DateTime.now())}.xlsx';
 
       if (kIsWeb) {
         // Web platform
@@ -491,7 +575,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
       if (mounted) {
         CommonWidgets.showLocalizedSnackBar(
           context: context,
-          getMessage: (tr) => 'Export successful: $fileName (${_filteredOrders.length} orders)',
+          getMessage: (tr) =>
+              'Export successful: $fileName (${_filteredOrders.length} orders)',
           type: SnackBarType.success,
         );
       }
@@ -1075,31 +1160,68 @@ class _ReportsScreenState extends State<ReportsScreen> {
         break;
     }
 
+    final isStale = order.isStale;
+    final daysSinceUpdate = order.daysSinceLastUpdate;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+        // Add warning background for stale orders
+        color: isStale ? Colors.orange.withOpacity(0.05) : null,
       ),
       child: Row(
         children: [
           Expanded(child: Text(order.orderNumber)),
           Expanded(child: Text(order.customerName)),
           Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: statusColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: statusColor),
-              ),
-              child: Text(
-                order.state.getLocalizedDisplayName(context),
-                style: TextStyle(color: statusColor, fontSize: 12),
-              ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: statusColor.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(9),
+                    border: Border.all(color: statusColor, width: 1.5),
+                  ),
+                  child: Text(
+                    order.state.getLocalizedDisplayName(context),
+                    style: TextStyle(color: statusColor, fontSize: 12),
+                  ),
+                ),
+                if (isStale) ...[
+                  const SizedBox(width: 8),
+                  Tooltip(
+                    message: 'This order needs attention - no status change for $daysSinceUpdate days',
+                    child: const Icon(
+                      Icons.warning,
+                      color: Colors.orange,
+                      size: 16,
+                    ),
+                  ),
+                ],
+              ],
             ),
           ),
-          Expanded(child: Text('AED ${order.cost.toStringAsFixed(2)}')),
-          Expanded(child: Text(DateFormat('MMM dd, yyyy').format(order.date))),
+          Expanded(child: Text('  AED ${order.cost.toStringAsFixed(2)}')),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(DateFormat('MMM dd, yyyy').format(order.date)),
+                if (isStale)
+                  Text(
+                    'Order has been $daysSinceUpdate days without status change!',
+                    style: const TextStyle(
+                      color: Colors.orange,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ],
       ),
     );

@@ -442,5 +442,7 @@
   "check_driver_status": "Check driver status",
   "view_company_stats": "View company stats",
   "no_message_available": "No message available",
-  "ai_dashboard": "AI Dashboard"
+  "ai_dashboard": "AI Dashboard",
+  "stale_order_warning": "Order has been {days} days without status change!",
+  "stale_order_tooltip": "This order needs attention - no status change for {days} days"
 }

@@ -440,5 +440,7 @@
   "check_driver_status": "فحص حالة السائق",
   "view_company_stats": "عرض إحصائيات الشركة",
   "no_message_available": "لا توجد رسالة متاحة",
-  "ai_dashboard": "لوحة الذكاء الاصطناعي"
+  "ai_dashboard": "لوحة الذكاء الاصطناعي",
+  "stale_order_warning": "الطلب لم يتغير حالته منذ {days} أيام!",
+  "stale_order_tooltip": "هذا الطلب يحتاج انتباه - لا تغيير في الحالة منذ {days} أيام"
 }

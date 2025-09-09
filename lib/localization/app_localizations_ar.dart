@@ -1044,4 +1044,14 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get ai_dashboard => 'لوحة الذكاء الاصطناعي';
+
+  @override
+  String stale_order_warning(Object days) {
+    return 'الطلب لم يتغير حالته منذ $days أيام!';
+  }
+
+  @override
+  String stale_order_tooltip(Object days) {
+    return 'هذا الطلب يحتاج انتباه - لا تغيير في الحالة منذ $days أيام';
+  }
 }

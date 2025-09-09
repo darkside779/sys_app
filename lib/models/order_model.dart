@@ -227,4 +227,23 @@ class Order {
         (returnReason?.hashCode ?? 0) ^
         createdBy.hashCode;
   }
+
+  /// Check if order status has been unchanged for 3+ days
+  bool get isStale {
+    final daysSinceCreation = DateTime.now().difference(createdAt).inDays;
+    final daysSinceLastUpdate = DateTime.now().difference(date).inDays;
+    
+    // Consider order stale if it's been 3+ days without status change
+    // and it's not in a final state (returned/not returned)
+    if (state == OrderState.returned || state == OrderState.notReturned) {
+      return false;
+    }
+    
+    return daysSinceCreation >= 3 || daysSinceLastUpdate >= 3;
+  }
+
+  /// Get number of days since last status update
+  int get daysSinceLastUpdate {
+    return DateTime.now().difference(date).inDays;
+  }
 }

@@ -2143,6 +2143,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'AI Dashboard'**
   String get ai_dashboard;
+
+  /// No description provided for @stale_order_warning.
+  ///
+  /// In en, this message translates to:
+  /// **'Order has been {days} days without status change!'**
+  String stale_order_warning(Object days);
+
+  /// No description provided for @stale_order_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'This order needs attention - no status change for {days} days'**
+  String stale_order_tooltip(Object days);
 }
 
 class _AppLocalizationsDelegate

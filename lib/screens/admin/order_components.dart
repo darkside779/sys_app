@@ -78,27 +78,29 @@ class OrderCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: _getStatusColor(order.state).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: _getStatusColor(order.state)),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        order.state.getLocalizedDisplayName(context),
-                        style: TextStyle(
-                          color: _getStatusColor(order.state),
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
                       ),
+                      decoration: BoxDecoration(
+                        color: _getStatusColor(order.state).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: _getStatusColor(order.state)),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            order.state.getLocalizedDisplayName(context),
+                            style: TextStyle(
+                              color: _getStatusColor(order.state),
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                       if (order.state == OrderState.returned && order.returnReason != null && order.returnReason!.isNotEmpty) ...[
                         const SizedBox(height: 2),
                         Text(
@@ -114,6 +116,19 @@ class OrderCard extends StatelessWidget {
                       ],
                     ],
                   ),
+                    ),
+                    if (order.isStale) ...[
+                      const SizedBox(width: 8),
+                      Tooltip(
+                        message: 'This order needs attention - no status change for ${order.daysSinceLastUpdate} days',
+                        child: const Icon(
+                          Icons.warning,
+                          color: Colors.orange,
+                          size: 16,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
                 PopupMenuButton(
                   itemBuilder: (context) => [

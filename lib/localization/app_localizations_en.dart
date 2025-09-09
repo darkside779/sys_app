@@ -1051,4 +1051,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ai_dashboard => 'AI Dashboard';
+
+  @override
+  String stale_order_warning(Object days) {
+    return 'Order has been $days days without status change!';
+  }
+
+  @override
+  String stale_order_tooltip(Object days) {
+    return 'This order needs attention - no status change for $days days';
+  }
 }
