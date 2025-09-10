@@ -1,0 +1,149 @@
+{
+  "name": "Daily Order Reports to Google Sheets",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * *"
+            }
+          ]
+        }
+      },
+      "id": "8c2c5c5c-4d4d-4d4d-8c2c-5c5c4d4d4d4d",
+      "name": "Schedule Daily 8AM",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://YOUR_PROJECT_ID.firebaseio.com/orders.json",
+        "options": {}
+      },
+      "id": "1a1a1a1a-2b2b-3c3c-4d4d-5e5e6f6f7g7g",
+      "name": "Get Firebase Orders",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Process orders and create daily report\nconst orders = $input.first().json;\nconst today = new Date();\nconst yesterday = new Date(today);\nyesterday.setDate(yesterday.getDate() - 1);\n\n// Initialize report structure\nconst report = {\n  date: yesterday.toISOString().split('T')[0], // YYYY-MM-DD format\n  totalOrders: 0,\n  received: 0,\n  outForDelivery: 0,\n  returned: 0,\n  notReturned: 0,\n  totalRevenue: 0,\n  averageOrderValue: 0\n};\n\n// Process orders if they exist\nif (orders && typeof orders === 'object') {\n  const orderArray = Object.values(orders);\n  \n  // Filter orders from yesterday\n  const yesterdayOrders = orderArray.filter(order => {\n    const orderDate = new Date(order.date || order.createdAt);\n    return orderDate.toDateString() === yesterday.toDateString();\n  });\n  \n  report.totalOrders = yesterdayOrders.length;\n  \n  // Count by status and calculate revenue\n  yesterdayOrders.forEach(order => {\n    const status = order.state || order.status;\n    const cost = parseFloat(order.cost || 0);\n    \n    report.totalRevenue += cost;\n    \n    switch(status) {\n      case 'received':\n        report.received++;\n        break;\n      case 'outForDelivery':\n        report.outForDelivery++;\n        break;\n      case 'returned':\n        report.returned++;\n        break;\n      case 'notReturned':\n        report.notReturned++;\n        break;\n    }\n  });\n  \n  // Calculate average order value\n  report.averageOrderValue = report.totalOrders > 0 \n    ? (report.totalRevenue / report.totalOrders).toFixed(2)\n    : 0;\n}\n\n// Format revenue to 2 decimal places\nreport.totalRevenue = parseFloat(report.totalRevenue.toFixed(2));\n\nreturn { json: report };"
+      },
+      "id": "2b2b2b2b-3c3c-4d4d-5e5e-6f6f7g7g8h8h",
+      "name": "Process Orders Data",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": "YOUR_GOOGLE_SHEET_ID",
+        "sheetName": "Sheet1",
+        "options": {}
+      },
+      "id": "3c3c3c3c-4d4d-5e5e-6f6f-7g7g8h8h9i9i",
+      "name": "Append to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 2,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Format data for Google Sheets\nconst report = $input.first().json;\n\n// Create array with headers and data\nconst formattedData = {\n  \"Date\": report.date,\n  \"Total Orders\": report.totalOrders,\n  \"Received\": report.received,\n  \"Out for Delivery\": report.outForDelivery,\n  \"Returned\": report.returned,\n  \"Not Returned\": report.notReturned,\n  \"Total Revenue (AED)\": report.totalRevenue,\n  \"Average Order Value (AED)\": report.averageOrderValue\n};\n\nreturn { json: formattedData };"
+      },
+      "id": "4d4d4d4d-5e5e-6f6f-7g7g-8h8h9i9i0j0j",
+      "name": "Format for Sheets",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        790,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule Daily 8AM": {
+      "main": [
+        [
+          {
+            "node": "Get Firebase Orders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Firebase Orders": {
+      "main": [
+        [
+          {
+            "node": "Process Orders Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Orders Data": {
+      "main": [
+        [
+          {
+            "node": "Format for Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format for Sheets": {
+      "main": [
+        [
+          {
+            "node": "Append to Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2025-01-10T15:19:15.000Z",
+      "updatedAt": "2025-01-10T15:19:15.000Z",
+      "id": "tag1",
+      "name": "delivery-app"
+    },
+    {
+      "createdAt": "2025-01-10T15:19:15.000Z",
+      "updatedAt": "2025-01-10T15:19:15.000Z",
+      "id": "tag2",
+      "name": "reports"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2025-01-10T15:19:15.000Z",
+  "versionId": "v1"
+}

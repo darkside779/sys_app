@@ -233,9 +233,8 @@ class Order {
     final daysSinceCreation = DateTime.now().difference(createdAt).inDays;
     final daysSinceLastUpdate = DateTime.now().difference(date).inDays;
     
-    // Consider order stale if it's been 3+ days without status change
-    // and it's not in a final state (returned/not returned)
-    if (state == OrderState.returned || state == OrderState.notReturned) {
+    // Show warning only for "notReturned" and "outForDelivery" orders that are 3+ days old
+    if (state != OrderState.notReturned && state != OrderState.outForDelivery) {
       return false;
     }
     
