@@ -114,6 +114,64 @@ class CompanyMetrics {
   }
 }
 
+class ProductMetrics {
+  final int totalProducts;
+  final int activeProducts;
+  final int availableProducts;
+  final int outOfStock;
+  final int lowStock;
+  final double totalInventoryValue;
+  final double averagePrice;
+
+  ProductMetrics({
+    required this.totalProducts,
+    required this.activeProducts,
+    required this.availableProducts,
+    required this.outOfStock,
+    required this.lowStock,
+    required this.totalInventoryValue,
+    required this.averagePrice,
+  });
+
+  factory ProductMetrics.fromList(List<Map<String, dynamic>> products) {
+    final activeProducts = products.where((p) => p['isActive'] == true).length;
+    final availableProducts = products.where((p) => (p['stock'] as int? ?? 0) > 0).length;
+    final outOfStock = products.where((p) => (p['stock'] as int? ?? 0) == 0).length;
+    final lowStock = products.where((p) => (p['stock'] as int? ?? 0) > 0 && (p['stock'] as int? ?? 0) <= 5).length;
+    
+    final totalValue = products.fold<double>(0, (sum, p) {
+      final price = (p['price'] as num?)?.toDouble() ?? 0;
+      final stock = (p['stock'] as int?) ?? 0;
+      return sum + (price * stock);
+    });
+    
+    final avgPrice = products.isNotEmpty ? 
+      products.fold<double>(0, (sum, p) => sum + ((p['price'] as num?)?.toDouble() ?? 0)) / products.length : 0;
+
+    return ProductMetrics(
+      totalProducts: products.length,
+      activeProducts: activeProducts,
+      availableProducts: availableProducts,
+      outOfStock: outOfStock,
+      lowStock: lowStock,
+      totalInventoryValue: totalValue,
+      averagePrice: avgPrice.toDouble(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'total_products': totalProducts,
+      'active_products': activeProducts,
+      'available_products': availableProducts,
+      'out_of_stock': outOfStock,
+      'low_stock': lowStock,
+      'total_inventory_value': totalInventoryValue,
+      'average_price': averagePrice,
+    };
+  }
+}
+
 class SystemInsights {
   final OrderMetrics orderMetrics;
   final DriverMetrics driverMetrics;
@@ -168,6 +226,7 @@ enum AIResponseType {
   orderMetrics,
   driverMetrics,
   companyMetrics,
+  productMetrics,
   systemInsights,
   textResponse,
   error,
@@ -206,6 +265,14 @@ class AIStructuredResponse {
   factory AIStructuredResponse.companyMetrics(CompanyMetrics metrics) {
     return AIStructuredResponse(
       type: AIResponseType.companyMetrics,
+      data: metrics,
+      isLiveData: true,
+    );
+  }
+
+  factory AIStructuredResponse.productMetrics(ProductMetrics metrics) {
+    return AIStructuredResponse(
+      type: AIResponseType.productMetrics,
       data: metrics,
       isLiveData: true,
     );

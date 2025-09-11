@@ -32,13 +32,20 @@ class AIDataService {
         _fetchOrdersData(),
         _fetchCompaniesData(),
         _fetchDriversData(),
+        _fetchProductsData(),
       ]);
 
       _cachedData = {
         'orders': results[0],
         'companies': results[1],
         'drivers': results[2],
-        'summary': _generateDataSummary(results[0], results[1], results[2]),
+        'products': results[3],
+        'summary': _generateDataSummary(
+          results[0] as Map<String, dynamic>,
+          results[1] as Map<String, dynamic>,
+          results[2] as Map<String, dynamic>,
+          results[3] as List<Map<String, dynamic>>,
+        ),
         'timestamp': DateTime.now().toIso8601String(),
       };
       
@@ -171,17 +178,67 @@ class AIDataService {
     }
   }
 
+  /// Helper method to parse DateTime from various formats
+  DateTime? _parseDateTime(dynamic dateValue) {
+    if (dateValue == null) return null;
+    
+    if (dateValue is Timestamp) {
+      return dateValue.toDate();
+    } else if (dateValue is String) {
+      try {
+        return DateTime.parse(dateValue);
+      } catch (e) {
+        print('Error parsing date string: $dateValue - $e');
+        return null;
+      }
+    } else if (dateValue is DateTime) {
+      return dateValue;
+    }
+    
+    return null;
+  }
+
+  /// Fetch products data
+  Future<List<Map<String, dynamic>>> _fetchProductsData() async {
+    try {
+      final productsSnapshot = await _firestore.collection('products').get();
+      final products = productsSnapshot.docs.map((doc) {
+        final data = doc.data();
+        return {
+          'id': doc.id,
+          'name': data['name'] ?? 'Unknown Product',
+          'price': (data['price'] as num?)?.toDouble() ?? 0.0,
+          'stock': (data['stock'] as num?)?.toInt() ?? 0,
+          'isActive': data['isActive'] ?? true,
+          'category': data['category'] ?? 'General',
+          'description': data['description'] ?? '',
+          'imageUrl': data['imageUrl'] ?? '',
+          'createdAt': _parseDateTime(data['createdAt']) ?? DateTime.now(),
+        };
+      }).toList();
+
+      return products;
+    } catch (e) {
+      print('Error fetching products data: $e');
+      return [];
+    }
+  }
+
   /// Generate overall data summary
   Map<String, dynamic> _generateDataSummary(
     Map<String, dynamic> ordersData,
     Map<String, dynamic> companiesData,
     Map<String, dynamic> driversData,
+    List<Map<String, dynamic>> productsData,
   ) {
+    final availableProducts = productsData.where((p) => (p['stock'] as int) > 0).length;
+    
     return {
       'overview': {
         'total_orders': ordersData['total_orders'] ?? 0,
         'total_companies': companiesData['total_companies'] ?? 0,
         'total_drivers': driversData['total_drivers'] ?? 0,
+        'total_products': productsData.length,
         'overall_completion_rate': ordersData['completion_rate'] ?? 0,
         'total_revenue': ordersData['total_cost'] ?? 0,
       },
@@ -189,8 +246,9 @@ class AIDataService {
         'best_performing_company': _findBestPerformingCompany(companiesData),
         'most_active_driver': _findMostActiveDriver(driversData),
         'recent_trend': _analyzeRecentTrend(ordersData),
+        'product_availability': '$availableProducts of ${productsData.length} products available',
       },
-      'alerts': _generateAlerts(ordersData, companiesData, driversData),
+      'alerts': _generateAlerts(ordersData, companiesData, driversData, productsData),
     };
   }
 
@@ -255,6 +313,7 @@ class AIDataService {
     Map<String, dynamic> ordersData,
     Map<String, dynamic> companiesData,
     Map<String, dynamic> driversData,
+    List<Map<String, dynamic>> productsData,
   ) {
     final alerts = <String>[];
     
@@ -268,6 +327,17 @@ class AIDataService {
     final notReturned = ordersData['not_returned'] as int? ?? 0;
     if (notReturned > 10) {
       alerts.add('High number of not returned orders: $notReturned');
+    }
+    
+    // Check product stock levels
+    final outOfStock = productsData.where((p) => (p['stock'] as int? ?? 0) == 0).length;
+    final lowStock = productsData.where((p) => (p['stock'] as int? ?? 0) > 0 && (p['stock'] as int? ?? 0) <= 5).length;
+    
+    if (outOfStock > 0) {
+      alerts.add('Products out of stock: $outOfStock items need restocking');
+    }
+    if (lowStock > 3) {
+      alerts.add('Multiple products have low stock: $lowStock items running low');
     }
     
     return alerts;
@@ -323,5 +393,9 @@ class AIDataService {
 
   Future<Map<String, dynamic>> getDriversData() async {
     return await _fetchDriversData();
+  }
+
+  Future<List<Map<String, dynamic>>> getProductsData() async {
+    return await _fetchProductsData();
   }
 }

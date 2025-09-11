@@ -87,15 +87,33 @@ class AIService {
     
     if (isArabic) {
       return RegExp(r'\b(اعرض|أظهر|احسب|كم|قارن|تحليل|توقع|ابحث)\b').hasMatch(lowerMessage) ||
-             RegExp(r'\b(طلبات|سائقين|شركات|اليوم|أمس|الأسبوع|الشهر|مكتمل|معلق)\b').hasMatch(lowerMessage);
+             RegExp(r'\b(طلبات|سائقين|شركات|منتجات|اليوم|أمس|الأسبوع|الشهر|مكتمل|معلق|نشط|غير نشط)\b').hasMatch(lowerMessage);
     } else {
       return RegExp(r'\b(show|display|count|how many|compare|analyze|predict|search)\b').hasMatch(lowerMessage) ||
-             RegExp(r'\b(orders|drivers|companies|today|yesterday|week|month|completed|pending)\b').hasMatch(lowerMessage);
+             RegExp(r'\b(orders|drivers|companies|products|today|yesterday|week|month|completed|pending|active|inactive)\b').hasMatch(lowerMessage);
     }
   }
 
   /// Generate data response (renamed from _generateStructuredMockResponse)
   Future<AIStructuredResponse> _generateDataResponse(String message, Map<String, dynamic> data, bool isArabic) async {
+    // Check if the question is about products
+    final lowerMessage = message.toLowerCase();
+    
+    if (isArabic) {
+      if (RegExp(r'\b(منتجات|منتج|سلع|بضائع)\b').hasMatch(lowerMessage)) {
+        return _generateProductResponse(message, data, isArabic);
+      }
+    } else {
+      if (RegExp(r'\b(products?|items?|goods|inventory)\b').hasMatch(lowerMessage)) {
+        return _generateProductResponse(message, data, isArabic);
+      }
+    }
+    
+    // For general questions, use AI model to generate contextual response
+    if (_shouldUseAIModel(message)) {
+      return await _generateAIResponse(message, data, isArabic);
+    }
+    
     return _generateStructuredMockResponse(message);
   }
 
@@ -147,6 +165,7 @@ class AIService {
           '📋 **يمكنني مساعدتك في:**\n\n'
           '• **اعرض الطلبات** - احصل على إحصائيات الطلبات\n'
           '• **كم عدد السائقين النشطين** - معلومات السائقين\n'
+          '• **اعرض المنتجات** - إحصائيات وتحليل المنتجات\n'
           '• **تحليل الأداء** - رؤى النظام\n'
           '• **توقع الطلب** - توقعات مستقبلية\n'
           '• **اعرض طلبات اليوم** - بيانات مفلترة حسب التاريخ\n\n'
@@ -159,6 +178,7 @@ class AIService {
           '📋 **I can help you with:**\n\n'
           '• **Show orders** - Get order statistics\n'
           '• **How many active drivers** - Driver information\n'
+          '• **Show products** - Product statistics and analysis\n'
           '• **Analyze performance** - System insights\n'
           '• **Predict demand** - Future forecasts\n'
           '• **Show today\'s orders** - Date-filtered data\n\n'
@@ -176,6 +196,8 @@ class AIService {
       return [
         'اعرض طلبات اليوم',
         'كم عدد السائقين النشطين؟',
+        'اعرض المنتجات النشطة',
+        'كم منتج متوفر؟',
         'تحليل أداء النظام',
         'توقع الطلب للأسبوع القادم',
         'اعرض أفضل الشركات',
@@ -187,6 +209,8 @@ class AIService {
       return [
         'Show today\'s orders',
         'How many active drivers?',
+        'Show active products',
+        'How many products available?',
         'Analyze system performance',
         'Predict demand for next week',
         'Show top companies',
@@ -194,6 +218,134 @@ class AIService {
         'Show inactive drivers',
         'Analyze last month\'s orders',
       ];
+    }
+  }
+
+  /// Generate product-specific responses
+  AIStructuredResponse _generateProductResponse(String message, Map<String, dynamic> data, bool isArabic) {
+    final products = data['products'] as List<Map<String, dynamic>>? ?? [];
+    final lowerMessage = message.toLowerCase();
+    
+    // Check for specific product queries
+    if (isArabic) {
+      if (RegExp(r'\b(كم|عدد)\b').hasMatch(lowerMessage) && RegExp(r'\b(متوفر|نشط)\b').hasMatch(lowerMessage)) {
+        final activeProducts = products.where((p) => p['isActive'] == true).length;
+        final availableProducts = products.where((p) => (p['stock'] as int? ?? 0) > 0).length;
+        return AIStructuredResponse.textResponse(
+          '📦 **المنتجات المتوفرة**: $availableProducts منتج\n'
+          '🟢 **المنتجات النشطة**: $activeProducts منتج\n'
+          '📊 **العدد الإجمالي**: ${products.length} منتج'
+        );
+      }
+      
+      if (RegExp(r'\b(نفد|فارغ|مخزون)\b').hasMatch(lowerMessage)) {
+        final outOfStock = products.where((p) => (p['stock'] as int? ?? 0) == 0).length;
+        final lowStock = products.where((p) => (p['stock'] as int? ?? 0) > 0 && (p['stock'] as int? ?? 0) <= 5).length;
+        return AIStructuredResponse.textResponse(
+          '⚠️ **منتجات نفد مخزونها**: $outOfStock منتج\n'
+          '🟡 **منتجات قليلة المخزون**: $lowStock منتج\n'
+          '💡 **يُنصح بإعادة التموين قريباً**'
+        );
+      }
+    } else {
+      if (RegExp(r'\b(how many|count)\b').hasMatch(lowerMessage) && RegExp(r'\b(available|active)\b').hasMatch(lowerMessage)) {
+        final activeProducts = products.where((p) => p['isActive'] == true).length;
+        final availableProducts = products.where((p) => (p['stock'] as int? ?? 0) > 0).length;
+        return AIStructuredResponse.textResponse(
+          '📦 **Available Products**: $availableProducts products\n'
+          '🟢 **Active Products**: $activeProducts products\n'
+          '📊 **Total Count**: ${products.length} products'
+        );
+      }
+      
+      if (RegExp(r'\b(out of stock|empty|inventory)\b').hasMatch(lowerMessage)) {
+        final outOfStock = products.where((p) => (p['stock'] as int? ?? 0) == 0).length;
+        final lowStock = products.where((p) => (p['stock'] as int? ?? 0) > 0 && (p['stock'] as int? ?? 0) <= 5).length;
+        return AIStructuredResponse.textResponse(
+          '⚠️ **Out of Stock**: $outOfStock products\n'
+          '🟡 **Low Stock**: $lowStock products\n'
+          '💡 **Recommend restocking soon**'
+        );
+      }
+    }
+    
+    // Default product overview
+    return _generateCountResponse(data, 'products', {}, isArabic);
+  }
+
+  /// Determine if query should use AI model for natural language processing
+  bool _shouldUseAIModel(String message) {
+    final lowerMessage = message.toLowerCase();
+    
+    // Use AI model for complex questions, explanations, predictions, and analysis
+    return RegExp(r'\b(why|how|explain|what if|predict|forecast|recommend|suggest|analyze|compare)\b').hasMatch(lowerMessage) ||
+           RegExp(r'\b(should|could|would|best|optimize|improve|strategy)\b').hasMatch(lowerMessage) ||
+           message.contains('?') && message.split(' ').length > 5; // Complex questions
+  }
+
+  /// Generate AI-powered response using the generative model
+  Future<AIStructuredResponse> _generateAIResponse(String message, Map<String, dynamic> data, bool isArabic) async {
+    try {
+      if (_model == null) {
+        await initialize();
+      }
+      
+      // Prepare context with current data
+      final context = _prepareDataContext(data, isArabic);
+      final prompt = _buildAIPrompt(message, context, isArabic);
+      
+      final response = await _model!.generateContent([Content.text(prompt)]);
+      final responseText = response.text ?? (isArabic ? 'لم أتمكن من إنشاء رد مناسب' : 'Could not generate appropriate response');
+      
+      return AIStructuredResponse.textResponse(responseText);
+    } catch (e) {
+      return AIStructuredResponse.error(
+        isArabic ? 'خطأ في الذكاء الاصطناعي: ${e.toString()}' : 'AI Error: ${e.toString()}'
+      );
+    }
+  }
+
+  /// Prepare data context for AI model
+  String _prepareDataContext(Map<String, dynamic> data, bool isArabic) {
+    final ordersData = data['orders'] as Map<String, dynamic>? ?? {};
+    final orders = (ordersData['recent_orders'] as List<dynamic>? ?? []).cast<Map<String, dynamic>>();
+    final drivers = data['drivers'] as List<Map<String, dynamic>>? ?? [];
+    final companies = data['companies'] as List<Map<String, dynamic>>? ?? [];
+    final products = data['products'] as List<Map<String, dynamic>>? ?? [];
+    
+    if (isArabic) {
+      return '''بيانات النظام الحالية:
+- الطلبات: ${orders.length} طلب إجمالي
+- السائقين: ${drivers.length} سائق (${drivers.where((d) => d['isActive'] == true).length} نشط)
+- الشركات: ${companies.length} شركة (${companies.where((c) => c['isActive'] == true).length} نشطة)
+- المنتجات: ${products.length} منتج (${products.where((p) => p['isActive'] == true).length} نشط، ${products.where((p) => (p['stock'] as int? ?? 0) > 0).length} متوفر)''';
+    } else {
+      return '''Current system data:
+- Orders: ${orders.length} total orders
+- Drivers: ${drivers.length} drivers (${drivers.where((d) => d['isActive'] == true).length} active)
+- Companies: ${companies.length} companies (${companies.where((c) => c['isActive'] == true).length} active)
+- Products: ${products.length} products (${products.where((p) => p['isActive'] == true).length} active, ${products.where((p) => (p['stock'] as int? ?? 0) > 0).length} available)''';
+    }
+  }
+
+  /// Build AI prompt with context
+  String _buildAIPrompt(String message, String context, bool isArabic) {
+    if (isArabic) {
+      return '''أنت مساعد ذكي لنظام إدارة التوصيل. أجب على السؤال التالي بناءً على البيانات المتوفرة:
+
+$context
+
+السؤال: $message
+
+يرجى تقديم إجابة مفيدة ومفصلة باللغة العربية.''';
+    } else {
+      return '''You are an AI assistant for a delivery management system. Answer the following question based on the available data:
+
+$context
+
+Question: $message
+
+Please provide a helpful and detailed response in English.''';
     }
   }
 
@@ -303,6 +455,14 @@ Best: ${metrics.mostActiveDriver}''';
 Total: ${metrics.totalCompanies}
 Active: ${metrics.activeCompanies}
 Best: ${metrics.bestPerformingCompany}''';
+      case AIResponseType.productMetrics:
+        final metrics = structuredResponse.data as ProductMetrics;
+        return '''📦 Product Metrics:
+Total: ${metrics.totalProducts}
+Active: ${metrics.activeProducts}
+Available: ${metrics.availableProducts}
+Out of Stock: ${metrics.outOfStock}
+Avg Price: \$${metrics.averagePrice.toStringAsFixed(2)}''';
       case AIResponseType.systemInsights:
       case AIResponseType.textResponse:
       case AIResponseType.error:
@@ -2095,6 +2255,42 @@ Unable to fetch live Firebase data at the moment. This might be due to:
 🔴 **Inactive**: ${companies.length - activeCompanies} companies
 
 ⭐ **Average Rating**: ${companies.isNotEmpty ? (companies.fold<double>(0, (sum, c) => sum + ((c['rating'] is num) ? (c['rating'] as num).toDouble() : 0)) / companies.length).toStringAsFixed(1) : '0'}/5'''
+        );
+        
+      case 'products':
+        final products = data['products'] as List<Map<String, dynamic>>? ?? [];
+        final activeProducts = products.where((p) => p['isActive'] == true).length;
+        final availableProducts = products.where((p) => (p['stock'] as int? ?? 0) > 0).length;
+        final totalStock = products.fold<int>(0, (sum, p) => sum + ((p['stock'] is int) ? p['stock'] as int : 0));
+        final avgPrice = products.isNotEmpty ? 
+          (products.fold<double>(0, (sum, p) => sum + ((p['price'] is num) ? (p['price'] as num).toDouble() : 0)) / products.length) : 0;
+        
+        return AIStructuredResponse.textResponse(
+          isArabic 
+              ? '''📦 **إحصائيات المنتجات**
+
+🔢 **العدد الإجمالي**: ${products.length} منتج
+🟢 **النشطة**: $activeProducts منتج
+📋 **المتوفرة**: $availableProducts منتج
+📦 **إجمالي المخزون**: $totalStock قطعة
+
+💰 **متوسط السعر**: \$${avgPrice.toStringAsFixed(2)}
+
+📊 **تفاصيل إضافية**:
+• منتجات نفدت: ${products.where((p) => (p['stock'] as int? ?? 0) == 0).length}
+• منتجات قليلة المخزون: ${products.where((p) => (p['stock'] as int? ?? 0) > 0 && (p['stock'] as int? ?? 0) <= 5).length}'''
+              : '''📦 **Product Statistics**
+
+🔢 **Total Count**: ${products.length} products
+🟢 **Active**: $activeProducts products
+📋 **Available**: $availableProducts products
+📦 **Total Stock**: $totalStock items
+
+💰 **Average Price**: \$${avgPrice.toStringAsFixed(2)}
+
+📊 **Additional Details**:
+• Out of stock: ${products.where((p) => (p['stock'] as int? ?? 0) == 0).length}
+• Low stock: ${products.where((p) => (p['stock'] as int? ?? 0) > 0 && (p['stock'] as int? ?? 0) <= 5).length}'''
         );
         
       default:

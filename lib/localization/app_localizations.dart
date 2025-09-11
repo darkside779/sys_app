@@ -1958,6 +1958,72 @@ abstract class AppLocalizations {
   /// **'No change'**
   String get no_change;
 
+  /// No description provided for @productMetrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Product Metrics'**
+  String get productMetrics;
+
+  /// No description provided for @totalProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Products'**
+  String get totalProducts;
+
+  /// No description provided for @activeProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Products'**
+  String get activeProducts;
+
+  /// No description provided for @availableProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Products'**
+  String get availableProducts;
+
+  /// No description provided for @outOfStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Out of Stock'**
+  String get outOfStock;
+
+  /// No description provided for @lowStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Low Stock'**
+  String get lowStock;
+
+  /// No description provided for @averagePrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Average Price'**
+  String get averagePrice;
+
+  /// No description provided for @inventoryValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Inventory Value'**
+  String get inventoryValue;
+
+  /// No description provided for @restockNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Restock needed for out of stock products'**
+  String get restockNeeded;
+
+  /// No description provided for @lowStockWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Several products have low stock levels'**
+  String get lowStockWarning;
+
+  /// No description provided for @total_cost.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Cost'**
+  String get total_cost;
+
   /// No description provided for @quick_analysis.
   ///
   /// In en, this message translates to:
@@ -2167,6 +2233,318 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This order has been {days} days without status change and may need attention.'**
   String stale_order_detail_message(Object days);
+
+  /// No description provided for @products.
+  ///
+  /// In en, this message translates to:
+  /// **'Products'**
+  String get products;
+
+  /// No description provided for @product.
+  ///
+  /// In en, this message translates to:
+  /// **'Product'**
+  String get product;
+
+  /// No description provided for @product_management.
+  ///
+  /// In en, this message translates to:
+  /// **'Product Management'**
+  String get product_management;
+
+  /// No description provided for @add_product.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Product'**
+  String get add_product;
+
+  /// No description provided for @edit_product.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Product'**
+  String get edit_product;
+
+  /// No description provided for @delete_product.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Product'**
+  String get delete_product;
+
+  /// No description provided for @product_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Product Name'**
+  String get product_name;
+
+  /// No description provided for @product_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Product Description'**
+  String get product_description;
+
+  /// No description provided for @product_price.
+  ///
+  /// In en, this message translates to:
+  /// **'Product Price'**
+  String get product_price;
+
+  /// No description provided for @product_category.
+  ///
+  /// In en, this message translates to:
+  /// **'Product Category'**
+  String get product_category;
+
+  /// No description provided for @product_sku.
+  ///
+  /// In en, this message translates to:
+  /// **'Product SKU'**
+  String get product_sku;
+
+  /// No description provided for @product_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Product Image'**
+  String get product_image;
+
+  /// No description provided for @search_products.
+  ///
+  /// In en, this message translates to:
+  /// **'Search products...'**
+  String get search_products;
+
+  /// No description provided for @category_filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Category Filter'**
+  String get category_filter;
+
+  /// No description provided for @all_categories.
+  ///
+  /// In en, this message translates to:
+  /// **'All Categories'**
+  String get all_categories;
+
+  /// No description provided for @no_products_match_search.
+  ///
+  /// In en, this message translates to:
+  /// **'No products match your search criteria'**
+  String get no_products_match_search;
+
+  /// No description provided for @no_products_add_first.
+  ///
+  /// In en, this message translates to:
+  /// **'No products found. Add your first product!'**
+  String get no_products_add_first;
+
+  /// No description provided for @clear_filters.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Filters'**
+  String get clear_filters;
+
+  /// No description provided for @categories.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get categories;
+
+  /// No description provided for @product_name_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Product name is required'**
+  String get product_name_required;
+
+  /// No description provided for @product_description_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Product description is required'**
+  String get product_description_required;
+
+  /// No description provided for @product_price_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Product price is required'**
+  String get product_price_required;
+
+  /// No description provided for @product_category_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Product category is required'**
+  String get product_category_required;
+
+  /// No description provided for @product_sku_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Product SKU is required'**
+  String get product_sku_required;
+
+  /// No description provided for @enter_product_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter product name'**
+  String get enter_product_name;
+
+  /// No description provided for @enter_product_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter product description'**
+  String get enter_product_description;
+
+  /// No description provided for @enter_product_price.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter product price (AED)'**
+  String get enter_product_price;
+
+  /// No description provided for @enter_product_category.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter product category'**
+  String get enter_product_category;
+
+  /// No description provided for @enter_product_sku.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter product SKU/Code'**
+  String get enter_product_sku;
+
+  /// No description provided for @enter_image_url.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter image URL (optional)'**
+  String get enter_image_url;
+
+  /// No description provided for @invalid_price.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid price'**
+  String get invalid_price;
+
+  /// No description provided for @failed_update_product_status.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update product status'**
+  String get failed_update_product_status;
+
+  /// No description provided for @delete_product_confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete \"{productName}\"? This action cannot be undone.'**
+  String delete_product_confirm(String productName);
+
+  /// No description provided for @product_deleted_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Product deleted successfully'**
+  String get product_deleted_success;
+
+  /// No description provided for @failed_delete_product.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete product'**
+  String get failed_delete_product;
+
+  /// No description provided for @product_created_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Product created successfully'**
+  String get product_created_success;
+
+  /// No description provided for @product_updated_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Product updated successfully'**
+  String get product_updated_success;
+
+  /// No description provided for @failed_create_product.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to create product'**
+  String get failed_create_product;
+
+  /// No description provided for @failed_update_product.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update product'**
+  String get failed_update_product;
+
+  /// No description provided for @sku.
+  ///
+  /// In en, this message translates to:
+  /// **'SKU'**
+  String get sku;
+
+  /// No description provided for @active_product.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Product'**
+  String get active_product;
+
+  /// No description provided for @quantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity'**
+  String get quantity;
+
+  /// No description provided for @select_products.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Products'**
+  String get select_products;
+
+  /// No description provided for @selected_products.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected Products'**
+  String get selected_products;
+
+  /// No description provided for @add_to_order.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to Order'**
+  String get add_to_order;
+
+  /// No description provided for @remove_from_order.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from Order'**
+  String get remove_from_order;
+
+  /// No description provided for @product_notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Product Notes'**
+  String get product_notes;
+
+  /// No description provided for @enter_notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter notes (optional)'**
+  String get enter_notes;
+
+  /// No description provided for @order_total.
+  ///
+  /// In en, this message translates to:
+  /// **'Order Total'**
+  String get order_total;
+
+  /// No description provided for @no_products_selected.
+  ///
+  /// In en, this message translates to:
+  /// **'No products selected'**
+  String get no_products_selected;
+
+  /// No description provided for @select_products_for_order.
+  ///
+  /// In en, this message translates to:
+  /// **'Select products for this order'**
+  String get select_products_for_order;
+
+  /// No description provided for @products_in_order.
+  ///
+  /// In en, this message translates to:
+  /// **'Products in Order'**
+  String get products_in_order;
 }
 
 class _AppLocalizationsDelegate

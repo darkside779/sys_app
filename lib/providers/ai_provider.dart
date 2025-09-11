@@ -78,6 +78,9 @@ class AIProvider extends ChangeNotifier {
       case AIResponseType.companyMetrics:
         final metrics = response.data as CompanyMetrics;
         return '🏢 Company analytics for ${metrics.totalCompanies} registered companies';
+      case AIResponseType.productMetrics:
+        final metrics = response.data as ProductMetrics;
+        return '📦 Product analytics with ${metrics.totalProducts} total products (${metrics.availableProducts} available)';
       case AIResponseType.systemInsights:
         return '🔍 System insights and analytics generated';
       case AIResponseType.textResponse:
@@ -104,6 +107,9 @@ class AIProvider extends ChangeNotifier {
         break;
       case 'companies':
         query = 'Give me a summary of company statistics';
+        break;
+      case 'products':
+        query = 'Show me product inventory and availability statistics';
         break;
       default:
         query = 'Provide a general overview of the delivery system';

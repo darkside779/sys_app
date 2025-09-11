@@ -7,6 +7,8 @@ import '../../providers/auth_provider.dart';
 import '../../providers/order_provider.dart';
 import '../../providers/company_provider.dart';
 import '../../providers/driver_provider.dart';
+import '../../providers/product_provider.dart';
+import '../../providers/user_provider.dart';
 import '../../localization/app_localizations.dart';
 import '../../widgets/common_widgets.dart';
 import '../../app/theme.dart';
@@ -14,6 +16,7 @@ import '../auth/login_screen.dart';
 import 'manage_companies_screen.dart';
 import 'manage_drivers_screen.dart';
 import 'manage_orders_screen.dart';
+import 'products_screen.dart';
 import 'reports_screen.dart';
 import 'manage_users_screen.dart';
 import 'admin_settings_screen.dart';
@@ -41,6 +44,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
       Provider.of<OrderProvider>(context, listen: false).initialize();
       Provider.of<CompanyProvider>(context, listen: false).initialize();
       Provider.of<DriverProvider>(context, listen: false).initialize();
+      Provider.of<ProductProvider>(context, listen: false).initialize();
+      Provider.of<UserProvider>(context, listen: false).loadUsers();
     });
   }
 
@@ -463,12 +468,41 @@ class _AdminDashboardState extends State<AdminDashboard> {
                         Expanded(
                           child: CommonWidgets.secondaryButton(
                             context: context,
+                            getText: (tr) => tr.products,
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .push(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ProductsScreen(),
+                                    ),
+                                  )
+                                  .then((_) {
+                                    // Return to dashboard after navigation
+                                    setState(() => _selectedIndex = 0);
+                                  });
+                            },
+                            icon: Icons.inventory,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CommonWidgets.secondaryButton(
+                            context: context,
                             getText: (tr) => tr.view_reports,
                             onPressed: () {
                               setState(() => _selectedIndex = 4);
                             },
                             icon: Icons.analytics,
                           ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Container(), // Empty space to maintain layout
                         ),
                       ],
                     ),

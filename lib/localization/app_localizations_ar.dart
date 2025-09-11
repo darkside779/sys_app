@@ -952,6 +952,39 @@ class AppLocalizationsAr extends AppLocalizations {
   String get no_change => 'بدون تغيير';
 
   @override
+  String get productMetrics => 'مقاييس المنتجات';
+
+  @override
+  String get totalProducts => 'إجمالي المنتجات';
+
+  @override
+  String get activeProducts => 'المنتجات النشطة';
+
+  @override
+  String get availableProducts => 'المنتجات المتوفرة';
+
+  @override
+  String get outOfStock => 'نفد المخزون';
+
+  @override
+  String get lowStock => 'مخزون منخفض';
+
+  @override
+  String get averagePrice => 'متوسط السعر';
+
+  @override
+  String get inventoryValue => 'قيمة المخزون';
+
+  @override
+  String get restockNeeded => 'إعادة التموين مطلوبة للمنتجات النافدة';
+
+  @override
+  String get lowStockWarning => 'عدة منتجات لديها مستويات مخزون منخفضة';
+
+  @override
+  String get total_cost => 'التكلفة الإجمالية';
+
+  @override
   String get quick_analysis => 'تحليل سريع';
 
   @override
@@ -1064,4 +1097,162 @@ class AppLocalizationsAr extends AppLocalizations {
   String stale_order_detail_message(Object days) {
     return 'هذا الطلب لم يتغير لمدة $days أيام وقد يحتاج إلى انتباه.';
   }
+
+  @override
+  String get products => 'المنتجات';
+
+  @override
+  String get product => 'منتج';
+
+  @override
+  String get product_management => 'إدارة المنتجات';
+
+  @override
+  String get add_product => 'إضافة منتج';
+
+  @override
+  String get edit_product => 'تعديل المنتج';
+
+  @override
+  String get delete_product => 'حذف المنتج';
+
+  @override
+  String get product_name => 'اسم المنتج';
+
+  @override
+  String get product_description => 'وصف المنتج';
+
+  @override
+  String get product_price => 'سعر المنتج';
+
+  @override
+  String get product_category => 'فئة المنتج';
+
+  @override
+  String get product_sku => 'رمز المنتج';
+
+  @override
+  String get product_image => 'صورة المنتج';
+
+  @override
+  String get search_products => 'البحث في المنتجات...';
+
+  @override
+  String get category_filter => 'تصفية الفئة';
+
+  @override
+  String get all_categories => 'جميع الفئات';
+
+  @override
+  String get no_products_match_search => 'لا توجد منتجات تطابق معايير البحث';
+
+  @override
+  String get no_products_add_first => 'لا توجد منتجات. أضف منتجك الأول!';
+
+  @override
+  String get clear_filters => 'مسح المرشحات';
+
+  @override
+  String get categories => 'الفئات';
+
+  @override
+  String get product_name_required => 'اسم المنتج مطلوب';
+
+  @override
+  String get product_description_required => 'وصف المنتج مطلوب';
+
+  @override
+  String get product_price_required => 'سعر المنتج مطلوب';
+
+  @override
+  String get product_category_required => 'فئة المنتج مطلوبة';
+
+  @override
+  String get product_sku_required => 'رمز المنتج مطلوب';
+
+  @override
+  String get enter_product_name => 'أدخل اسم المنتج';
+
+  @override
+  String get enter_product_description => 'أدخل وصف المنتج';
+
+  @override
+  String get enter_product_price => 'أدخل سعر المنتج (د.إ)';
+
+  @override
+  String get enter_product_category => 'أدخل فئة المنتج';
+
+  @override
+  String get enter_product_sku => 'أدخل رمز/كود المنتج';
+
+  @override
+  String get enter_image_url => 'أدخل رابط الصورة (اختياري)';
+
+  @override
+  String get invalid_price => 'يرجى إدخال سعر صحيح';
+
+  @override
+  String get failed_update_product_status => 'فشل في تحديث حالة المنتج';
+
+  @override
+  String delete_product_confirm(String productName) {
+    return 'هل أنت متأكد من حذف \"$productName\"؟ لا يمكن التراجع عن هذا الإجراء.';
+  }
+
+  @override
+  String get product_deleted_success => 'تم حذف المنتج بنجاح';
+
+  @override
+  String get failed_delete_product => 'فشل في حذف المنتج';
+
+  @override
+  String get product_created_success => 'تم إنشاء المنتج بنجاح';
+
+  @override
+  String get product_updated_success => 'تم تحديث المنتج بنجاح';
+
+  @override
+  String get failed_create_product => 'فشل في إنشاء المنتج';
+
+  @override
+  String get failed_update_product => 'فشل في تحديث المنتج';
+
+  @override
+  String get sku => 'الرمز';
+
+  @override
+  String get active_product => 'منتج نشط';
+
+  @override
+  String get quantity => 'الكمية';
+
+  @override
+  String get select_products => 'اختر المنتجات';
+
+  @override
+  String get selected_products => 'المنتجات المختارة';
+
+  @override
+  String get add_to_order => 'إضافة للطلب';
+
+  @override
+  String get remove_from_order => 'إزالة من الطلب';
+
+  @override
+  String get product_notes => 'ملاحظات المنتج';
+
+  @override
+  String get enter_notes => 'أدخل ملاحظات (اختياري)';
+
+  @override
+  String get order_total => 'إجمالي الطلب';
+
+  @override
+  String get no_products_selected => 'لم يتم اختيار منتجات';
+
+  @override
+  String get select_products_for_order => 'اختر منتجات لهذا الطلب';
+
+  @override
+  String get products_in_order => 'المنتجات في الطلب';
 }

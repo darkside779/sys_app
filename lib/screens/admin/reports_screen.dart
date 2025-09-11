@@ -19,6 +19,7 @@ import '../../providers/user_provider.dart';
 import '../../models/order_model.dart';
 import '../../models/company_model.dart';
 import '../../models/driver_model.dart';
+import '../../models/user_model.dart';
 import '../../localization/app_localizations.dart';
 import '../../widgets/common_widgets.dart';
 import '../../app/theme.dart';
@@ -34,11 +35,13 @@ class _ReportsScreenState extends State<ReportsScreen> {
   final _orderNumberController = TextEditingController();
   String? _selectedCompanyId;
   String? _selectedDriverId;
+  String? _selectedCreatedBy;
   OrderState? _selectedStatus;
   DateTime? _startDate;
   DateTime? _endDate;
   List<Order> _filteredOrders = [];
   bool _isLoading = false;
+  bool _isFiltersExpanded = true;
 
   @override
   void initState() {
@@ -106,6 +109,13 @@ class _ReportsScreenState extends State<ReportsScreen> {
       orders = orders.where((order) => order.state == _selectedStatus).toList();
     }
 
+    // Filter by created by user
+    if (_selectedCreatedBy != null) {
+      orders = orders
+          .where((order) => order.createdBy == _selectedCreatedBy)
+          .toList();
+    }
+
     // Filter by date range
     if (_startDate != null) {
       orders = orders
@@ -135,6 +145,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
       _orderNumberController.clear();
       _selectedCompanyId = null;
       _selectedDriverId = null;
+      _selectedCreatedBy = null;
       _selectedStatus = null;
       _startDate = null;
       _endDate = null;
@@ -615,35 +626,68 @@ class _ReportsScreenState extends State<ReportsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Icon(Icons.filter_list, color: Theme.of(context).primaryColor),
-                const SizedBox(width: 8),
-                Text(
-                  AppLocalizations.of(context).filters,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+            InkWell(
+              onTap: () {
+                setState(() {
+                  _isFiltersExpanded = !_isFiltersExpanded;
+                });
+              },
+              child: Row(
+                children: [
+                  Icon(Icons.filter_list, color: Theme.of(context).primaryColor),
+                  const SizedBox(width: 8),
+                  Text(
+                    AppLocalizations.of(context).filters,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const Spacer(),
-                TextButton.icon(
-                  onPressed: _clearFilters,
-                  icon: const Icon(Icons.clear),
-                  label: Text(AppLocalizations.of(context).clear),
-                ),
-                const SizedBox(width: 8),
-                ElevatedButton.icon(
-                  onPressed: _applyFilters,
-                  icon: const Icon(Icons.search),
-                  label: Text(AppLocalizations.of(context).apply),
-                ),
-              ],
+                  const SizedBox(width: 8),
+                  AnimatedRotation(
+                    turns: _isFiltersExpanded ? 0.5 : 0,
+                    duration: const Duration(milliseconds: 200),
+                    child: Icon(
+                      Icons.expand_more,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  const Spacer(),
+                  if (_isFiltersExpanded) ...[
+                    TextButton.icon(
+                      onPressed: _clearFilters,
+                      icon: const Icon(Icons.clear),
+                      label: Text(AppLocalizations.of(context).clear),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton.icon(
+                      onPressed: _applyFilters,
+                      icon: const Icon(Icons.search),
+                      label: Text(AppLocalizations.of(context).apply),
+                    ),
+                  ] else ...[
+                    // Show compact apply button when collapsed
+                    ElevatedButton.icon(
+                      onPressed: _applyFilters,
+                      icon: const Icon(Icons.search),
+                      label: Text(AppLocalizations.of(context).apply),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
             ),
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 16,
-              runSpacing: 16,
-              children: [
+            AnimatedSize(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              child: _isFiltersExpanded ? Column(
+                children: [
+                  const SizedBox(height: 16),
+                  Wrap(
+                    spacing: 16,
+                    runSpacing: 16,
+                    children: [
                 SizedBox(
                   width: 200,
                   child: TextField(
@@ -736,6 +780,41 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 ),
                 SizedBox(
                   width: 200,
+                  child: Consumer<UserProvider>(
+                    builder: (context, userProvider, child) {
+                      return DropdownButtonFormField<String>(
+                        initialValue: _selectedCreatedBy,
+                        decoration: InputDecoration(
+                          labelText: 'Created By',
+                          prefixIcon: const Icon(Icons.person),
+                          border: OutlineInputBorder(),
+                          isDense: true,
+                        ),
+                        items: [
+                          DropdownMenuItem<String>(
+                            value: null,
+                            child: Text('All Users'),
+                          ),
+                          ...userProvider.users
+                              .where((user) => user.role != UserRole.superAdmin)
+                              .map(
+                            (user) => DropdownMenuItem<String>(
+                              value: user.id,
+                              child: Text(user.name),
+                            ),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedCreatedBy = value;
+                          });
+                        },
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(
+                  width: 200,
                   child: DropdownButtonFormField<OrderState>(
                     initialValue: _selectedStatus,
                     decoration: InputDecoration(
@@ -799,7 +878,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     ),
                   ),
                 ),
-              ],
+                    ],
+                  ),
+                ],
+              ) : const SizedBox.shrink(),
             ),
           ],
         ),
@@ -1177,20 +1259,24 @@ class _ReportsScreenState extends State<ReportsScreen> {
           Expanded(
             child: Row(
               children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: statusColor.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(9),
-                    border: Border.all(color: statusColor, width: 1.5),
-                  ),
-                  child: Text(
-                    order.state.getLocalizedDisplayName(context),
-                    style: TextStyle(color: statusColor, fontSize: 12),
+                Flexible(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: statusColor.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(9),
+                      border: Border.all(color: statusColor, width: 1.5),
+                    ),
+                    child: Text(
+                      order.state.getLocalizedDisplayName(context),
+                      style: TextStyle(color: statusColor, fontSize: 12),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
                   ),
                 ),
                 if (isStale) ...[
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 4),
                   Tooltip(
                     message: 'This order needs attention - no status change for $daysSinceUpdate days',
                     child: const Icon(

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../localization/app_localizations.dart';
+import 'product_model.dart';
 
 enum OrderState { received, outForDelivery, returned, notReturned }
 
@@ -40,7 +41,8 @@ class Order {
   final String customerName;
   final String? customerNumber; // Customer phone/ID number
   final String customerAddress;
-  final String? products; // Order contents/products description
+  final String? products; // Order contents/products description (legacy field)
+  final List<OrderItem>? orderItems; // New structured products list
   final DateTime date;
   final double cost;
   final String orderNumber;
@@ -59,6 +61,7 @@ class Order {
     this.customerNumber,
     required this.customerAddress,
     this.products,
+    this.orderItems,
     required this.date,
     required this.cost,
     required this.orderNumber,
@@ -83,6 +86,7 @@ class Order {
       'customerNumber': customerNumber,
       'customerAddress': customerAddress,
       'products': products,
+      'orderItems': orderItems?.map((item) => item.toMap()).toList(),
       'date': Timestamp.fromDate(date),
       'cost': cost,
       'orderNumber': orderNumber,
@@ -115,6 +119,11 @@ class Order {
       customerNumber: data['customerNumber'],
       customerAddress: data['customerAddress'] ?? '',
       products: data['products'],
+      orderItems: data['orderItems'] != null 
+          ? (data['orderItems'] as List)
+              .map((item) => OrderItem.fromMap(item as Map<String, dynamic>))
+              .toList()
+          : null,
       date: (data['date'] as Timestamp).toDate(),
       cost: (data['cost'] ?? 0).toDouble(),
       orderNumber: data['orderNumber'] ?? '',
@@ -161,6 +170,7 @@ class Order {
     String? customerNumber,
     String? customerAddress,
     String? products,
+    List<OrderItem>? orderItems,
     DateTime? date,
     double? cost,
     String? orderNumber,
@@ -179,6 +189,7 @@ class Order {
       customerNumber: customerNumber ?? this.customerNumber,
       customerAddress: customerAddress ?? this.customerAddress,
       products: products ?? this.products,
+      orderItems: orderItems ?? this.orderItems,
       date: date ?? this.date,
       cost: cost ?? this.cost,
       orderNumber: orderNumber ?? this.orderNumber,

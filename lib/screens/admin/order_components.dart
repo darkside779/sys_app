@@ -6,10 +6,15 @@ import 'package:intl/intl.dart';
 import '../../providers/order_provider.dart';
 import '../../providers/company_provider.dart';
 import '../../providers/driver_provider.dart';
+import '../../providers/user_provider.dart';
+import '../../localization/localization_extension.dart';
+import '../../providers/product_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/order_model.dart';
 import '../../models/company_model.dart';
 import '../../models/driver_model.dart';
+import '../../models/product_model.dart';
+import '../../widgets/product_selection_dialog.dart';
 import '../../localization/app_localizations.dart';
 
 class OrderCard extends StatelessWidget {
@@ -72,7 +77,7 @@ class OrderCard extends StatelessWidget {
                   ],
                   Expanded(
                     child: Text(
-                      'Order #${order.orderNumber}',
+                      '${context.tr.order_hash}${order.orderNumber}',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -191,13 +196,13 @@ class OrderCard extends StatelessWidget {
             _buildInfoRow(
               Icons.local_shipping,
               AppLocalizations.of(context).driver,
-              driver?.name ?? 'Unknown',
+              driver?.name ?? context.tr.unknown_driver,
             ),
             const SizedBox(height: 8),
             _buildInfoRow(
               Icons.attach_money,
               AppLocalizations.of(context).cost,
-              'AED ${order.cost.toStringAsFixed(2)}',
+              '${context.tr.currency_symbol} ${order.cost.toStringAsFixed(2)}',
             ),
             const SizedBox(height: 8),
             _buildInfoRow(
@@ -252,20 +257,31 @@ class OrderCard extends StatelessWidget {
   }
 
   String _getCreatedByName(BuildContext context, String userId) {
-    // For now, return 'Admin' for any non-empty userId
-    // TODO: Implement proper user name lookup when UserProvider is available
     if (userId.isEmpty) {
-      return 'Unknown User';
+      return context.tr.unknown_user;
     }
     
-    // Map common admin user IDs to display names
+    // Look up the actual user from UserProvider
+    try {
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      
+      final users = userProvider.users.where((user) => user.id == userId);
+      
+      if (users.isNotEmpty) {
+        return users.first.name;
+      }
+    } catch (e) {
+      // UserProvider not available or error
+    }
+    
+    // Fallback for special cases or when user not found
     switch (userId.toLowerCase()) {
       case 'admin':
-        return 'System Admin';
-      case 'admin_user':
-        return 'Admin User';
+      case 'system':
+      case 'excel_import':
+        return context.tr.admin;
       default:
-        return 'Admin ($userId)';
+        return context.tr.unknown_user;
     }
   }
 }
@@ -292,6 +308,10 @@ class _OrderDialogState extends State<OrderDialog> {
   OrderState _selectedStatus = OrderState.outForDelivery;
   DateTime _selectedDate = DateTime.now();
   bool _isLoading = false;
+  
+  // Product selection variables
+  List<OrderItem> _selectedProducts = [];
+  bool _useStructuredProducts = true;
 
   @override
   void initState() {
@@ -306,6 +326,16 @@ class _OrderDialogState extends State<OrderDialog> {
       _selectedDriverId = widget.order!.driverId;
       _selectedStatus = widget.order!.state;
       _selectedDate = widget.order!.date;
+      
+      // Handle existing orders - check if they have structured products or legacy products field
+      if (widget.order!.orderItems != null && widget.order!.orderItems!.isNotEmpty) {
+        _selectedProducts = List.from(widget.order!.orderItems!);
+        _useStructuredProducts = true;
+      } else if (widget.order!.products != null && widget.order!.products!.isNotEmpty) {
+        // Legacy order with text-based products - don't select products for backward compatibility
+        _useStructuredProducts = false;
+        _selectedProducts = [];
+      }
     }
   }
 
@@ -319,12 +349,230 @@ class _OrderDialogState extends State<OrderDialog> {
     super.dispose();
   }
 
+  Widget _buildProductSection() {
+    return Consumer<ProductProvider>(
+      builder: (context, productProvider, child) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.shopping_cart, color: Theme.of(context).primaryColor),
+                SizedBox(width: 8),
+                Text(
+                  context.tr.products,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+                Spacer(),
+                ElevatedButton.icon(
+                  onPressed: () => _showProductSelectionDialog(productProvider),
+                  icon: Icon(Icons.add, size: 18),
+                  label: Text(context.tr.add_product),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 12),
+            if (_selectedProducts.isEmpty)
+              Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.info_outline, color: Colors.grey),
+                    SizedBox(width: 8),
+                    Text(
+                      context.tr.select_products_for_order,
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                  ],
+                ),
+              )
+            else
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Column(
+                  children: [
+                    // Header
+                    Container(
+                      padding: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade50,
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 3,
+                            child: Text(context.tr.product, style: TextStyle(fontWeight: FontWeight.w600)),
+                          ),
+                          SizedBox(width: 8),
+                          Expanded(
+                            flex: 1,
+                            child: Text(context.tr.quantity, style: TextStyle(fontWeight: FontWeight.w600)),
+                          ),
+                          SizedBox(width: 8),
+                          Expanded(
+                            flex: 2,
+                            child: Text(context.tr.product_price, style: TextStyle(fontWeight: FontWeight.w600)),
+                          ),
+                          SizedBox(width: 8),
+                          Expanded(
+                            flex: 2,
+                            child: Text(context.tr.total, style: TextStyle(fontWeight: FontWeight.w600)),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Product items
+                    ..._selectedProducts.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final item = entry.value;
+                      return Container(
+                        padding: EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: index < _selectedProducts.length - 1 
+                                  ? Colors.grey.shade200 
+                                  : Colors.transparent,
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 3,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    item.productName,
+                                    style: TextStyle(fontWeight: FontWeight.w500),
+                                  ),
+                                  if (item.notes != null && item.notes!.isNotEmpty)
+                                    Text(
+                                      item.notes!,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              width: 50,
+                              child: Text(
+                                item.quantity.toString(),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 60,
+                              child: Text(
+                                '\$${item.productPrice.toStringAsFixed(2)}',
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 70,
+                              child: Text(
+                                '\$${item.totalPrice.toStringAsFixed(2)}',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () => _removeProduct(index),
+                              icon: Icon(Icons.delete, color: Colors.red, size: 18),
+                              padding: EdgeInsets.zero,
+                              constraints: BoxConstraints(minWidth: 30, minHeight: 30),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                    // Total
+                    Container(
+                      padding: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.vertical(bottom: Radius.circular(8)),
+                      ),
+                      child: Row(
+                        children: [
+                          Text(
+                            '${context.tr.order_total}: \$${_calculateProductsTotal().toStringAsFixed(2)}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showProductSelectionDialog(ProductProvider productProvider) {
+    showDialog(
+      context: context,
+      builder: (context) => ProductSelectionDialog(
+        availableProducts: productProvider.activeProducts,
+        onProductsSelected: (selectedItems) {
+          setState(() {
+            _selectedProducts.addAll(selectedItems);
+            _updateTotalCost();
+          });
+        },
+      ),
+    );
+  }
+
+  void _removeProduct(int index) {
+    setState(() {
+      _selectedProducts.removeAt(index);
+      _updateTotalCost();
+    });
+  }
+
+  double _calculateProductsTotal() {
+    return _selectedProducts.fold(0.0, (sum, item) => sum + item.totalPrice);
+  }
+
+  void _updateTotalCost() {
+    if (_selectedProducts.isNotEmpty) {
+      final productsTotal = _calculateProductsTotal();
+      _costController.text = productsTotal.toStringAsFixed(2);
+    }
+  }
+
   Future<void> _saveOrder() async {
     if (!_formKey.currentState!.validate()) return;
     if (_selectedCompanyId == null || _selectedDriverId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Please select both company and driver'),
+          content: Text('${context.tr.please_select_company} and ${context.tr.select_driver}'),
           backgroundColor: Colors.red,
         ),
       );
@@ -355,6 +603,7 @@ class _OrderDialogState extends State<OrderDialog> {
           note: _noteController.text.trim().isEmpty
               ? null
               : _noteController.text.trim(),
+          orderItems: _useStructuredProducts && _selectedProducts.isNotEmpty ? _selectedProducts : null,
           createdBy: currentUserId,
           createdAt: DateTime.now(),
         );
@@ -362,7 +611,7 @@ class _OrderDialogState extends State<OrderDialog> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Order created successfully'),
+              content: Text(context.tr.data_saved),
               backgroundColor: Colors.green,
             ),
           );
@@ -381,12 +630,15 @@ class _OrderDialogState extends State<OrderDialog> {
           'note': _noteController.text.trim().isEmpty
               ? null
               : _noteController.text.trim(),
+          'orderItems': _useStructuredProducts && _selectedProducts.isNotEmpty 
+              ? _selectedProducts.map((item) => item.toMap()).toList()
+              : null,
         };
         await orderProvider.updateOrder(widget.order!.id, updates);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Order updated successfully'),
+              content: Text(context.tr.update_success),
               backgroundColor: Colors.green,
             ),
           );
@@ -400,7 +652,7 @@ class _OrderDialogState extends State<OrderDialog> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Operation failed: $e'),
+            content: Text('${context.tr.operation_failed}: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -417,7 +669,7 @@ class _OrderDialogState extends State<OrderDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(widget.order == null ? 'Create Order' : 'Edit Order'),
+      title: Text(widget.order == null ? context.tr.create_order : context.tr.update_order),
       content: SizedBox(
         width: MediaQuery.of(context).size.width * 0.9,
         height: MediaQuery.of(context).size.height * 0.7,
@@ -430,13 +682,13 @@ class _OrderDialogState extends State<OrderDialog> {
                 TextFormField(
                   controller: _orderNumberController,
                   decoration: InputDecoration(
-                    labelText: 'Order Number',
-                    hintText: 'Enter order number',
+                    labelText: context.tr.order_number,
+                    hintText: context.tr.order_number,
                     prefixIcon: const Icon(Icons.numbers),
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Order number is required';
+                      return context.tr.required_field;
                     }
                     return null;
                   },
@@ -445,13 +697,13 @@ class _OrderDialogState extends State<OrderDialog> {
                 TextFormField(
                   controller: _customerNameController,
                   decoration: InputDecoration(
-                    labelText: 'Customer Name',
-                    hintText: 'Enter customer name',
+                    labelText: context.tr.customer_name,
+                    hintText: context.tr.customer_name,
                     prefixIcon: const Icon(Icons.person),
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Customer name is required';
+                      return context.tr.required_field;
                     }
                     return null;
                   },
@@ -460,14 +712,14 @@ class _OrderDialogState extends State<OrderDialog> {
                 TextFormField(
                   controller: _customerAddressController,
                   decoration: InputDecoration(
-                    labelText: 'Customer Address',
-                    hintText: 'Enter customer address',
+                    labelText: context.tr.customer_address,
+                    hintText: context.tr.customer_address,
                     prefixIcon: const Icon(Icons.location_on),
                   ),
                   maxLines: 2,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Customer address is required';
+                      return context.tr.required_field;
                     }
                     return null;
                   },
@@ -476,17 +728,17 @@ class _OrderDialogState extends State<OrderDialog> {
                 TextFormField(
                   controller: _costController,
                   decoration: InputDecoration(
-                    labelText: 'Cost',
-                    hintText: 'Enter cost',
+                    labelText: '${context.tr.cost} (${context.tr.currency_symbol})',
+                    hintText: context.tr.cost,
                     prefixIcon: const Icon(Icons.attach_money),
                   ),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Cost is required';
+                      return context.tr.required_field;
                     }
                     if (double.tryParse(value.trim()) == null) {
-                      return 'Please enter a valid number';
+                      return context.tr.invalid_price;
                     }
                     return null;
                   },
@@ -625,11 +877,16 @@ class _OrderDialogState extends State<OrderDialog> {
                   },
                 ),
                 const SizedBox(height: 16),
+                // Product Selection Section
+                if (_useStructuredProducts) ...[
+                  _buildProductSection(),
+                  const SizedBox(height: 16),
+                ],
                 TextFormField(
                   controller: _noteController,
                   decoration: InputDecoration(
-                    labelText: 'Note (Optional)',
-                    hintText: 'Enter additional notes',
+                    labelText: context.tr.enter_notes,
+                    hintText: context.tr.notes,
                     prefixIcon: const Icon(Icons.note),
                   ),
                   maxLines: 3,
@@ -648,7 +905,7 @@ class _OrderDialogState extends State<OrderDialog> {
           onPressed: _isLoading ? null : () => _saveOrder(),
           child: _isLoading
               ? const CircularProgressIndicator()
-              : Text(widget.order == null ? 'Create' : 'Update'),
+              : Text(widget.order == null ? context.tr.create : context.tr.update),
         ),
       ],
     );

@@ -958,6 +958,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_change => 'No change';
 
   @override
+  String get productMetrics => 'Product Metrics';
+
+  @override
+  String get totalProducts => 'Total Products';
+
+  @override
+  String get activeProducts => 'Active Products';
+
+  @override
+  String get availableProducts => 'Available Products';
+
+  @override
+  String get outOfStock => 'Out of Stock';
+
+  @override
+  String get lowStock => 'Low Stock';
+
+  @override
+  String get averagePrice => 'Average Price';
+
+  @override
+  String get inventoryValue => 'Inventory Value';
+
+  @override
+  String get restockNeeded => 'Restock needed for out of stock products';
+
+  @override
+  String get lowStockWarning => 'Several products have low stock levels';
+
+  @override
+  String get total_cost => 'Total Cost';
+
+  @override
   String get quick_analysis => 'Quick Analysis';
 
   @override
@@ -1071,4 +1104,164 @@ class AppLocalizationsEn extends AppLocalizations {
   String stale_order_detail_message(Object days) {
     return 'This order has been $days days without status change and may need attention.';
   }
+
+  @override
+  String get products => 'Products';
+
+  @override
+  String get product => 'Product';
+
+  @override
+  String get product_management => 'Product Management';
+
+  @override
+  String get add_product => 'Add Product';
+
+  @override
+  String get edit_product => 'Edit Product';
+
+  @override
+  String get delete_product => 'Delete Product';
+
+  @override
+  String get product_name => 'Product Name';
+
+  @override
+  String get product_description => 'Product Description';
+
+  @override
+  String get product_price => 'Product Price';
+
+  @override
+  String get product_category => 'Product Category';
+
+  @override
+  String get product_sku => 'Product SKU';
+
+  @override
+  String get product_image => 'Product Image';
+
+  @override
+  String get search_products => 'Search products...';
+
+  @override
+  String get category_filter => 'Category Filter';
+
+  @override
+  String get all_categories => 'All Categories';
+
+  @override
+  String get no_products_match_search =>
+      'No products match your search criteria';
+
+  @override
+  String get no_products_add_first =>
+      'No products found. Add your first product!';
+
+  @override
+  String get clear_filters => 'Clear Filters';
+
+  @override
+  String get categories => 'Categories';
+
+  @override
+  String get product_name_required => 'Product name is required';
+
+  @override
+  String get product_description_required => 'Product description is required';
+
+  @override
+  String get product_price_required => 'Product price is required';
+
+  @override
+  String get product_category_required => 'Product category is required';
+
+  @override
+  String get product_sku_required => 'Product SKU is required';
+
+  @override
+  String get enter_product_name => 'Enter product name';
+
+  @override
+  String get enter_product_description => 'Enter product description';
+
+  @override
+  String get enter_product_price => 'Enter product price (AED)';
+
+  @override
+  String get enter_product_category => 'Enter product category';
+
+  @override
+  String get enter_product_sku => 'Enter product SKU/Code';
+
+  @override
+  String get enter_image_url => 'Enter image URL (optional)';
+
+  @override
+  String get invalid_price => 'Please enter a valid price';
+
+  @override
+  String get failed_update_product_status => 'Failed to update product status';
+
+  @override
+  String delete_product_confirm(String productName) {
+    return 'Are you sure you want to delete \"$productName\"? This action cannot be undone.';
+  }
+
+  @override
+  String get product_deleted_success => 'Product deleted successfully';
+
+  @override
+  String get failed_delete_product => 'Failed to delete product';
+
+  @override
+  String get product_created_success => 'Product created successfully';
+
+  @override
+  String get product_updated_success => 'Product updated successfully';
+
+  @override
+  String get failed_create_product => 'Failed to create product';
+
+  @override
+  String get failed_update_product => 'Failed to update product';
+
+  @override
+  String get sku => 'SKU';
+
+  @override
+  String get active_product => 'Active Product';
+
+  @override
+  String get quantity => 'Quantity';
+
+  @override
+  String get select_products => 'Select Products';
+
+  @override
+  String get selected_products => 'Selected Products';
+
+  @override
+  String get add_to_order => 'Add to Order';
+
+  @override
+  String get remove_from_order => 'Remove from Order';
+
+  @override
+  String get product_notes => 'Product Notes';
+
+  @override
+  String get enter_notes => 'Enter notes (optional)';
+
+  @override
+  String get order_total => 'Order Total';
+
+  @override
+  String get no_products_selected => 'No products selected';
+
+  @override
+  String get select_products_for_order => 'Select products for this order';
+
+  @override
+  String get products_in_order => 'Products in Order';
 }

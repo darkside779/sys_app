@@ -6,8 +6,12 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import '../../providers/ai_provider.dart';
 import '../../models/ai_message.dart';
 import '../../models/ai_response_models.dart';
-import '../../widgets/ai_response_cards.dart';
 import '../../localization/app_localizations.dart';
+import '../../widgets/order_metrics_card.dart';
+import '../../widgets/driver_metrics_card.dart';
+import '../../widgets/company_metrics_card.dart';
+import '../../widgets/product_metrics_card.dart';
+import '../../widgets/system_insights_card.dart';
 
 class AIChatScreen extends StatefulWidget {
   const AIChatScreen({super.key});
@@ -178,6 +182,9 @@ class _AIChatScreenState extends State<AIChatScreen> {
       case AIResponseType.companyMetrics:
         final metrics = response.data as CompanyMetrics;
         return CompanyMetricsCard(metrics: metrics);
+      case AIResponseType.productMetrics:
+        final metrics = response.data as ProductMetrics;
+        return ProductMetricsCard(metrics: metrics);
       case AIResponseType.systemInsights:
         final insights = response.data as SystemInsights;
         return SystemInsightsCard(insights: insights);
